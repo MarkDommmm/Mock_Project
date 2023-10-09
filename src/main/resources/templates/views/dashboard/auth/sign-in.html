@@ -1098,7 +1098,7 @@
                     <h2 class="mb-2 text-center">Sign In</h2>
                     <p class="text-center">Sign in to stay connected.</p>
 <!--                    FORM SIGN IN-->
-                    <form method="post" action="/auth/sign-in" th:object="${signin}">
+                    <form method="post" th:action="@{/auth/sign-in}" name='login-form' th:object="${signin}">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group">

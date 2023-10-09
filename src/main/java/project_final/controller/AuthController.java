@@ -1,12 +1,14 @@
 package project_final.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.LoginRequestDto;
@@ -23,14 +25,12 @@ import javax.validation.Valid;
 
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
-    private IUserService userService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private IMailService mailService;
+    private final IUserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final IMailService mailService;
 
 
     @PostMapping("/register")
@@ -41,22 +41,5 @@ public class AuthController {
         return "redirect:/home/sign-in";
     }
 
-    @PostMapping("/sign-in")
-    public String login(@Valid @ModelAttribute LoginRequestDto loginRequestDto) throws LoginException {
-        Authentication authentication = null;
-        try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequestDto.getUsername(), loginRequestDto.getPassword()));
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-            throw new LoginException("Username or password is incorrect!");
-        }
-        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
-        if (!userPrinciple.isStatus()) {
-            throw new LoginException("Account is locked");
-        }
 
-        return "redirect:/home";
-
-    }
 }
