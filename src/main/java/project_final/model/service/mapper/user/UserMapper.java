@@ -16,10 +16,11 @@ import java.util.Set;
 
 @Component
 @AllArgsConstructor
-public class UserMapper implements IUserMapper{
+public class UserMapper implements IUserMapper {
 
     private final IRoleService roleService;
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public User toEntity(UserRequest userRequest) {
         Set<Role> roles = new HashSet<>();
@@ -41,7 +42,8 @@ public class UserMapper implements IUserMapper{
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .roles(user.getRoles())
                 .status(user.isStatus())
-              .build();
+                .build();
     }
 }

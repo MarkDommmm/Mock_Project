@@ -9,11 +9,20 @@ import project_final.model.dto.request.UserRequest;
 
 @Controller
 public class HomeController {
-
     @RequestMapping("/home")
-    public String home() {
+    public String home () {
         return "dashboard/ChoseTable";
     }
+
+    @RequestMapping("/user")
+    public String homeUser() {
+        return "dashboard/ChoseTable";
+    }
+    @RequestMapping("/admin")
+    public String homeAdmin() {
+        return "dashboard/ChoseTable";
+    }
+
     @RequestMapping("/403")
     public String error403() {
         return "/dashboard/errors/error403";

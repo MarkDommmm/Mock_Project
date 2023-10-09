@@ -35,7 +35,7 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> findByUserName(String username) {
-        return Optional.empty();
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -54,7 +54,8 @@ public class UserService implements IUserService {
 
     @Override
     public User findById(Long id) {
-        return null;
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
     }
 
     @Override
