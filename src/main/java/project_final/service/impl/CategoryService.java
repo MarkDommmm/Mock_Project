@@ -6,44 +6,54 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.entity.Category;
+import project_final.model.dto.request.CategoryRequest;
+import project_final.model.dto.response.CategoryResponse;
 import project_final.repository.ICategoryRepository;
 import project_final.service.ICategoryService;
+import project_final.service.mapper.ICategoryMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CategoryService implements ICategoryService {
 
     private final ICategoryRepository categoryRepository;
+    private final ICategoryMapper categoryMapper;
+
 
 
     @Override
-    public Page<Category> findAll(String name, int page, int size) {
-        return categoryRepository.findAllByNameContains(name, PageRequest.of(page, size));
+    public Page<CategoryResponse> findAll(String name, int page, int size) {
+        Page<Category> categories = categoryRepository.findAllByNameContains(name, PageRequest.of(page, size));
+        return categories.map(categoryMapper::toResponse);
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryResponse> findAll() {
+
+        return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
-    public Page<Category> findAll(int page, int size) {
+    public Page<CategoryResponse> findAll(int page, int size) {
         return null;
     }
 
     @Override
-    public Category findById(Long id) {
+    public CategoryResponse findById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        return category.orElse(null);
+        if (category.isPresent()) {
+            return categoryMapper.toResponse(category.get());
+        }
+        return null;
     }
 
     @Override
-    public void save(Category category) {
-        category.setStatus(true);
-        categoryRepository.save(category);
+    public void save(CategoryRequest categoryRequest) {
+        categoryRepository.save(categoryMapper.toEntity(categoryRequest));
     }
 
     @Override

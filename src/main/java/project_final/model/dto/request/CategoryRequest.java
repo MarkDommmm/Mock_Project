@@ -1,24 +1,20 @@
-package project_final.entity;
+package project_final.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
-
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
+public class CategoryRequest {
     private Long id;
-    @Column(name = "category_name")
     private String name;
-    private String image;
+    private MultipartFile image;
     private String description;
     private boolean status;
 }

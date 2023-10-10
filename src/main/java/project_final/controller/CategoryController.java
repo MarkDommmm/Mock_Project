@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.Category;
+import project_final.model.dto.request.CategoryRequest;
 import project_final.service.ICategoryService;
 
 import javax.validation.Valid;
@@ -31,12 +32,13 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public String addCategory(@Valid @ModelAttribute Category category, BindingResult bindingResult){
+    public String addCategory(@Valid @ModelAttribute CategoryRequest categoryRequest, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "dashboard/page/category/category-add";
         }
 
-        categoryService.save(category);
+        categoryService.save(categoryRequest);
+
         return "redirect:/category";
     }
 
@@ -46,11 +48,11 @@ public class CategoryController {
     }
 
     @PostMapping("/update")
-    public String editCategory(@Valid @ModelAttribute Category category,BindingResult bindingResult){
+    public String editCategory(@Valid @ModelAttribute CategoryRequest categoryRequest,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "dashboard/page/category/category-update";
         }
-        categoryService.save(category);
+        categoryService.save(categoryRequest);
         return "redirect:/category";
     }
 
