@@ -8,6 +8,7 @@ import project_final.model.domain.Status;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,6 +26,8 @@ public class Reservation {
     private Date createdDate;
     private Date startTime;
     private Date endTime;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<TableMenu> tableMenuList;
     @Enumerated(EnumType.STRING)
     private Status status;
 }

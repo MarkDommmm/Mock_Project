@@ -12,13 +12,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category {
+public class TableMenu {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    @Column(name = "category_name")
-    private String name;
-    private String image;
-    private String description;
-    private boolean status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Menu menu;
+    private int quantity;
 }
