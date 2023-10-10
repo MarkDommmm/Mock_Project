@@ -15,32 +15,31 @@ public class TableController {
     private final ITableService tableService;
 
     private final ITableTypeService tableTypeService;
-    @GetMapping("/")
+    @GetMapping
     public String findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, Model model){
         model.addAttribute("tables",tableService.findAll(page, size));
-        return "/dashboard/table/table-list";
+        return "/dashboard/page/table/table-list";
     }
 
     @GetMapping("/add")
     public String add(Model model){
         model.addAttribute("tables",new TableRequest());
         model.addAttribute("tableTypes",tableTypeService.findAll());
-        return "/dashboard/table/create";
+        return "/dashboard/page/table/table-add";
 
     }
 
     @PostMapping("/add")
     public String addTable(@ModelAttribute TableRequest tableRequest) {
         tableService.save(tableRequest);
-        return "redirect:/";
+        return "redirect:/table";
     }
 
     @GetMapping("/edit/{id}")
-
     public String edit(@PathVariable Long id,Model model){
         model.addAttribute("tables",tableService.findById(id));
         model.addAttribute("tableTypes",tableTypeService.findAll());
-        return "/dashboard/table/create";
+        return "/dashboard/page/table/table-update";
 
     }
 
