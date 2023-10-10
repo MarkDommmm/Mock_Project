@@ -1,36 +1,32 @@
 package project_final.model.service.impl.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
-import project_final.model.entity.Role;
 import project_final.model.entity.RoleName;
 import project_final.model.entity.User;
 import project_final.model.repository.IUserRepository;
-import project_final.model.service.impl.role.IRoleService;
+
 import project_final.model.service.mapper.user.IUserMapper;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 
 @Service
+@AllArgsConstructor
 public class UserService implements IUserService {
-    @Autowired
+
     private IUserRepository userRepository;
 
-    @Autowired
     private IUserMapper userMapper;
 
     @Override
     public boolean checkPassword(String password, String confirm_password) {
-        if (password.equals(confirm_password)) {
-            return true;
-        }
-        return false;
+        return password.equals(confirm_password);
     }
 
     @Override
@@ -60,11 +56,17 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponse lock(Long id) {
+        Optional<User> users = userRepository.findById(id);
+        if (users.isPresent()) {
+            users.get().setStatus(!users.get().isStatus());
+            return userMapper.toResponse(userRepository.save(users.get()));
+        }
         return null;
     }
 
     @Override
-    public List<UserResponse> findAll() {
-        return null;
+    public Page<UserResponse> findAll(String name, int page, int size) {
+        Page<User> users = userRepository.findAllUsersWithUserRoleAndUseAndUsernameContaining(RoleName.ROLE_USER, name, PageRequest.of(page,size));
+        return users.map(user -> userMapper.toResponse(user));
     }
 }

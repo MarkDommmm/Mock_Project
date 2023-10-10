@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-import project_final.model.entity.TableType;
+
+import javax.mail.Multipart;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TableRequest {
-    private int tableNumber;
-    private MultipartFile tableImage;
-    private TableType tableType;
+public class TableTypeRequest {
+    private Long id;
+    private String name;
+    private MultipartFile image;
     private String description;
-
 }

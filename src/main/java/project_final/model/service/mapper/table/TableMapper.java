@@ -16,7 +16,7 @@ public class TableMapper implements ITableMapper{
         String tableImage = uploadService.uploadFile(tableRequest.getTableImage());
         return Tables.builder()
                 .tableNumber(tableRequest.getTableNumber())
-                .people(tableRequest.getPeople())
+                .tableType(tableRequest.getTableType())
                 .tableImage(tableImage)
                 .description(tableRequest.getDescription())
                 .status(true).build();
@@ -27,7 +27,7 @@ public class TableMapper implements ITableMapper{
         return TableResponse.builder()
                 .id(tables.getId())
                 .tableImage(tables.getTableImage())
-                .people(tables.getPeople())
+                .tableType(tables.getTableType())
                 .description(tables.getDescription())
                 .status(tables.isStatus()).build();
     }

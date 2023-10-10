@@ -1,20 +1,23 @@
-package project_final.model.dto.response;
+package project_final.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import project_final.model.entity.TableType;
 
+import javax.persistence.*;
+
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TableResponse {
+public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private int tableNumber;
-    private String tableImage;
-    private TableType tableType;
+    @Column(name = "category_name")
+    private String name;
     private String description;
     private boolean status;
 }

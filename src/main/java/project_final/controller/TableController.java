@@ -7,21 +7,25 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.model.dto.request.TableRequest;
 import project_final.model.service.impl.table.ITableService;
+import project_final.model.service.impl.tableType.ITableTypeService;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/table")
 public class TableController {
     private final ITableService tableService;
+    private final ITableTypeService tableTypeService;
     @GetMapping("/")
     public String findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, Model model){
         model.addAttribute("tables",tableService.findAll(page, size));
-        return "/table";
+        return "/dashboard/table/table-list";
     }
 
     @GetMapping("/add")
-    public ModelAndView add(){
-        return new ModelAndView("/create","table",new TableRequest());
+    public String add(Model model){
+        model.addAttribute("tables",new TableRequest());
+        model.addAttribute("tableTypes",tableTypeService.findAll());
+        return "/dashboard/table/create";
     }
 
     @PostMapping("/add")
@@ -30,8 +34,10 @@ public class TableController {
         return "redirect:/";
     }
     @GetMapping("/edit/{id}")
-    public ModelAndView edit(@PathVariable Long id){
-        return new ModelAndView("/edit","table",tableService.findById(id));
+    public String edit(@PathVariable Long id,Model model){
+        model.addAttribute("tables",tableService.findById(id));
+        model.addAttribute("tableTypes",tableTypeService.findAll());
+        return "/dashboard/table/create";
     }
 
     @PostMapping("/update")

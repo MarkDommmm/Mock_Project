@@ -22,6 +22,10 @@ public class HomeController {
     public String homeAdmin() {
         return "dashboard/ChoseTable";
     }
+    @RequestMapping("/table")
+    public String homeTable() {
+        return "dashboard/table/table-list";
+    }
 
     @RequestMapping("/403")
     public String error403() {
