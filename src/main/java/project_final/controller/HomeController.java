@@ -26,6 +26,7 @@ public class HomeController {
     public String menu() {
         return "dashboard/menu";
     }
+
     @RequestMapping("/403")
     public String error403() {
         return "/dashboard/errors/error403";

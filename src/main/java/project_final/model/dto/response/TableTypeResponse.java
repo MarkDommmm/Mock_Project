@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import project_final.model.entity.TableType;
 
+import javax.mail.Multipart;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TableResponse {
+public class TableTypeResponse {
     private Long id;
-    private int tableNumber;
-    private String tableImage;
-    private TableType tableType;
+    private String name;
+    private String image;
     private String description;
     private boolean status;
 }

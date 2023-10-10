@@ -1,5 +1,6 @@
 package project_final.model.service.impl.user;
 
+import org.springframework.data.domain.Page;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
@@ -14,5 +15,5 @@ public interface IUserService {
     User save(UserRequest userRequest) throws RegisterException;
     User findById(Long id);
     UserResponse lock(Long id);
-    List<UserResponse> findAll();
+    Page<UserResponse> findAll(String name,int page,int size);
 }

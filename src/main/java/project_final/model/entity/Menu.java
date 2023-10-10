@@ -6,20 +6,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Tables {
+public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private int tableNumber;
-    private String tableImage;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableType tableType;
+    private String name;
+    @Column(name = "image_url")
+    private String image;
     private String description;
+    private double price;
+    private Date createDate;
     private boolean status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
+
+
 }

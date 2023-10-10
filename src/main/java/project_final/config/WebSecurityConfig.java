@@ -52,9 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/home/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/assets/**").permitAll()
+
                 .antMatchers("/admin/**").hasRole("ADMIN")
 //                .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
 //                .antMatchers("/403/**").permitAll()
+
                 .anyRequest().authenticated()
                 .and()
                 .logout()
