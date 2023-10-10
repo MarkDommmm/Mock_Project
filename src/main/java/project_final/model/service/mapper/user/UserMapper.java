@@ -24,7 +24,7 @@ public class UserMapper implements IUserMapper {
     @Override
     public User toEntity(UserRequest userRequest) {
         Set<Role> roles = new HashSet<>();
-        roles.add(roleService.findByRoleName(RoleName.ROLE_USER));
+        roles.add(roleService.findByRoleName(RoleName.USER));
         return User.builder()
                 .name(userRequest.getName())
                 .username(userRequest.getUsername())

@@ -19,15 +19,18 @@ public class HomeController {
         return "dashboard/ChoseTable";
     }
     @RequestMapping("/admin")
-    public String homeAdmin() {
-        return "dashboard/ChoseTable";
+    public String admin() {
+        return "dashboard/extra/terms-of-service";
     }
-
+    @RequestMapping("/home/menu")
+    public String menu() {
+        return "dashboard/menu";
+    }
     @RequestMapping("/403")
     public String error403() {
         return "/dashboard/errors/error403";
     }
- 
+
     @RequestMapping("/home/sign-in")
     public String signIn(Model model) {
         model.addAttribute("signin", new LoginRequestDto());

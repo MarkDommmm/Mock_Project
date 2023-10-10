@@ -21,6 +21,7 @@ import project_final.security.user_principle.UserPrinciple;
 
 import javax.security.auth.login.LoginException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -39,6 +40,29 @@ public class AuthController {
         String emailContent = "<p style=\"color: red; font-size: 18px;\">\n" + "Registered successfully</p>";
         mailService.sendMail(userRequest.getEmail(), "RegisterSuccess", emailContent);
         return "redirect:/home/sign-in";
+    }
+
+    @PostMapping("/sign-in")
+    public String signIn(HttpSession session, LoginRequestDto loginRequestDto ) throws LoginException {
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
+            );
+            // tạo đối tượng authentication để xác thực thông qua username và password
+
+        } catch (AuthenticationException e) {
+            throw new LoginException("Username or password is incorrect!");
+        }
+
+        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
+        session.setAttribute("currentUser",userPrinciple);
+        return "redirect:/home";
+    }
+    @GetMapping("/logout")
+    public  String logout(HttpSession session){
+        session.removeAttribute("currentUser");
+        return "redirect:/home";
     }
 
 
