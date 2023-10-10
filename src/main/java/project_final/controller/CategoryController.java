@@ -22,32 +22,33 @@ public class CategoryController {
     public String findAllCategory(Model model, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         model.addAttribute("category", categoryService.findAll(name, page, size));
         model.addAttribute("name", name);
-        return "category/list";
+        return "dashboard/page/category/category-list";
     }
 
     @GetMapping("/add")
     public ModelAndView add(){
-        return new ModelAndView("category/add","category",new Category());
+        return new ModelAndView("dashboard/page/category/category-add","category",new Category());
     }
 
     @PostMapping("/add")
     public String addCategory(@Valid @ModelAttribute Category category, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            return "category/add";
+            return "dashboard/page/category/category-add";
         }
+
         categoryService.save(category);
         return "redirect:/category";
     }
 
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable Long id){
-        return new ModelAndView("category/edit","category",categoryService.findById(id));
+        return new ModelAndView("dashboard/page/category/category-update","category",categoryService.findById(id));
     }
 
     @PostMapping("/update")
     public String editCategory(@Valid @ModelAttribute Category category,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            return "category/edit";
+            return "dashboard/page/category/category-update";
         }
         categoryService.save(category);
         return "redirect:/category";
