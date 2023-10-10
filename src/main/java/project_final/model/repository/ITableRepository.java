@@ -9,4 +9,5 @@ import java.awt.print.Pageable;
 
 @Repository
 public interface ITableRepository extends JpaRepository<Tables,Long> {
+
 }

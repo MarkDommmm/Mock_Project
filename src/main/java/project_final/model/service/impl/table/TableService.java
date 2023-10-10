@@ -21,16 +21,13 @@ public class TableService implements ITableService {
     @Override
     public Page<TableResponse> findAll(int page, int size) {
         Page<Tables> tables = tableRepository.findAll(PageRequest.of(page, size));
-        return tables.map(table -> tableMapper.toResponse(table));
+        return tables.map(tableMapper::toResponse);
     }
 
     @Override
     public TableResponse findById(Long id) {
         Optional<Tables> table = tableRepository.findById(id);
-        if (table.isPresent()) {
-            return tableMapper.toResponse(table.get());
-        }
-        return null;
+        return table.map(tableMapper::toResponse).orElse(null);
     }
 
     @Override
