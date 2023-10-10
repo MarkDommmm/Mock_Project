@@ -1,9 +1,9 @@
-package project_final.model.repository;
+package project_final.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import project_final.model.entity.Role;
-import project_final.model.entity.RoleName;
+import project_final.entity.Role;
+import project_final.model.domain.RoleName;
 
 import java.util.Optional;
 @Repository

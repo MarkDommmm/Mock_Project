@@ -1,12 +1,10 @@
-package project_final.model.service.impl.tableType;
+package project_final.service;
 
 
 
 import org.springframework.data.domain.Page;
 import project_final.model.dto.request.TableTypeRequest;
 import project_final.model.dto.response.TableTypeResponse;
-import project_final.model.entity.TableType;
-import project_final.model.service.impl.IGenericService;
 
 import java.util.List;
 

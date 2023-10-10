@@ -1,12 +1,11 @@
-package project_final.model.service.impl.user;
+package project_final.service;
 
 import org.springframework.data.domain.Page;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
-import project_final.model.entity.User;
+import project_final.entity.User;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {

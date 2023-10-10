@@ -1,4 +1,4 @@
-package project_final.model.entity;
+package project_final.model.domain;
 
 public enum Status {
     PENDING,

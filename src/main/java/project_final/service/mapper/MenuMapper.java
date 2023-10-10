@@ -1,13 +1,13 @@
-package project_final.model.service.mapper.menu;
+package project_final.service.mapper;
 
 ;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import project_final.model.dto.request.MenuRequest;
 import project_final.model.dto.response.MenuResponse;
-import project_final.model.entity.Menu;
-import project_final.model.service.impl.upload_file.IUploadService;
+import project_final.entity.Menu;
+import project_final.service.IUploadService;
+import project_final.service.mapper.IMenuMapper;
 
 import java.util.Date;
 @Component

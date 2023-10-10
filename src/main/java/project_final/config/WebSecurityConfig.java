@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import project_final.security.user_principle.UserDetailService;
+import project_final.security.UserDetailService;
 
 @Configuration
 @EnableWebSecurity

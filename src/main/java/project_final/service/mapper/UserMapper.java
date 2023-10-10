@@ -1,15 +1,15 @@
-package project_final.model.service.mapper.user;
+package project_final.service.mapper;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
-import project_final.model.entity.Role;
-import project_final.model.entity.RoleName;
-import project_final.model.entity.User;
-import project_final.model.service.impl.role.IRoleService;
+import project_final.entity.Role;
+import project_final.model.domain.RoleName;
+import project_final.entity.User;
+import project_final.service.IRoleService;
+import project_final.service.mapper.IUserMapper;
 
 import java.util.HashSet;
 import java.util.Set;

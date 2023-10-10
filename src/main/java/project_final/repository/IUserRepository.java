@@ -1,4 +1,4 @@
-package project_final.model.repository;
+package project_final.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import project_final.model.entity.RoleName;
-import project_final.model.entity.User;
+import project_final.model.domain.RoleName;
+import project_final.entity.User;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

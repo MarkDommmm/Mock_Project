@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import project_final.model.entity.Role;
+import project_final.entity.Role;
 
 import java.util.Set;
 

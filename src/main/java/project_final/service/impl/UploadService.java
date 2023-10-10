@@ -1,4 +1,4 @@
-package project_final.model.service.impl.upload_file;
+package project_final.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import project_final.service.IUploadService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +19,7 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class UploadService implements IUploadService{
+public class UploadService implements IUploadService {
     private final AmazonS3 s3Client;
     private final String bucketName = "longduong";
 

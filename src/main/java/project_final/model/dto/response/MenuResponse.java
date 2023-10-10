@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import project_final.model.entity.Category;
+import project_final.entity.Category;
 
 import java.util.Date;
 

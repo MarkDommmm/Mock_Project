@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import project_final.model.dto.request.TableRequest;
-import project_final.model.service.impl.table.ITableService;
-import project_final.model.service.impl.tableType.ITableTypeService;
+import project_final.service.ITableService;
+import project_final.service.ITableTypeService;
 
 @Controller
 @AllArgsConstructor

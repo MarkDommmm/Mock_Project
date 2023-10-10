@@ -1,4 +1,4 @@
-package project_final.model.service.impl;
+package project_final.service;
 
 import org.springframework.data.domain.Page;
 

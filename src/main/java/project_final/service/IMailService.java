@@ -1,4 +1,4 @@
-package project_final.model.service.impl.mail;
+package project_final.service;
 
 public interface IMailService {
     void sendMail(String to,String subject, String text);

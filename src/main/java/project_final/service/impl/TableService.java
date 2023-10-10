@@ -1,4 +1,4 @@
-package project_final.model.service.impl.table;
+package project_final.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -6,9 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.model.dto.request.TableRequest;
 import project_final.model.dto.response.TableResponse;
-import project_final.model.entity.Tables;
-import project_final.model.repository.ITableRepository;
-import project_final.model.service.mapper.table.ITableMapper;
+import project_final.entity.Tables;
+import project_final.repository.ITableRepository;
+import project_final.service.ITableService;
+import project_final.service.mapper.ITableMapper;
 
 import java.util.Optional;
 

@@ -1,12 +1,13 @@
-package project_final.model.service.impl.category;
+package project_final.service.impl;
 
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import project_final.model.entity.Category;
-import project_final.model.repository.ICategoryRepository;
+import project_final.entity.Category;
+import project_final.repository.ICategoryRepository;
+import project_final.service.ICategoryService;
 
 import java.util.List;
 import java.util.Optional;

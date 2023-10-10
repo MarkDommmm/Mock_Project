@@ -1,4 +1,4 @@
-package project_final.model.service.impl.upload_file;
+package project_final.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,12 +1,12 @@
-package project_final.security.user_principle;
+package project_final.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import project_final.model.entity.User;
-import project_final.model.service.impl.user.IUserService;
+import project_final.entity.User;
+import project_final.service.IUserService;
 
 
 @Service

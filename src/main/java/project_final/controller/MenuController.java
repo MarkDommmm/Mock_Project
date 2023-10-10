@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project_final.model.dto.request.MenuRequest;
-import project_final.model.service.impl.category.ICategoryService;
-import project_final.model.service.impl.menu.IMenuService;
+import project_final.service.ICategoryService;
+import project_final.service.IMenuService;
 
 @Controller
 @AllArgsConstructor

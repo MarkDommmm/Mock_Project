@@ -1,10 +1,12 @@
-package project_final.model.service.impl.role;
+package project_final.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project_final.model.entity.Role;
-import project_final.model.entity.RoleName;
-import project_final.model.repository.IRoleRepository;
+import project_final.entity.Role;
+import project_final.model.domain.RoleName;
+import project_final.repository.IRoleRepository;
+import project_final.service.IRoleService;
+
 @Service
 public class RoleService implements IRoleService {
     @Autowired

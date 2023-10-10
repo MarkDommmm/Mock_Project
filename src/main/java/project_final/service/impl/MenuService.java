@@ -1,4 +1,4 @@
-package project_final.model.service.impl.menu;
+package project_final.service.impl;
 
 
 import lombok.AllArgsConstructor;
@@ -7,15 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.model.dto.request.MenuRequest;
 import project_final.model.dto.response.MenuResponse;
-import project_final.model.entity.Menu;
-import project_final.model.repository.IMenuRepository;
-import project_final.model.service.mapper.menu.IMenuMapper;
+import project_final.entity.Menu;
+import project_final.repository.IMenuRepository;
+import project_final.service.IMenuService;
+import project_final.service.mapper.IMenuMapper;
 
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long>{
+public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long> {
 
     private final IMenuRepository menuRepository;
     private final IMenuMapper menuMapper;

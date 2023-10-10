@@ -1,7 +1,7 @@
-package project_final.model.service.impl.role;
+package project_final.service;
 
-import project_final.model.entity.Role;
-import project_final.model.entity.RoleName;
+import project_final.entity.Role;
+import project_final.model.domain.RoleName;
 
 public interface IRoleService {
     Role findByRoleName(RoleName roleName);

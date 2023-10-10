@@ -1,4 +1,4 @@
-package project_final.security.user_principle;
+package project_final.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import project_final.model.entity.User;
+import project_final.entity.User;
 //
 import java.util.Collection;
 import java.util.List;

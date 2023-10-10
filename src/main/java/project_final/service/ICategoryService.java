@@ -1,10 +1,9 @@
-package project_final.model.service.impl.category;
+package project_final.service;
 
 
 
 import org.springframework.data.domain.Page;
-import project_final.model.entity.Category;
-import project_final.model.service.impl.IGenericService;
+import project_final.entity.Category;
 
 import java.util.List;
 

@@ -1,12 +1,13 @@
-package project_final.model.service.impl.mail;
+package project_final.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import project_final.service.IMailService;
 
 @Service
-public class MailService implements IMailService{
+public class MailService implements IMailService {
     @Autowired
     private JavaMailSender javaMailSender;
     public void sendMail(String to,String subject, String text){

@@ -1,15 +1,16 @@
-package project_final.model.service.mapper.table;
+package project_final.service.mapper;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import project_final.model.dto.request.TableRequest;
 import project_final.model.dto.response.TableResponse;
-import project_final.model.entity.Tables;
-import project_final.model.service.impl.upload_file.IUploadService;
+import project_final.entity.Tables;
+import project_final.service.IUploadService;
+import project_final.service.mapper.ITableMapper;
 
 @Component
 @AllArgsConstructor
-public class TableMapper implements ITableMapper{
+public class TableMapper implements ITableMapper {
     private final IUploadService uploadService;
     @Override
     public Tables toEntity(TableRequest tableRequest) {
