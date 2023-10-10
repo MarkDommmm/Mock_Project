@@ -28,10 +28,7 @@ public class TableTypeService implements ITableTypeService {
     @Override
     public TableTypeResponse findById(Long id) {
         Optional<TableType> tableType = tableTypeRepository.findById(id);
-        if (tableType.isPresent()) {
-            return iTableTypeMapper.toResponse(tableType.get());
-        }
-        return null;
+        return tableType.map(iTableTypeMapper::toResponse).orElse(null);
     }
 
     @Override
@@ -49,12 +46,12 @@ public class TableTypeService implements ITableTypeService {
     @Override
     public Page<TableTypeResponse> findAll(String name, int page, int size) {
         Page<TableType> tableTypes = tableTypeRepository.findAllByNameContains(name, PageRequest.of(page, size));
-        return  tableTypes.map(tableType-> iTableTypeMapper.toResponse(tableType));
+        return  tableTypes.map(iTableTypeMapper::toResponse);
     }
 
     @Override
     public List<TableTypeResponse> findAll() {
 
-        return tableTypeRepository.findAll().stream().map(t->iTableTypeMapper.toResponse(t)).collect(Collectors.toList());
+        return tableTypeRepository.findAll().stream().map(iTableTypeMapper::toResponse).collect(Collectors.toList());
     }
 }

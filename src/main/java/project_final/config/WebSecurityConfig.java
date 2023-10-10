@@ -48,15 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-//                .antMatchers("/**/").permitAll()
-                .antMatchers("/home/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/assets/**").permitAll()
-
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/**/").permitAll()
+//                .antMatchers("/home/**").permitAll()
+//                .antMatchers("/auth/**").permitAll()
+//                .antMatchers("/assets/**").permitAll()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
 //                .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
 //                .antMatchers("/403/**").permitAll()
-
                 .anyRequest().authenticated()
                 .and()
                 .logout()

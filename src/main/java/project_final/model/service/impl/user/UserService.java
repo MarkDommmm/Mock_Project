@@ -66,7 +66,7 @@ public class UserService implements IUserService {
 
     @Override
     public Page<UserResponse> findAll(String name, int page, int size) {
-        Page<User> users = userRepository.findAllUsersWithUserRoleAndUseAndUsernameContaining(RoleName.ROLE_USER, name, PageRequest.of(page,size));
+        Page<User> users = userRepository.findAllUsersWithUserRoleAndUseAndUsernameContaining(RoleName.USER, name, PageRequest.of(page,size));
         return users.map(user -> userMapper.toResponse(user));
     }
 }
