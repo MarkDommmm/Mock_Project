@@ -40,6 +40,5 @@ public class AuthController {
         mailService.sendMail(userRequest.getEmail(), "RegisterSuccess", emailContent);
         return "redirect:/home/sign-in";
     }
-
-
+//aaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 }
