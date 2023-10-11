@@ -80,7 +80,7 @@ public class AuthController {
     private ModelAndView edit(@PathVariable("id") Long id) {
         return new ModelAndView("/dashboard/app/user-update", "profile", userService.findById(id));
     }
-
+//.
     @PostMapping("/update")
     private String update(@ModelAttribute("profile") UserRequest userRequest) throws RegisterException {
         userService.update(userRequest);
