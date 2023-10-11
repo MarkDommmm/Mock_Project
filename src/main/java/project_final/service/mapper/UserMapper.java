@@ -30,7 +30,6 @@ public class UserMapper implements IUserMapper {
     public User toEntity(UserRequest userRequest) {
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.findByRoleName(RoleName.ROLE_USER));
-//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         MultipartFile oldImage = userRequest.getAvatar();
         if (oldImage.isEmpty()){
             Optional<User> user = userRepository.findById(userRequest.getId());
