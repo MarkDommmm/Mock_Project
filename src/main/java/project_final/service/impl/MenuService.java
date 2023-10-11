@@ -12,7 +12,9 @@ import project_final.repository.IMenuRepository;
 import project_final.service.IMenuService;
 import project_final.service.mapper.IMenuMapper;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +26,17 @@ public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long>
     @Override
     public Page<MenuResponse> findAll(String name, int page, int size) {
         Page<Menu> menus = menuRepository.findAllByNameContains(name, PageRequest.of(page, size));
+        return menus.map(menuMapper::toResponse);
+    }
+
+    @Override
+    public List<MenuResponse> findTopSellingMenus() {
+        return menuRepository.findTopSellingMenus().stream().map(menuMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<MenuResponse> findAllByCategoryName(String category, int page, int size) {
+        Page<Menu> menus = menuRepository.findAllByCategoryName(category, PageRequest.of(page, size));
         return menus.map(menuMapper::toResponse);
     }
 
