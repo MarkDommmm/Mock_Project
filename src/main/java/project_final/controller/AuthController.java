@@ -80,10 +80,23 @@ public class AuthController {
     private ModelAndView edit(@PathVariable("id") Long id) {
         return new ModelAndView("/dashboard/app/user-update", "profile", userService.findById(id));
     }
-//.
+
     @PostMapping("/update")
-    private String update(@ModelAttribute("profile") UserRequest userRequest) throws RegisterException {
+    private String update(@ModelAttribute("profile") UpdateUserRequest userRequest) throws RegisterException {
         userService.update(userRequest);
+        return "redirect:/home";
+    }
+
+    @GetMapping("/change-password/{id}")
+    private ModelAndView changePassword(@PathVariable("id") Long id) {
+        UpdateUserRequest userRequest = new UpdateUserRequest();
+        userRequest.setId(id);
+        return new ModelAndView("/dashboard/app/user-change-pass", "changePass",userRequest );
+    }
+
+    @PostMapping("/change-password")
+    private String changePass(@ModelAttribute("changePass") UpdateUserRequest userRequest) throws RegisterException {
+        userService.changePass(userRequest);
         return "redirect:/home";
     }
 

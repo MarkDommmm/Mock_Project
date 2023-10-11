@@ -3,9 +3,9 @@ package project_final.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project_final.exception.RegisterException;
-import project_final.model.dto.request.ChangePasswordUserRequest;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
@@ -26,6 +26,7 @@ public class UserService implements IUserService {
     private IUserRepository userRepository;
 
     private IUserMapper userMapper;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public boolean checkPassword(String password, String confirm_password) {
@@ -45,24 +46,47 @@ public class UserService implements IUserService {
         if (userRepository.existsByEmail(userRequest.getEmail())) {
             throw new RegisterException("Email is exits");
         }
-        if (userRequest.getPassword() != null){
-            if (!checkPassword(userRequest.getPassword(), userRequest.getConfirm_password())) {
-                throw new RegisterException("Password not match");
-            }
+
+        if (!checkPassword(userRequest.getPassword(), userRequest.getConfirm_password())) {
+            throw new RegisterException("Password not match");
         }
+
         return userRepository.save(userMapper.toEntity(userRequest));
     }
 
     @Override
-    public User update(UserRequest userRequest) throws RegisterException {
-        return userRepository.save(userMapper.toEntity(userRequest));
+    public User update(UpdateUserRequest userRequest) throws RegisterException {
+        return userRepository.save(userMapper.toUpdate(userRequest));
     }
+
 
 
     @Override
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
+    }
+
+    @Override
+    public User changePass(UpdateUserRequest userRequest) throws RegisterException {
+        Optional<User> user = userRepository.findById(userRequest.getId());
+
+        if (!checkPassword(userRequest.getNew_password(), userRequest.getConfirm_password())) {
+            throw new RegisterException("New passwords do not match");
+        }
+
+        if (passwordEncoder.matches(userRequest.getPassword(), user.get().getPassword())) {
+
+            String newPassword = userRequest.getNew_password();
+            String encodedNewPassword = passwordEncoder.encode(newPassword);
+            user.get().setPassword(encodedNewPassword);
+            user.get().setName(userRequest.getName());
+            user.get().setPhone(userRequest.getPhone());
+
+            return userRepository.save(user.get());
+        } else {
+            throw new RegisterException("Old password does not match");
+        }
     }
 
     @Override
@@ -77,7 +101,7 @@ public class UserService implements IUserService {
 
     @Override
     public Page<UserResponse> findAll(String name, int page, int size) {
-        Page<User> users = userRepository.findAllUsersWithUserRoleAndUseAndUsernameContaining(RoleName.ROLE_USER, name, PageRequest.of(page,size));
+        Page<User> users = userRepository.findAllUsersWithUserRoleAndUseAndUsernameContaining(RoleName.ROLE_USER, name, PageRequest.of(page, size));
         return users.map(user -> userMapper.toResponse(user));
     }
 }

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class UserPrinciple implements UserDetails {
     private Long id;
     private String fullName;
+    private String avatar;
 
     private String username;
     @JsonIgnore
@@ -35,6 +36,7 @@ public class UserPrinciple implements UserDetails {
         return UserPrinciple.builder()
                 .id(user.getId())
                 .fullName(user.getName())
+                .avatar(user.getAvatar())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .status(user.isStatus())
