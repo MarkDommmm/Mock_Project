@@ -1152,9 +1152,9 @@
                                     <thead>
                                     <tr class="ligth">
                                         <th>STT</th>
+                                        <th>Image</th>
                                         <th>Name</th>
                                         <th>Price</th>
-                                        <th>Image</th>
                                         <th>Description</th>
                                         <th>Create Date</th>
                                         <th>Category</th>
@@ -1165,12 +1165,12 @@
                                     <tbody>
                                     <tr th:each="m,loop:${menu}">
                                         <td th:text="${loop.count}"></td>
-                                        <td th:text="${m.name}"></td>
-                                        <td th:text="${m.price} + '$'"></td>
                                         <td class="text-center">
                                             <img class="bg-soft-primary rounded img-fluid avatar-40 me-3"
                                                  th:src="${m.image}" alt="profile">
                                         </td>
+                                        <td th:text="${m.name}"></td>
+                                        <td th:text="${m.price} + '$'"></td>
                                         <td th:text="${m.description}"></td>
                                         <td th:text="${m.creatDate}"></td>
                                         <td th:text="${m.category.name}"></td>

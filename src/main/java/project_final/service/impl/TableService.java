@@ -13,6 +13,7 @@ import project_final.service.mapper.ITableMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,9 +21,9 @@ public class TableService implements ITableService {
     private final ITableRepository tableRepository;
     private final ITableMapper tableMapper;
 
-    public Page<TableResponse> getTables(String name, int page, int size) {
-        Page<Tables> tables = tableRepository.findAllByTableTypeName(name, PageRequest.of(page, size));
-        return tables.map(tableMapper::toResponse);
+    public List<TableResponse> getTables(String name) {
+        List<Tables> tables = tableRepository.findAllByTableTypeName(name);
+        return tables.stream().map(tableMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
