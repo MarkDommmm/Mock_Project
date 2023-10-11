@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import project_final.entity.Category;
 import project_final.model.dto.request.TableRequest;
-import project_final.model.dto.response.CategoryResponse;
 import project_final.model.dto.response.TableResponse;
 import project_final.entity.Tables;
 import project_final.repository.ITableRepository;
 import project_final.service.ITableService;
 import project_final.service.mapper.ITableMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,9 +20,14 @@ public class TableService implements ITableService {
     private final ITableRepository tableRepository;
     private final ITableMapper tableMapper;
 
+    public Page<TableResponse> getTables(String name, int page, int size) {
+        Page<Tables> tables = tableRepository.findAllByTableTypeName(name, PageRequest.of(page, size));
+        return tables.map(tableMapper::toResponse);
+    }
+
     @Override
-    public Page<TableResponse> findAll(String name,int page, int size) {
-        Page<Tables> tables = tableRepository.findAllByNameContains(name,PageRequest.of(page, size));
+    public Page<TableResponse> findAll(String name, int page, int size) {
+        Page<Tables> tables = tableRepository.findAllByNameContains(name, PageRequest.of(page, size));
         return tables.map(tableMapper::toResponse);
     }
 

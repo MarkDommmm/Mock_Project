@@ -12,4 +12,5 @@ public interface ITableTypeService extends IGenericService<TableTypeRequest, Tab
     Page<TableTypeResponse> findAll(String name, int page, int size);
 
     List<TableTypeResponse> findAll();
+
 }
