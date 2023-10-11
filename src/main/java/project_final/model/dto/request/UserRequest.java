@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Builder
 public class UserRequest {
+    private Long id;
     private String name;
     private MultipartFile avatar;
     private String username;

@@ -10,40 +10,43 @@ import project_final.service.ITableTypeService;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/tableType")
+@RequestMapping("/table-type")
 public class TableTypeController {
     private final ITableTypeService tableTypeService;
     @GetMapping
-    public String getTableType(Model model, @RequestParam(defaultValue= "") String name,@RequestParam(defaultValue ="0") int page,@RequestParam(defaultValue = "5") int size) {
-        model.addAttribute("tableTypes", tableTypeService.findAll());
-        return "tableTypes";
+    public String getTableType(Model model,
+                               @RequestParam(defaultValue= "") String name,
+                               @RequestParam(defaultValue ="0") int page,
+                               @RequestParam(defaultValue = "5") int size) {
+        model.addAttribute("tableTypes", tableTypeService.findAll(name, page, size));
+        return "/dashboard/page/table-type/table-type-list";
     }
 
     @GetMapping("/add")
     public ModelAndView add(){
-        return new ModelAndView("/tableType/create","tableType",new TableTypeRequest());
+        return new ModelAndView("/dashboard/page/table-type/table-type-add","tableType",new TableTypeRequest());
     }
 
     @PostMapping("/add")
     public String addTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest){
         tableTypeService.save(tableTypeRequest);
-        return "redirect:/tableType";
+        return "redirect:/table-type";
     }
-    @GetMapping("/edit/{id")
+    @GetMapping("/edit/{id}")
     public ModelAndView add(@PathVariable Long id){
-        return new ModelAndView("/tableType/edit","tableType",tableTypeService.findById(id));
+        return new ModelAndView("/dashboard/page/table-type/table-type-update","tableType",tableTypeService.findById(id));
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/update")
     public String updateTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest){
         tableTypeService.save(tableTypeRequest);
-        return "redirect:/tableType";
+        return "redirect:/table-type";
     }
 
     @GetMapping("delete/{id}")
     public String delete(@PathVariable Long id){
         tableTypeService.delete(id);
-        return "redirect:/tableType";
+        return "redirect:/table-type";
     }
 
 }

@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.exception.RegisterException;
+import project_final.model.dto.request.ChangePasswordUserRequest;
+import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
 import project_final.model.domain.RoleName;
@@ -43,11 +45,19 @@ public class UserService implements IUserService {
         if (userRepository.existsByEmail(userRequest.getEmail())) {
             throw new RegisterException("Email is exits");
         }
-        if (!checkPassword(userRequest.getPassword(), userRequest.getConfirm_password())) {
-            throw new RegisterException("Password not match");
+        if (userRequest.getPassword() != null){
+            if (!checkPassword(userRequest.getPassword(), userRequest.getConfirm_password())) {
+                throw new RegisterException("Password not match");
+            }
         }
         return userRepository.save(userMapper.toEntity(userRequest));
     }
+
+    @Override
+    public User update(UserRequest userRequest) throws RegisterException {
+        return userRepository.save(userMapper.toEntity(userRequest));
+    }
+
 
     @Override
     public User findById(Long id) {

@@ -37,10 +37,7 @@ public class CategoryService implements ICategoryService {
         return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
     }
 
-    @Override
-    public Page<CategoryResponse> findAll(int page, int size) {
-        return null;
-    }
+
 
     @Override
     public CategoryResponse findById(Long id) {

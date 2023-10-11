@@ -32,18 +32,17 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public String addCategory(@Valid @ModelAttribute CategoryRequest categoryRequest, BindingResult bindingResult){
+    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "dashboard/page/category/category-add";
         }
-
         categoryService.save(categoryRequest);
-
         return "redirect:/category";
     }
 
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable Long id){
+
         return new ModelAndView("dashboard/page/category/category-update","category",categoryService.findById(id));
     }
 

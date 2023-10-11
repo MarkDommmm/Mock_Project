@@ -16,7 +16,7 @@ public class Tables {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private int tableNumber;
+    private String name;
     private String tableImage;
     @ManyToOne(fetch = FetchType.LAZY)
     private TableType tableType;

@@ -12,7 +12,7 @@ import project_final.entity.TableType;
 @Builder
 public class TableResponse {
     private Long id;
-    private int tableNumber;
+    private String name;
     private String tableImage;
     private TableType tableType;
     private String description;
