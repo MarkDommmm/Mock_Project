@@ -8,11 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import project_final.entity.Tables;
+import project_final.model.dto.response.TableResponse;
+
+import java.util.List;
 
 
 @Repository
 public interface ITableRepository extends JpaRepository<Tables, Long> {
     Page<Tables> findAllByNameContains(String name, Pageable pageable);
     @Query("Select T from Tables T join T.tableType TableType where TableType.name=:name " )
-    Page<Tables> findAllByTableTypeName(@Param("name")String name,Pageable pageable);
+    List<Tables> findAllByTableTypeName(@Param("name")String name);
 }

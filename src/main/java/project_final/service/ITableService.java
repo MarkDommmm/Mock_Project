@@ -8,5 +8,5 @@ import project_final.model.dto.response.TableResponse;
 import java.util.List;
 
 public interface ITableService extends IGenericService<TableRequest, TableResponse,Long> {
-    Page<TableResponse> getTables(String name, int page, int size);
+    List<TableResponse> getTables(String name);
 }
