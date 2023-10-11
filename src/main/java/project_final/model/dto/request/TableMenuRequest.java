@@ -1,26 +1,19 @@
-package project_final.entity;
+package project_final.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project_final.entity.Menu;
+import project_final.entity.Reservation;
 
-import javax.persistence.*;
-
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TableMenu {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+public class TableMenuRequest {
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
     private Menu menu;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
     private Reservation reservation;
     private int quantity;
     private double price;
