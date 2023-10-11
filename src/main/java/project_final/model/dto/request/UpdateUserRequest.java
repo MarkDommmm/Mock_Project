@@ -15,4 +15,7 @@ public class UpdateUserRequest {
     private String name;
     private MultipartFile avatar;
     private String phone;
+    private String password;
+    private String new_password;
+    private String confirm_password;
 }

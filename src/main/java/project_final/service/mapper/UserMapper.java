@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
 import project_final.entity.Role;
@@ -26,49 +27,49 @@ public class UserMapper implements IUserMapper {
     private final PasswordEncoder passwordEncoder;
     private final IUserRepository userRepository;
 
+
+
+    public User toUpdate(UpdateUserRequest userRequest) {
+        Optional<User> user = userRepository.findById(userRequest.getId());
+
+        String newPassword = userRequest.getNew_password();
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+        System.out.println("passOld" + user.get().getPassword());
+        if (userRequest.getAvatar().isEmpty()) {
+            return User.builder()
+                    .id(userRequest.getId())
+                    .name(userRequest.getName())
+                    .avatar(user.get().getAvatar())
+                    .password(user.get().getPassword())
+                    .phone(userRequest.getPhone())
+                    .build();
+        }
+
+        String url = uploadService.uploadFile(userRequest.getAvatar());
+        return User.builder()
+                .id(userRequest.getId())
+                .avatar(url)
+                .password(userRequest.getPassword() != null ?
+                        passwordEncoder.encode(userRequest.getPassword()) :
+                        user.get().getPassword())
+                .phone(userRequest.getPhone())
+                .build();
+    }
+
+
     @Override
     public User toEntity(UserRequest userRequest) {
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.findByRoleName(RoleName.ROLE_USER));
-        MultipartFile oldImage = userRequest.getAvatar();
-        if (oldImage.isEmpty()){
-            Optional<User> user = userRepository.findById(userRequest.getId());
             return User.builder()
-                    .id(userRequest.getId())
-                    .name(userRequest.getName())
-                    .username(userRequest.getUsername())
-                    .avatar(user.get().getAvatar())
-                    .password(user.get().getPassword())
-                    .email(userRequest.getEmail())
-                    .phone(userRequest.getPhone())
-                    .roles(roles)
-                    .status(true).build();
-        }
-        if (userRequest.getPassword() == null) {
-            String url = uploadService.uploadFile(userRequest.getAvatar());
-            Optional<User> user = userRepository.findById(userRequest.getId());
-            return User.builder()
-                    .id(userRequest.getId())
-                    .name(userRequest.getName())
-                    .username(userRequest.getUsername())
-                    .avatar(url)
-                    .password(user.get().getPassword())
-                    .email(userRequest.getEmail())
-                    .phone(userRequest.getPhone())
-                    .roles(roles)
-                    .status(true).build();
-        }else {
-            String url = uploadService.uploadFile(userRequest.getAvatar());
-            return User.builder()
-                    .avatar(url)
+                    .avatar("../../assets/images/avatars/01.png")
                     .name(userRequest.getName())
                     .username(userRequest.getUsername())
                     .password(passwordEncoder.encode(userRequest.getPassword()))
                     .email(userRequest.getEmail())
                     .roles(roles)
                     .status(true).build();
-        }
-
     }
 
     @Override
