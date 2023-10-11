@@ -28,6 +28,29 @@ public class MenuController {
         return "dashboard/page/menu/menu-list";
     }
 
+    @GetMapping("/menu/category")
+    public String getMenuByCategory(@RequestParam(defaultValue = "") String category,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "6") int size,
+                                    Model model) {
+        model.addAttribute("category", category);
+        model.addAttribute("menus",menuService.findAllByCategoryName(category, page, size));
+        return "dashboard/ChoseTable";
+    }
+
+    @GetMapping("/menu")
+    public String getMenu(@RequestParam(defaultValue = "") String name,
+                          @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "4") int size,
+                          Model model) {
+        model.addAttribute("categories",categoryService.findAll());
+        model.addAttribute("menu", menuService.findAll(name, page, size));
+        model.addAttribute("name", name);
+        model.addAttribute("menuTrending",menuService.findTopSellingMenus());
+        return "dashboard/menu";
+    }
+
+
     @GetMapping("/add")
     public String add(Model model) {
         model.addAttribute("menu", new MenuRequest());

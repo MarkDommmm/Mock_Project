@@ -1,19 +1,18 @@
 package project_final.controller;
 
-import jdk.javadoc.internal.doclets.formats.html.Table;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import project_final.entity.Tables;
+
 import project_final.model.dto.request.TableRequest;
 import project_final.model.dto.response.TableResponse;
 import project_final.service.ITableService;
 import project_final.service.ITableTypeService;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
+
 
 @Controller
 @AllArgsConstructor

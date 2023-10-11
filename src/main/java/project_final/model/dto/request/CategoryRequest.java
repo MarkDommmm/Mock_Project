@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class CategoryRequest {
     private Long id;
+    @NotBlank
     private String name;
     private MultipartFile image;
     private String description;

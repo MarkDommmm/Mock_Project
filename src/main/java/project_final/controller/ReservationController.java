@@ -17,9 +17,13 @@ import java.util.Date;
 public class ReservationController {
     private final IReservationService reservationService;
     @GetMapping
-    public String getAll(Model model, @RequestParam(defaultValue = "") Date date,
+    public String getAll(Model model, @RequestParam Date date,
                          @RequestParam(defaultValue = "0") int page,
                          @RequestParam(defaultValue = "5") int size) {
+        if (date == null) {
+            date = new Date(Long.MIN_VALUE);
+        }
+        model.addAttribute("date", date);
         model.addAttribute("reservations", reservationService.findAll(date, page, size));
         return "/dashboard/page/reservation/list";
     }
