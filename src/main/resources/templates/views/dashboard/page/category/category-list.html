@@ -1165,20 +1165,20 @@
                                         <td th:text="${c.name}"></td>
                                         <td class="text-center">
                                             <img
-                                                class="bg-soft-primary rounded img-fluid avatar-40 me-3"
-                                                src="../../assets/images/avatars/01.png" alt="profile"></td>
+                                                    class="bg-soft-primary rounded img-fluid avatar-40 me-3"
+                                                    th:src="${c.image}" alt="profile"></td>
 
                                         <td th:text="${c.description}"></td>
-                                        <td><span class="badge bg-primary">Active</span>
-                                            <span class="badge bg-danger">Inactive</span>
-                                            <span class="badge bg-warning">Pending</span>
-                                            <span class="badge bg-info">Hold</span>
-                                            <span class="badge bg-success">Complite</span></td>
+                                        <td>
+                                            <span th:if="${c.status}" class="badge bg-success">Activce</span>
+                                            <span th:unless="${c.status}" class="badge bg-danger">Inactive</span>
+                                        </td>
                                         <td>
                                             <div class="flex align-items-center list-user-action">
 
                                                 <a class="btn btn-sm btn-icon btn-warning" data-toggle="tooltip"
-                                                   data-placement="top" title="" data-original-title="Edit" th:href="@{|/category/edit/${c.id}|}">
+                                                   data-placement="top" title="" data-original-title="Edit"
+                                                   th:href="@{|/category/edit/${c.id}|}">
                                     <span class="btn-inner">
                                        <svg width="20" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -1196,7 +1196,8 @@
                                     </span>
                                                 </a>
                                                 <a class="btn btn-sm btn-icon btn-danger" data-toggle="tooltip"
-                                                   data-placement="top" title="" data-original-title="Delete" th:href="@{|/category/delete/${c.id}|}">
+                                                   data-placement="top" title="" data-original-title="Delete"
+                                                   th:href="@{|/category/delete/${c.id}|}">
                                     <span class="btn-inner">
                                        <svg width="20" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
@@ -1216,6 +1217,18 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                <nav aria-label="..." th:if="${category.getTotalPages() != 0}">
+                                    <ul class="pagination pagination-sm">
+                                        <li th:each="pageNumber : ${#numbers.sequence(0, category.getTotalPages() - 1)}"
+                                            th:class="${pageNumber == category.getNumber() ? 'page-item active' : 'page-item'}">
+                                            <a th:href="@{|/category?page=${pageNumber}&size=${category.size}&name=${name}|}"
+                                               class="page-link">
+                                                <span th:text="${pageNumber + 1}"></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <nav th:unless="${category.getTotalPages() != 0}"></nav>
                             </div>
                         </div>
                     </div>

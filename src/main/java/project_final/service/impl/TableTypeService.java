@@ -21,10 +21,6 @@ public class TableTypeService implements ITableTypeService {
     private final ITableTypeRepository tableTypeRepository;
     private final ITableTypeMapper iTableTypeMapper;
 
-    @Override
-    public Page<TableTypeResponse> findAll(int page, int size) {
-        return null;
-    }
 
     @Override
     public TableTypeResponse findById(Long id) {
@@ -52,7 +48,6 @@ public class TableTypeService implements ITableTypeService {
 
     @Override
     public List<TableTypeResponse> findAll() {
-
         return tableTypeRepository.findAll().stream().map(iTableTypeMapper::toResponse).collect(Collectors.toList());
     }
 }

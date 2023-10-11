@@ -8,16 +8,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import project_final.entity.User;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.LoginRequestDto;
+import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 
+import project_final.model.dto.response.UserResponse;
 import project_final.service.IMailService;
 import project_final.service.IUserService;
 
 import project_final.security.UserPrinciple;
 
+import javax.management.monitor.StringMonitor;
 import javax.security.auth.login.LoginException;
 
 import javax.servlet.http.HttpSession;
@@ -42,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public String signIn(HttpSession session, LoginRequestDto loginRequestDto ) throws LoginException {
+    public String signIn(HttpSession session, LoginRequestDto loginRequestDto) throws LoginException {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(
@@ -55,14 +61,30 @@ public class AuthController {
         }
 
         UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
-        session.setAttribute("currentUser",userPrinciple);
+        session.setAttribute("currentUser", userPrinciple);
         return "redirect:/home";
     }
+
     @GetMapping("/logout")
-    public  String logout(HttpSession session){
+    public String logout(HttpSession session) {
         session.removeAttribute("currentUser");
         return "redirect:/home";
     }
 
+    @GetMapping("/profile/{id}")
+    private ModelAndView profile(@PathVariable("id") Long id) {
+        return new ModelAndView("/dashboard/app/user-profile", "profile", userService.findById(id));
+    }
+
+    @GetMapping("/edit/{id}")
+    private ModelAndView edit(@PathVariable("id") Long id) {
+        return new ModelAndView("/dashboard/app/user-update", "profile", userService.findById(id));
+    }
+
+    @PostMapping("/update")
+    private String update(@ModelAttribute("profile") UserRequest userRequest) throws RegisterException {
+        userService.update(userRequest);
+        return "redirect:/home";
+    }
 
 }
