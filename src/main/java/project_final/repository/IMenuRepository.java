@@ -24,4 +24,7 @@ public interface IMenuRepository extends JpaRepository<Menu,Long> {
     List<Menu> findTopSellingMenus();
     @Query("SELECT M FROM Menu M JOIN M.category C WHERE C.name =:category")
     Page<Menu> findAllByCategoryName(@Param("category") String category, Pageable pageable);
+
+    @Query("SELECT M FROM Menu M JOIN M.category C WHERE C.name =:category")
+    List<Menu> findAllByCategoryName(@Param("category") String category);
 }

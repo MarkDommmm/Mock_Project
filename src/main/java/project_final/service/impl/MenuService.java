@@ -10,6 +10,7 @@ import project_final.model.dto.response.MenuResponse;
 import project_final.entity.Menu;
 import project_final.repository.IMenuRepository;
 import project_final.service.IMenuService;
+import project_final.service.mapper.CartMapper;
 import project_final.service.mapper.IMenuMapper;
 
 import java.util.List;
@@ -22,6 +23,17 @@ public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long>
 
     private final IMenuRepository menuRepository;
     private final IMenuMapper menuMapper;
+    private final CartMapper cartMapper;
+
+    @Override
+    public List<MenuResponse> getAll(String name) {
+        List<Menu> menus = menuRepository.findAllByCategoryName(name);
+        return menus.stream().map(menuMapper::toResponse).collect(Collectors.toList());
+    }
+
+
+
+
 
     @Override
     public Page<MenuResponse> findAll(String name, int page, int size) {

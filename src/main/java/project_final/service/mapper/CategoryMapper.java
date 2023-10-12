@@ -19,7 +19,6 @@ public class CategoryMapper implements ICategoryMapper{
     private final ICategoryRepository categoryRepository;
     @Override
     public Category toEntity(CategoryRequest categoryRequest) {
-
         MultipartFile oldImage = categoryRequest.getImage();
         if (oldImage.isEmpty()) {
             Optional<Category> category = categoryRepository.findById(categoryRequest.getId());

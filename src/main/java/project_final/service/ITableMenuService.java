@@ -1,9 +1,13 @@
 package project_final.service;
 
+import org.springframework.data.domain.Page;
 import project_final.model.dto.request.TableMenuRequest;
+import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.model.dto.response.TableMenuResponse;
-import project_final.service.IGenericService;
 
-public interface ITableMenuService extends IGenericService<TableMenuRequest, TableMenuResponse,Long> {
-    void changeStatus(Long id);
+
+public interface ITableMenuService extends IGenericService<TableMenuRequest, TableMenuCartResponse,Long> {
+Page<TableMenuResponse> getAll(String name,int page,int size);
+void addCart(Long id);
+void changeStatus(Long id);
 }

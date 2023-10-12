@@ -32,6 +32,7 @@ public class TableMenuController {
         tableMenuService.save(tableMenuRequest);
         return "redirect:/tableMenu";
     }
+
     @GetMapping("/edit/{id}")
     public String edit(Model model,@PathVariable Long id){
         model.addAttribute("tableMenu",tableMenuService.findById(id));

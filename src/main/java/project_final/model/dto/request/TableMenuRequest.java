@@ -15,7 +15,8 @@ public class TableMenuRequest {
     private Long id;
     private Menu menu;
     private Reservation reservation;
-    private int quantity;
+    private int quantity = 1;
     private double price;
     private boolean status;
+
 }
