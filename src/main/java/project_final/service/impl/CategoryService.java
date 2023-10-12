@@ -36,6 +36,14 @@ public class CategoryService implements ICategoryService {
         return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
     }
 
+    @Override
+    public void changeStatus(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent()) {
+            category.get().setStatus(!category.get().isStatus());
+            categoryRepository.save(category.get());
+        }
+    }
 
 
     @Override

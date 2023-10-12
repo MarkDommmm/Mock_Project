@@ -61,5 +61,11 @@ public class CategoryController {
         return "redirect:/category";
     }
 
+    @GetMapping("/status/{id}")
+    public String changeStatus(@PathVariable Long id){
+        categoryService.changeStatus(id);
+        return "redirect:/category";
+    }
+
 
 }

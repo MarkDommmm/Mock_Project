@@ -59,4 +59,16 @@ public class ReservationService implements IReservationService<ReservationReques
             reservationRepository.save(reservation.get());
         }
     }
+
+    @Override
+    public double revenuesOnDay(Date date ) {
+        double revenue = reservationRepository.revenuesOnDay(date);
+        return revenue;
+    }
+
+    @Override
+    public int countCompletedReservationsOnDay(Date date) {
+        int count = reservationRepository.countCompletedReservationsOnDay(date);
+        return count;
+    }
 }

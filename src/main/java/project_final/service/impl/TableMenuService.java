@@ -90,4 +90,13 @@ public class TableMenuService implements ITableMenuService {
     }
 
 
+    @Override
+    public void changeStatus(Long id) {
+        Optional<TableMenu> tableMenu = tableMenuRepository.findById(id);
+        if (tableMenu.isPresent()) {
+            tableMenu.get().setStatus(!tableMenu.get().isStatus());
+            tableMenuRepository.save(tableMenu.get());
+        }
+    }
+
 }

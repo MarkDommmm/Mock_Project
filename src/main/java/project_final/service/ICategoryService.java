@@ -13,4 +13,5 @@ public interface ICategoryService extends IGenericService<CategoryRequest, Categ
 
     List<CategoryResponse> findAll();
 
+    void changeStatus(Long id);
 }

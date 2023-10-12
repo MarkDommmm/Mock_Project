@@ -71,4 +71,13 @@ public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long>
             menuRepository.deleteById(id);
         }
     }
+
+    @Override
+    public void changeStatus(Long id) {
+        Optional<Menu> menu = menuRepository.findById(id);
+        if(menu.isPresent()) {
+            menu.get().setStatus(!menu.get().isStatus());
+            menuRepository.save(menu.get());
+        }
+    }
 }
