@@ -33,7 +33,6 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryResponse> findAll() {
-
         return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
     }
 

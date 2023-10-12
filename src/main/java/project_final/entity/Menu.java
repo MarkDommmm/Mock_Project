@@ -24,7 +24,7 @@ public class Menu {
     private double price;
     private Date createDate;
     private boolean status;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
 

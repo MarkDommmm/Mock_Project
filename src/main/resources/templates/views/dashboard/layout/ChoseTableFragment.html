@@ -1,17 +1,36 @@
 <!-- Thymeleaf Fragment (fragment.html) -->
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <style>
+        .boxs {
+            border-radius: 30px;
+            box-shadow: 15px 15px 30px #bebebe,
+            -15px -15px 30px #ffffff;
+        }
+
+        .cardH {
+            margin-top: 17px;
+            margin-bottom: 10px;
+        }
+
+        .rounded-pill {
+            -webkit-border-radius: 0 !important;
+            border-radius: 0!important;
+        }
+
+    </style>
 </head>
 <body>
 <div class="card-body" th:fragment="tableFragment">
     <div class="swiper-container d-slider2">
         <div class="swiper-wrapper">
-            <div class="swiper-slide" th:each="t,loop:${tableTypes}" th:data-table-name="${t.name}">
-                <div class="card  category-menu">
+            <div class="swiper-slide cardH " th:each="t,loop:${tableTypes}" th:data-table-name="${t.name}">
+                <span></span>
+                <div class="card  category-menu boxs">
                     <div class="card-body">
                         <div class="text-center">
                             <!-- Delete Icon -->
@@ -60,7 +79,7 @@
                         <img th:src="${t.tableImage}"
                              class="img-fluid rounded-pill avatar-170 " alt="profile-image">
                     </div>
-                    <a href="">
+                    <a href="" class="boxs">
                         <div class="card-body menu-image">
                             <h6 class="heading-title fw-bolder mt-4 mb-0" th:text="${t.name}"></h6>
                             <div class="card-rating stars-ratings">
@@ -136,10 +155,7 @@
                 name: tableTypeName
             },
             success: function (data) {
-                var tableTypes = data.tableTypes;
                 var tables = data.tables;
-                // console.log(tableTypes.content);
-                // console.log(tables.content);
                 $("#render-table").html("");
                 $.each(tables, function (tableIndex, t) {
                     let htmlContent = `
@@ -158,7 +174,7 @@
                         <img src="${t.tableImage}"
                              class="img-fluid rounded-pill avatar-170 " alt="profile-image">
                     </div>
-                    <a href="">
+                    <a href="" class="boxs">
                         <div class="card-body menu-image">
                             <h6 class="heading-title fw-bolder mt-4 mb-0">${t.name}</h6>
                             <div class="card-rating stars-ratings">
