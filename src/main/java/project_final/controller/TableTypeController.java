@@ -29,6 +29,7 @@ public class TableTypeController {
 
     @PostMapping("/add")
     public String addTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest){
+
         tableTypeService.save(tableTypeRequest);
         return "redirect:/table-type";
     }
