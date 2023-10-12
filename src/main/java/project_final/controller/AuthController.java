@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.User;
 import project_final.exception.RegisterException;
+import project_final.model.dto.request.ForgotPassForm;
 import project_final.model.dto.request.LoginRequestDto;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
@@ -42,8 +43,6 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@ModelAttribute @Valid UserRequest userRequest) throws RegisterException {
         userService.save(userRequest);
-        String emailContent = "<p style=\"color: red; font-size: 18px;\">\n" + "Registered successfully</p>";
-        mailService.sendMail(userRequest.getEmail(), "RegisterSuccess", emailContent);
         return "redirect:/home/sign-in";
     }
 
@@ -54,7 +53,6 @@ public class AuthController {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
             );
-            // tạo đối tượng authentication để xác thực thông qua username và password
 
         } catch (AuthenticationException e) {
             throw new LoginException("Username or password is incorrect!");
@@ -99,5 +97,20 @@ public class AuthController {
         userService.changePass(userRequest);
         return "redirect:/home";
     }
+    @GetMapping("/forgot-password")
+    public String forgotPassword(Model model){
+        model.addAttribute("user",new ForgotPassForm());
+        return "/dashboard/app/user-forgot-pass";
+    }
+    @PostMapping("/forgot-password")
+    public String sendVerification(@ModelAttribute("user") ForgotPassForm forgotPassForm){
+
+        String verification = userService.sendVerification(forgotPassForm.getEmail());
+        String emailContent = "<p style=\"color: red; font-size: 18px;\">\n" + verification + "</p>";
+        mailService.sendMail(forgotPassForm.getEmail(), "Verification", emailContent);
+        return "redirect: /forgot-password";
+    }
+
+
 
 }

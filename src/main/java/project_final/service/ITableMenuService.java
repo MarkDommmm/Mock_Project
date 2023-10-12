@@ -5,4 +5,5 @@ import project_final.model.dto.response.TableMenuResponse;
 import project_final.service.IGenericService;
 
 public interface ITableMenuService extends IGenericService<TableMenuRequest, TableMenuResponse,Long> {
+    void changeStatus(Long id);
 }

@@ -12,4 +12,5 @@ public interface IMenuService<K,V,E> {
    V findById(E id);
    void save(K k);
    void delete(E id);
+   void changeStatus(E id);
 }

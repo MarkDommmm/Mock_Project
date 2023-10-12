@@ -19,6 +19,7 @@ public interface IUserService {
     User findById(Long id);
     User changePass(UpdateUserRequest userRequest) throws RegisterException;
     UserResponse lock(Long id);
-
     Page<UserResponse> findAll(String name, int page, int size);
+    String sendVerification(String email);
+
 }

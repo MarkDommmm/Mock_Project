@@ -14,19 +14,21 @@ import project_final.entity.User;
 import project_final.repository.IUserRepository;
 
 import project_final.service.IUserService;
+import project_final.service.IVerificationService;
 import project_final.service.mapper.IUserMapper;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
 @AllArgsConstructor
 public class UserService implements IUserService {
 
-    private IUserRepository userRepository;
-
-    private IUserMapper userMapper;
-    private PasswordEncoder passwordEncoder;
+    private final IUserRepository userRepository;
+    private final IUserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final IVerificationService verificationService;
 
     @Override
     public boolean checkPassword(String password, String confirm_password) {
@@ -103,5 +105,15 @@ public class UserService implements IUserService {
     public Page<UserResponse> findAll(String name, int page, int size) {
         Page<User> users = userRepository.findAllUsersWithUserRoleAndUseAndUsernameContaining(RoleName.ROLE_USER, name, PageRequest.of(page, size));
         return users.map(user -> userMapper.toResponse(user));
+    }
+
+    @Override
+    public String sendVerification(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            String verification = verificationService.create(user).getVerification();
+            return verification;
+        }
+        return null;
     }
 }
