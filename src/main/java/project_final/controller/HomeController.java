@@ -85,6 +85,22 @@ public class HomeController {
         return tableMenuService.findAll(name, page, sizeCart);
     }
 
+    @RequestMapping("/checkoutTable/{id}")
+    public String checkoutTable(@PathVariable Long id,Model model){
+        model.addAttribute("table",tableService.findById(id));
+        model.addAttribute("reservation",new ReservationRequest());
+        return "dashboard/checkoutTable";
+    }
+
+    @RequestMapping("/checkout")
+    public String checkout(Model model,@RequestParam(defaultValue = "") Long id,
+                           @RequestParam(defaultValue = "") String name,
+                           @RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "10") int sizeCart){
+        model.addAttribute("cart", tableMenuService.findAll(name, page, sizeCart));
+        return "/dashboard/checkout";
+    }
+
     @RequestMapping("/403")
     public String error403() {
         return "/dashboard/errors/error403";
