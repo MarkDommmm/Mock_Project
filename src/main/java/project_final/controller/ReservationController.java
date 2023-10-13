@@ -39,7 +39,7 @@ public class ReservationController {
         User user = (User) session.getAttribute("currentUser");
         reservationRequest.setUser(user);
         reservationService.save(reservationRequest);
-        return "redirect:/";
+        return "/dashboard/menu";
     }
 
     @GetMapping("/edit/{id}")

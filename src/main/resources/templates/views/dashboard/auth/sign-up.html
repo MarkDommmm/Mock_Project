@@ -1102,21 +1102,24 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="full-name" class="form-label">Full Name</label>
+                                        <label for="full-name" class="form-label">UserName</label>
                                         <input type="text"
                                                class="form-control form-control-sm" id="full-name" th:field="${signup.username}">
+                                        <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" class="form-control form-control-sm" id="email" th:field="${signup.email}">
+                                        <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="password" class="form-label">Password</label>
                                         <input type="password" class="form-control form-control-sm" id="password" th:field="${signup.password}">
+                                        <span style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                                     </div>
                                 </div>
 
@@ -1125,6 +1128,7 @@
                                         <label for="confirm-password" class="form-label">Confirm Password</label>
                                         <input type="password" class="form-control form-control-sm"
                                                id="confirm-password" th:field="${signup.confirm_password}">
+<!--                                        <span style="color: red" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirm_password}"></span>-->
                                     </div>
                                 </div>
 <!--                                <div class="col-lg-12 d-flex justify-content-center">-->

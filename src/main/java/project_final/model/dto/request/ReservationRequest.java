@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import project_final.entity.Tables;
 import project_final.entity.User;
 
@@ -19,6 +20,10 @@ public class ReservationRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     private Tables table;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date bookingDate;
+    @DateTimeFormat(pattern = "HH:mm")
     private Date startTime;
+    @DateTimeFormat(pattern = "HH:mm")
     private Date endTime;
 }

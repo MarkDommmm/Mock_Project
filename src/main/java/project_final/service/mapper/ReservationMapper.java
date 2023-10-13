@@ -16,6 +16,7 @@ public class ReservationMapper implements IReservationMapper{
                 .user(reservationRequest.getUser())
                 .table(reservationRequest.getTable())
                 .createdDate(new Date())
+                .bookingDate(reservationRequest.getBookingDate())
                 .startTime(reservationRequest.getStartTime())
                 .endTime(reservationRequest.getEndTime())
                 .status(Status.PENDING).build();
@@ -28,6 +29,7 @@ public class ReservationMapper implements IReservationMapper{
                 .user(reservation.getUser())
                 .table(reservation.getTable())
                 .createdDate(reservation.getCreatedDate())
+                .bookingDate(reservation.getBookingDate())
                 .startTime(reservation.getStartTime())
                 .endTime(reservation.getEndTime())
                 .status(reservation.getStatus()).build();

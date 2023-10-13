@@ -1105,6 +1105,7 @@
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" class="form-control form-control-sm" id="username"
                                            aria-describedby="username" th:field="${signin.username}">
+                                    <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -1112,6 +1113,7 @@
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control form-control-sm" id="password"
                                            aria-describedby="password" th:field="${signin.password}">
+                                    <span style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                                 </div>
                             </div>
                             <div class="col-lg-12 d-flex justify-content-between">
