@@ -31,6 +31,7 @@ public class CategoryMapper implements ICategoryMapper{
         } else if (existingCategory.isPresent()) {
             // nếu category  tồn tại
             image = existingCategory.get().getImage();
+
         } else {
             // không có ảnh và không tồn tại category
             image = "../../assets/images/avatars/01.png";

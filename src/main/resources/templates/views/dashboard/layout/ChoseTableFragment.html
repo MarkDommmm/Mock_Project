@@ -79,8 +79,8 @@
                         <img th:src="${t.tableImage}"
                              class="img-fluid rounded-pill avatar-170 " alt="profile-image">
                     </div>
-                    <a href="" class="boxs">
-                        <div class="card-body menu-image">
+
+                        <div class="card-body menu-image ">
                             <h6 class="heading-title fw-bolder mt-4 mb-0" th:text="${t.name}"></h6>
                             <div class="card-rating stars-ratings">
                                 <svg width="18" viewBox="0 0 30 30" fill="none"
@@ -121,6 +121,7 @@
                                     <!--             <small class="text-decoration-line-through">$8.49</small>-->
                                 </div>
                                 <div>
+
                                     <a th:href="@{|/checkoutTable/${t.id}|}">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
@@ -132,11 +133,12 @@
                                                   height="10" rx="0.833332" transform="rotate(-90 7 12.834)"
                                                   fill="currentColor"/>
                                         </svg>
+
                                     </a>
                                 </div>
                             </div>
                         </div>
-                    </a>
+
                 </div>
             </div>
         </div>

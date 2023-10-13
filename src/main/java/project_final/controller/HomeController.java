@@ -2,6 +2,7 @@ package project_final.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IMenuRepository;
 import project_final.service.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -46,6 +48,14 @@ public class HomeController {
         return tableDataDTO;
     }
 
+    @GetMapping("/home/chose-table/{id}")
+    public String choseTable(@PathVariable("id") Long id, HttpSession session) {
+        session.setAttribute("idTable",id);
+        Long idTable = (Long) session.getAttribute("idTable");
+
+        return "redirect:/home/menu";
+    }
+
 
     @RequestMapping("/home/menu")
     public String getMenu(@RequestParam(defaultValue = "") String name,
@@ -61,28 +71,65 @@ public class HomeController {
         model.addAttribute("cart", tableMenuService.getAll(name, page, sizeCart));
         return "dashboard/menu";
     }
+//    @RequestMapping("/home/get-menus")
+//    @ResponseBody
+//    public MenuDataDTO getAllMenu(
+//            @RequestParam(defaultValue = "") String name,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size) {
+//        MenuDataDTO menuDataDTO = new MenuDataDTO();
+//        menuDataDTO.setCategoryResponse(categoryService.findAll());
+//        menuDataDTO.setMenu(menuService.getAll(name));
+//        return menuDataDTO;
+//    }
 
     @RequestMapping("/home/chose-menu-category")
     @ResponseBody
     public MenuDataDTO getMenuByIdCategory(
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "1000") int size) {
+        System.out.println(name + "soutttttttttttttttttttttttttttttttttttttttttttttt");
         MenuDataDTO menuDataDTO = new MenuDataDTO();
         menuDataDTO.setCategoryResponse(categoryService.findAll());
-        menuDataDTO.setMenu(menuService.getAll(name));
+        menuDataDTO.setMenu(menuService.findAll(name, page, size));
         return menuDataDTO;
     }
 
 
     @RequestMapping("/add-cart")
     @ResponseBody
-    public Page<TableMenuCartResponse> addTableMenu(@RequestParam(defaultValue = "") Long id,
-                                                    @RequestParam(defaultValue = "") String name,
-                                                    @RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(defaultValue = "10") int sizeCart) {
-       tableMenuService.addCart(id);
+    public Page<TableMenuCartResponse> addTableMenu(
+            @RequestParam(defaultValue = "") Long id,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int sizeCart,
+            HttpSession session) {
+
+        tableMenuService.addCart(id);
         return tableMenuService.findAll(name, page, sizeCart);
+    }
+    @RequestMapping("/remove-cart-item")
+    @ResponseBody
+    public Page<TableMenuCartResponse> removeCartItem(
+            @RequestParam(defaultValue = "") Long id,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int sizeCart,
+            HttpSession session) {
+        System.out.println(id);
+        tableMenuService.removeCartItem(id);
+        return tableMenuService.findAll(name, page, sizeCart);
+    }
+
+    @GetMapping("/check-out")
+    public  String checkout(@RequestParam(defaultValue = "") String name,
+                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "12") int size,
+                            @RequestParam(defaultValue = "10") int sizeCart,
+                            Model model){
+        model.addAttribute("cart", tableMenuService.getAll(name, page, sizeCart));
+        return "/dashboard/checkout";
     }
 
     @RequestMapping("/checkoutTable/{id}")
@@ -121,11 +168,6 @@ public class HomeController {
     @RequestMapping("/user")
     public String homeUser() {
         return "dashboard/ChoseTable";
-    }
-
-    @RequestMapping("/admin")
-    public String admin() {
-        return "dashboard/extra/terms-of-service";
     }
 
 

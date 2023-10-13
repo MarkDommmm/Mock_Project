@@ -18,5 +18,5 @@ import java.util.List;
 @Builder
 public class MenuDataDTO {
     private List<CategoryResponse> categoryResponse;
-    private List<MenuResponse> menu;
+    private Page<MenuResponse> menu;
 }

@@ -5,12 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.entity.Menu;
+import project_final.entity.Reservation;
 import project_final.entity.TableMenu;
+import project_final.entity.Tables;
 import project_final.model.dto.request.TableMenuRequest;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.model.dto.response.TableMenuResponse;
 import project_final.repository.IMenuRepository;
+import project_final.repository.IReservationRepository;
 import project_final.repository.ITableMenuRepository;
+import project_final.repository.ITableRepository;
 import project_final.service.ITableMenuService;
 import project_final.service.mapper.CartMapper;
 import project_final.service.mapper.ITableMenuMapper;
@@ -24,6 +28,7 @@ public class TableMenuService implements ITableMenuService {
     private final ITableMenuRepository tableMenuRepository;
     private final ITableMenuMapper tableMenuMapper;
     private final IMenuRepository menuRepository;
+    private final ITableRepository tableRepository;
 
     @Override
     public Page<TableMenuCartResponse> findAll(String name, int page, int size) {
@@ -59,12 +64,27 @@ public class TableMenuService implements ITableMenuService {
             if (!menuInCart) {
                 TableMenuRequest tableMenuRequest = new TableMenuRequest();
                 tableMenuRequest.setMenu(menu);
+//                tableMenuRequest.setReservation( );
                 tableMenuRequest.setPrice(menu.getPrice());
                 save(tableMenuRequest);
             }
         }
     }
 
+    @Override
+    public void removeCartItem(Long id) {
+        for (TableMenu tableMenu : tableMenuRepository.findAll()) {
+            if (tableMenu.getId().equals(id)) {
+                if (tableMenu.getQuantity() <= 1) {
+                    tableMenuRepository.deleteById(tableMenu.getId());
+                } else {
+                    tableMenu.setQuantity(tableMenu.getQuantity() - 1);
+                    tableMenuRepository.save(tableMenu);
+                }
+                break;
+            }
+        }
+    }
 
 
     @Override
