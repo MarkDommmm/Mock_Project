@@ -15,12 +15,25 @@
 
     <!-- Custom Css -->
     <link rel="stylesheet" type="text/css" th:href="@{../assets/css/aprycot.min.css}">
+
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
     <!--    Font Awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
           integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <style>
+        .boxs {
+            border-radius: 30px;
+            box-shadow: 15px 15px 30px #bebebe,
+            -15px -15px 30px #ffffff;
+        }
+
+        .cardH {
+            margin-top: 17px;
+            margin-bottom: 10px;
+        }
+
         .card-trending {
             gap: 30px;
             display: flex;
@@ -53,12 +66,73 @@
             position: relative;
         }
 
+        #render-table {
+            display: grid;
+            transform: translate3d(-447.5px, 0px, 0px);
+            transition-duration: 0ms;
+            grid-template-columns: auto auto auto auto auto auto;
+            column-gap: 15px;
+        }
 
+        .card.card-white {
+
+            width: 200px;
+        }
+
+        .col {
+            margin-top: 90px;
+            margin-right: 94px !important;
+        }
+
+
+        .active {
+            background-color: rgba(234, 106, 18, 0.7) !important;
+        }
+
+        .iq-my-cart {
+            width: 350px;
+            margin-top: 2.6rem !important;
+            margin-bottom: 1.5rem;
+            margin-left: 2rem;
+        }
+
+        .horizontal-scroll {
+            overflow-x: hidden;
+            white-space: nowrap;
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-column-gap: 15px;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+
+
+        }
+
+        .show-more {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .show-more p {
+            margin: 0;
+        }
+
+        .chose-menu-cate:hover .rect {
+            fill: white;
+        }
+
+        .chose-menu-cate:hover .path {
+            stroke: #ea6a12;
+        }
     </style>
 </head>
 
-<body class="  "
-      th:style="'background-image:url('+@{../assets/images/dashboard.png}+');  background-attachment: fixed; background-size: cover;'">
+<body>
+
 <!-- loader Start -->
 <div id="loading">
     <div class="loader simple-loader">
@@ -1472,7 +1546,7 @@
                     <div class="card-header border-0  ">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3>Menu category</h3>
-                            <a href="#" class="text-dark d-flex">View All
+                            <a  class="text-dark d-flex chose-menu-cate">View All
                                 <svg width="24" height="24" class="ms-1" viewBox="0 0 24 24" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <rect width="24" height="24" rx="12" fill="#EA6A12"/>
@@ -1486,9 +1560,34 @@
                     <div class="card-body">
                         <div class="swiper-container d-slider2">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide" th:each="m:${categories}" th:data-table-name="${m.name}">
-
-                                    <div class="card  category-menu">
+                                <div class="swiper-slide chose-menu-cate">
+                                    <div class="card active  category-menu">
+                                        <div class="card-body">
+                                            <div class="text-center">
+                                                <div class="delete-admin">
+                                                    <i class="fa-solid fa-circle-xmark"></i>
+                                                </div>
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046747.png"
+                                                     alt="menu"
+                                                     class="img-fluid   mb-3">
+                                                <h6 class="heading-title fw-bolder pb-4">View All</h6>
+                                                <div class="category-icon pt-4">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <rect class="rect" width="24" height="24" rx="12"
+                                                              fill="#EA6A12"></rect>
+                                                        <path class="path" d="M10.25 8.5L13.75 12L10.25 15.5"
+                                                              stroke="white" stroke-width="1.5" stroke-linecap="round"
+                                                              stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide chose-menu-cate   " th:each="m:${categories}"
+                                     th:data-table-name="${m.name}">
+                                    <div class="card   category-menu">
                                         <div class="card-body">
                                             <div class="text-center">
                                                 <div class="delete-admin">
@@ -1498,102 +1597,96 @@
                                                      class="img-fluid rounded-pill mb-3">
                                                 <h6 class="heading-title fw-bolder pb-4" th:text="${m.name}"></h6>
                                                 <div class="category-icon pt-4">
-
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
-                                                        <rect width="24" height="24" rx="12" fill="#fff"/>
-                                                        <path d="M10.25 8.5L13.75 12L10.25 15.5" stroke="#EA6A12"
-                                                              stroke-width="1.5" stroke-linecap="round"
-                                                              stroke-linejoin="round"/>
+                                                        <rect class="rect" width="24" height="24" rx="12"
+                                                              fill="#EA6A12"></rect>
+                                                        <path class="path" d="M10.25 8.5L13.75 12L10.25 15.5"
+                                                              stroke="white" stroke-width="1.5" stroke-linecap="round"
+                                                              stroke-linejoin="round"></path>
                                                     </svg>
-
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
                             </div>
                         </div>
+
                         <!-- <h3>Menu</h3> -->
                         <div class="swiper-container d-slider2">
-                            <div class="swiper-wrapper">
-                                <div class="col-xl-12 col-lg-12 dish-card-horizontal mt-2">
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4"
-                                         id="render-table">
+                            <div class="swiper-wrapper" id="render-table">
 
-                                        <div class="col" th:each="f:${menuAll}">
-                                            <div class="card card-white dish-card profile-img mb-0 ">
-                                                <div class="profile-img21">
-                                                    <img th:src="${f.image}"
-                                                         class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
-                                                         alt="profile-image">
-                                                    <img th:src="${f.image}"
-                                                         class="img-fluid rounded-pill avatar-170 "
-                                                         alt="profile-image">
-                                                </div>
-                                                <div class="card-body menu-image">
-                                                    <h6 class="heading-title fw-bolder mt-4 mb-0"
-                                                        th:text="${f.name}"></h6>
-                                                    <div class="card-rating stars-ratings">
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between mt-3">
-                                                        <div class="d-flex align-items-center">
+                                <div class="col swiper-slide hover" th:each="f:${menuAll}" >
+                                    <div class="card card-white dish-card profile-img mb-0 ">
+                                        <div class="profile-img21">
+                                            <img th:src="${f.image}"
+                                                 class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
+                                                 alt="profile-image">
+                                            <img th:src="${f.image}"
+                                                 class="img-fluid rounded-pill avatar-170 "
+                                                 alt="profile-image">
+                                        </div>
+                                        <div class="card-body menu-image">
+                                            <h6 class="heading-title fw-bolder mt-4 mb-0"
+                                                th:text="${f.name}"></h6>
+                                            <div class="card-rating stars-ratings">
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <div class="d-flex align-items-center">
                                                             <span class="text-primary fw-bolder me-2"
                                                                   th:text="'$'+${f.price}"></span>
-                                                            <small class="text-decoration-line-through">$8.49</small>
-                                                        </div>
-                                                        <a class="add-cart" th:data-id="${f.id}">
-                                                            <svg width="24" height="24" viewBox="0 0 24 24"
-                                                                 fill="none"
-                                                                 xmlns="http://www.w3.org/2000/svg">
-                                                                <rect class="circle-1" width="24" height="24"
-                                                                      rx="12"
-                                                                      fill="currentColor"/>
-                                                                <rect class="circle-2" x="11.168" y="7"
-                                                                      width="1.66667"
-                                                                      height="10" rx="0.833333"
-                                                                      fill="currentColor"/>
-                                                                <rect class="circle-3" x="7" y="12.834"
-                                                                      width="1.66666"
-                                                                      height="10" rx="0.833332"
-                                                                      transform="rotate(-90 7 12.834)"
-                                                                      fill="currentColor"/>
-                                                            </svg>
-                                                        </a>
-                                                    </div>
+                                                    <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
+                                                <a class="add-cart" th:data-id="${f.id}">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <rect class="circle-1" width="24" height="24"
+                                                              rx="12"
+                                                              fill="currentColor"/>
+                                                        <rect class="circle-2" x="11.168" y="7"
+                                                              width="1.66667"
+                                                              height="10" rx="0.833333"
+                                                              fill="currentColor"/>
+                                                        <rect class="circle-3" x="7" y="12.834"
+                                                              width="1.66666"
+                                                              height="10" rx="0.833332"
+                                                              transform="rotate(-90 7 12.834)"
+                                                              fill="currentColor"/>
+                                                    </svg>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -1602,7 +1695,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- <h3>Trending orders</h3> -->
                 <div class="card-transparent bg-transparent mb-0">
                     <div class="card-header border-0 m-2 mb-5">
@@ -1618,11 +1710,12 @@
                             </a>
                         </div>
                     </div>
+
                     <div class="card-body p-0 dish-card-vertical">
                         <div class="swiper swiper-container d-slider3">
                             <div class="swiper-wrapper">
                                 <div class="card-trending" style="width: 280px">
-                                    <div class="card card-white dish-card2 index" style="width: 220px"
+                                    <div class="card card-white dish-card2 index hover" style="width: 220px"
                                          th:each="mt:${menuTrending}">
                                         <div class="card-body ">
                                             <div class="d-flex profile-img1">
@@ -1729,16 +1822,19 @@
                                                     <p th:text="${mt.description}"></p>
                                                     <div class="d-flex mt-2">
                                                         <span class="text-primary me-4"
-                                                              th:text="'$'+${mt.price}"></span>
-                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <rect width="24" height="24" rx="12" fill="#EA6A12"/>
-                                                            <rect x="11.168" y="7" width="1.66667" height="10"
-                                                                  rx="0.833333" fill="white"/>
-                                                            <rect x="7" y="12.834" width="1.66666" height="10"
-                                                                  rx="0.833332" transform="rotate(-90 7 12.834)"
-                                                                  fill="white"/>
-                                                        </svg>
+                                                              th:text="'$'+${mt.price}">
+                                                        </span>
+                                                        <a class="add-cart" th:data-id="${mt.id}">
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                                                                <rect width="24" height="24" rx="12" fill="#EA6A12"/>
+                                                                <rect x="11.168" y="7" width="1.66667" height="10"
+                                                                      rx="0.833333" fill="white"/>
+                                                                <rect x="7" y="12.834" width="1.66666" height="10"
+                                                                      rx="0.833332" transform="rotate(-90 7 12.834)"
+                                                                      fill="white"/>
+                                                            </svg>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1752,6 +1848,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- layout Right -->
             <div class="col-md-12 col-lg-4 mt-5">
@@ -1781,20 +1878,26 @@
                             <div class="card-header">
                                 <h4 class="list-main">My Cart</h4>
                             </div>
-                            <div class="card-body" id="render-cart">
-                                <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
-                                    <div class="d-flex align-items-center justify-content-between profile-img4">
-                                        <div class="profile-img11">
-                                            <img th:src="${c.menu.image}"
-                                                 class="img-fluid rounded-pill avatar-115 blur-shadow position-end"
-                                                 alt="img">
-                                            <img th:src="${c.menu.image}"
-                                                 class="img-fluid rounded-pill avatar-115" alt="img">
-                                        </div>
-                                        <div class="d-flex align-items-center profile-content">
-                                            <div>
-                                                <h6 class="mb-1 heading-title fw-bolder" th:text="${c.menu.name}"></h6>
-                                                <span class="d-flex align-items-center ">
+
+
+                            <div class="card-body">
+
+                                <div class="horizontal-scroll" id="render-cart">
+                                    <div class="rounded-pill bg-soft-primary iq-my-cart"
+                                         th:each="c:${cart}">
+                                        <div class="d-flex align-items-center justify-content-between profile-img4">
+                                            <div class="profile-img11">
+                                                <img th:src="${c.menu.image}"
+                                                     class="img-fluid rounded-pill avatar-115 blur-shadow position-end"
+                                                     alt="img">
+                                                <img th:src="${c.menu.image}"
+                                                     class="img-fluid rounded-pill avatar-115" alt="img">
+                                            </div>
+                                            <div class="d-flex align-items-center profile-content">
+                                                <div>
+                                                    <h6 class="mb-1 heading-title fw-bolder"
+                                                        th:text="${c.menu.name}"></h6>
+                                                    <span class="d-flex align-items-center ">
                                                     <svg width="10" height="10"
                                                          viewBox="0 0 10 10"
                                                          fill="none"
@@ -1808,10 +1911,10 @@
                                                         </svg>
                                                     <small class="text-dark ms-1" th:text="${c.quantity}"></small>
                                                     </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="me-4 text-end">
-                                                <span class="mb-1">
+                                            <div class="me-4 text-end">
+                                                <span class="mb-1 remove-cart" th:data-menu-id="${c.id}">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
                                                         <path opacity="0.4"
@@ -1822,16 +1925,24 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                            <p class="mb-0 text-dark" th:text="${c.price}">$7.49</p>
+                                                <p class="mb-0 text-dark" th:text="${c.price}+'$'">$7.49</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="text-center mt-5">
-                                <a type="button" href="../dashboard/special-pages/add-to-cart.html"
+                            <div class="show-more">
+                                <p>Scroll left show more!!</p>
+                                <img class="animation--Gl63I"
+                                     src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"
+                                     alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
+                                     style="max-height: 80px;">
+                            </div>
+
+                            <div class="text-center">
+                                <a type="button" href="/check-out"
                                    style="margin-bottom: 20px"
-                                   class="btn btn-primary rounded-pill">Checkout</a>
+                                   class="btn btn-primary rounded-pill">Checkout!!!</a>
                             </div>
                         </div>
                     </div>
@@ -1857,11 +1968,12 @@
                             </div>
                             <!-- List Categories -->
                             <div class="card-body">
-                                <div class="iq-col-masonry m-0">
-                                    <form th:each="c:${categories}">
-                                        <button type="submit" th:text="${c.name}"
-                                                class="btn btn-primary rounded iq-col-masonry-block"></button>
-                                    </form>
+                                <div class="iq-col-masonry m-0" >
+
+                                        <button type="submit" th:each="c:${categories}" th:text="${c.name}"
+                                                class="btn btn-outline-primary rounded iq-col-masonry-block"></button>
+
+<!--                                    <button type="button" class="btn   btn-primary rounded iq-col-masonry-block">Pizza</button>-->
                                 </div>
                             </div>
 
@@ -1900,9 +2012,8 @@
     <!-- Footer Section End -->
     <script>
         // Add Cart
-        $(".add-cart").click(function () {
+        $(document).on("click", ".add-cart", function () {
             const id = $(this).data("id");
-            console.log(id)
             $(".col .dish-card").removeClass("active");
 
             $(this).closest(".dish-card").addClass("active");
@@ -1914,10 +2025,18 @@
                     id: id
                 },
                 success: function (data) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: '❤️Added to cart !!!❤️',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                     $("#render-cart").html("");
                     $.each(data.content, function (i, c) {
                         let htmlCart = `
-                     <div class="rounded-pill bg-soft-primary iq-my-cart"">
+
+                                  <div class="rounded-pill bg-soft-primary iq-my-cart"">
                                     <div class="d-flex align-items-center justify-content-between profile-img4">
                                         <div class="profile-img11">
                                             <img src="${c.image}"
@@ -1961,16 +2080,119 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
                     `;
                         $("#render-cart").append(htmlCart);
                     })
                 }
             });
         });
+        // Remove Cart
+        $(document).on("click", ".remove-cart", function () {
+            const id = $(this).data("menu-id");
+            $.ajax({
+                url: "/remove-cart-item",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: '❤️Item removed from cart !!!❤️',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    $("#render-cart").html("");
+                    $.each(data.content, function (i, c) {
+                        let htmlCart = `
+                     <div class="rounded-pill bg-soft-primary iq-my-cart"">
+                                    <div class="d-flex align-items-center justify-content-between profile-img4">
+                                        <div class="profile-img11">
+                                            <img src="${c.image}"
+                                                 class="img-fluid rounded-pill avatar-115 blur-shadow position-end"
+                                                 alt="img">
+                                            <img src="${c.image}"
+                                                 class="img-fluid rounded-pill avatar-115" alt="img">
+                                        </div>
+                                        <div class="d-flex align-items-center profile-content">
+                                            <div>
+                                                <h6 class="mb-1 heading-title fw-bolder"  >${c.name}</h6>
+                                                <span class="d-flex align-items-center ">
+                                                    <svg width="10" height="10"
+                                                         viewBox="0 0 10 10"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                            <rect x="0.875" y="2.05469" width="1.66667" height="10"
+                                                                  rx="0.833333" transform="rotate(-45 0.875 2.05469)"
+                                                                  fill="#EA6A12"/>
+                                                            <rect x="2.05469" y="9.125" width="1.66666" height="10"
+                                                                  rx="0.833332" transform="rotate(-135 2.05469 9.125)"
+                                                                  fill="#EA6A12"/>
+                                                        </svg>
+                                                    <small class="text-dark ms-1"  >${c.quantity}</small>
+                                                    </span>
+                                            </div>
+                                        </div>
+                                        <div class="me-4 text-end">
+                                               <span class="mb-1 remove-cart" data-menu-id="${c.id}">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.4"
+                                                              d="M19.6449 9.48924C19.6449 9.55724 19.112 16.298 18.8076 19.1349C18.6169 20.8758 17.4946 21.9318 15.8111 21.9618C14.5176 21.9908 13.2514 22.0008 12.0055 22.0008C10.6829 22.0008 9.38936 21.9908 8.1338 21.9618C6.50672 21.9228 5.38342 20.8458 5.20253 19.1349C4.88936 16.288 4.36613 9.55724 4.35641 9.48924C4.34668 9.28425 4.41281 9.08925 4.54703 8.93126C4.67929 8.78526 4.86991 8.69727 5.07026 8.69727H18.9408C19.1402 8.69727 19.3211 8.78526 19.464 8.93126C19.5973 9.08925 19.6644 9.28425 19.6449 9.48924"
+                                                              fill="#E60A0A"/>
+                                                        <path
+                                                                d="M21 5.97686C21 5.56588 20.6761 5.24389 20.2871 5.24389H17.3714C16.7781 5.24389 16.2627 4.8219 16.1304 4.22692L15.967 3.49795C15.7385 2.61698 14.9498 2 14.0647 2H9.93624C9.0415 2 8.26054 2.61698 8.02323 3.54595L7.87054 4.22792C7.7373 4.8219 7.22185 5.24389 6.62957 5.24389H3.71385C3.32386 5.24389 3 5.56588 3 5.97686V6.35685C3 6.75783 3.32386 7.08982 3.71385 7.08982H20.2871C20.6761 7.08982 21 6.75783 21 6.35685V5.97686Z"
+                                                                fill="#E60A0A"/>
+                                                    </svg>
+                                                </span>
+                                            <p class="mb-0 text-dark" >${c.price}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                    `;
+                        $("#render-cart").append(htmlCart);
+                    })
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            var isDragging = false;
+            var startX, scrollLeft;
+
+            $(".horizontal-scroll").on("mousedown", function (e) {
+                // Kiểm tra xem click không phải trực tiếp lên thẻ <img>
+                if (!$(e.target).is("img")) {
+                    // Nếu không phải là thẻ <img>, bắt đầu quá trình kéo
+                    isDragging = true;
+                    startX = e.pageX - this.offsetLeft;
+                    scrollLeft = this.scrollLeft;
+
+                    // Ngăn chặn sự kiện mặc định (chọn văn bản)
+                    e.preventDefault();
+                }
+            }).on("mouseup", function () {
+                isDragging = false;
+            }).on("mousemove", function (e) {
+                if (!isDragging) return;
+                var x = e.pageX - this.offsetLeft;
+                var walk = (x - startX) * 3;
+                this.scrollLeft = scrollLeft - walk;
+            }).on("mouseleave", function () {
+                isDragging = false;
+            });
+        });
     </script>
+
     <script>
-        $(".swiper-slide").click(function () {
-            $(".swiper-slide .category-menu").removeClass("active");
+        $(document).on("click", ".chose-menu-cate", function () {
+
+            $(".chose-menu-cate .category-menu").removeClass("active");
 
             $(this).find(".category-menu").addClass("active");
 
@@ -1983,81 +2205,83 @@
                 },
                 success: function (data) {
                     let menu = data.menu;
+
                     $("#render-table").html("");
-                    $.each(menu, function (index, f) {
+                    $.each(menu.content, function (index, f) {
                         let htmlMenu = `
-                       <div class="col">
-                                            <div class="card card-white dish-card profile-img mb-0">
-                                                <div class="profile-img21">
-                                                    <img src="${f.image}"
-                                                         class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
-                                                         alt="profile-image">
-                                                    <img src="${f.image}"
-                                                         class="img-fluid rounded-pill avatar-170 " alt="profile-image">
-                                                </div>
-                                                <div class="card-body menu-image">
-                                                    <h6 class="heading-title fw-bolder mt-4 mb-0"
-                                                        >${f.name}</h6>
-                                                    <div class="card-rating stars-ratings">
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                        <svg width="18" viewBox="0 0 30 30" fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                    d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
-                                                                    fill="currentColor"/>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between mt-3">
-                                                        <div class="d-flex align-items-center">
+                       <div class="col swiper-slide hover" style=" width: 109.167px;">
+                                    <div class="card card-white dish-card profile-img mb-0 ">
+                                        <div class="profile-img21">
+                                            <img  src="${f.image}"
+                                                 class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
+                                                 alt="profile-image">
+                                            <img  src="${f.image}"
+                                                 class="img-fluid rounded-pill avatar-170 "
+                                                 alt="profile-image">
+                                        </div>
+                                        <div class="card-body menu-image">
+                                            <h6 class="heading-title fw-bolder mt-4 mb-0"
+                                                 >${f.name}</h6>
+                                            <div class="card-rating stars-ratings">
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M27.2035 11.1678C27.127 10.9426 26.9862 10.7446 26.7985 10.5985C26.6109 10.4523 26.3845 10.3643 26.1474 10.3453L19.2112 9.79418L16.2097 3.14996C16.1141 2.93597 15.9586 2.75421 15.762 2.62662C15.5654 2.49904 15.336 2.43108 15.1017 2.43095C14.8673 2.43083 14.6379 2.49853 14.4411 2.6259C14.2444 2.75327 14.0887 2.93486 13.9929 3.14875L10.9914 9.79418L4.05515 10.3453C3.82211 10.3638 3.59931 10.449 3.41343 10.5908C3.22754 10.7325 3.08643 10.9249 3.00699 11.1447C2.92754 11.3646 2.91311 11.6027 2.96544 11.8305C3.01776 12.0584 3.13462 12.2663 3.30204 12.4295L8.42785 17.4263L6.61502 25.2763C6.55997 25.5139 6.57762 25.7626 6.66566 25.99C6.7537 26.2175 6.90807 26.4132 7.10874 26.5519C7.30942 26.6905 7.54713 26.7656 7.79103 26.7675C8.03493 26.7693 8.27376 26.6978 8.47652 26.5623L15.1013 22.1458L21.726 26.5623C21.9333 26.6999 22.1777 26.7707 22.4264 26.7653C22.6751 26.7598 22.9161 26.6783 23.1171 26.5318C23.3182 26.3852 23.4695 26.1806 23.5507 25.9455C23.632 25.7104 23.6393 25.456 23.5717 25.2167L21.3464 17.43L26.8652 12.4635C27.2266 12.1375 27.3592 11.6289 27.2035 11.1678Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                                <svg width="18" viewBox="0 0 30 30" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                            d="M8.22826 17.4264L6.41543 25.2763C6.35929 25.514 6.37615 25.7631 6.46379 25.9911C6.55142 26.2191 6.70578 26.4153 6.90668 26.5542C7.10759 26.6931 7.34571 26.7682 7.58994 26.7696C7.83418 26.7711 8.07317 26.6988 8.27571 26.5623L14.9005 22.1458L21.5252 26.5623C21.7325 26.6999 21.9769 26.7708 22.2256 26.7653C22.4743 26.7599 22.7153 26.6784 22.9163 26.5318C23.1174 26.3853 23.2687 26.1807 23.3499 25.9456C23.4312 25.7105 23.4385 25.4561 23.3709 25.2167L21.1456 17.43L26.6644 12.4636C26.8412 12.3045 26.9674 12.097 27.0275 11.8668C27.0876 11.6367 27.0789 11.394 27.0025 11.1688C26.9261 10.9435 26.7854 10.7456 26.5977 10.5995C26.4101 10.4533 26.1837 10.3654 25.9466 10.3466L19.0104 9.79424L16.0088 3.15003C15.9131 2.93608 15.7576 2.75441 15.5609 2.62693C15.3642 2.49946 15.1348 2.43163 14.9005 2.43163C14.6661 2.43163 14.4367 2.49946 14.24 2.62693C14.0434 2.75441 13.8878 2.93608 13.7921 3.15003L10.7906 9.79424L3.85435 10.3454C3.6213 10.3639 3.39851 10.4491 3.21262 10.5908C3.02674 10.7326 2.88563 10.9249 2.80618 11.1448C2.72673 11.3646 2.71231 11.6027 2.76463 11.8306C2.81696 12.0584 2.93382 12.2664 3.10123 12.4295L8.22826 17.4264ZM11.6994 12.1631C11.9166 12.146 12.1251 12.0708 12.3032 11.9453C12.4813 11.8199 12.6224 11.6488 12.7117 11.4501L14.9005 6.60658L17.0892 11.4501C17.1785 11.6488 17.3196 11.8199 17.4977 11.9453C17.6758 12.0708 17.8843 12.146 18.1015 12.1631L22.9341 12.5463L18.9544 16.1282C18.6089 16.4397 18.4714 16.919 18.5979 17.3668L20.1224 22.7019L15.5769 19.6711C15.3774 19.5372 15.1426 19.4657 14.9023 19.4657C14.662 19.4657 14.4272 19.5372 14.2276 19.6711L9.47778 22.8381L10.7553 17.3072C10.8021 17.1037 10.7958 16.8917 10.737 16.6914C10.6782 16.4911 10.5689 16.3093 10.4195 16.1635L6.72325 12.5597L11.6994 12.1631Z"
+                                                            fill="currentColor"/>
+                                                </svg>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <div class="d-flex align-items-center">
                                                             <span class="text-primary fw-bolder me-2"
-                                                                  >$ ${f.price}</span>
-                                                            <small class="text-decoration-line-through">$8.49</small>
-                                                        </div>
-                                                        <a class="add-cart"  data-id="${f.id}">
-                                                            <svg width="24" height="24" viewBox="0 0 24 24"
-                                                                 fill="none"
-                                                                 xmlns="http://www.w3.org/2000/svg">
-                                                                <rect class="circle-1" width="24" height="24"
-                                                                      rx="12"
-                                                                      fill="currentColor"/>
-                                                                <rect class="circle-2" x="11.168" y="7"
-                                                                      width="1.66667"
-                                                                      height="10" rx="0.833333"
-                                                                      fill="currentColor"/>
-                                                                <rect class="circle-3" x="7" y="12.834"
-                                                                      width="1.66666"
-                                                                      height="10" rx="0.833332"
-                                                                      transform="rotate(-90 7 12.834)"
-                                                                      fill="currentColor"/>
-                                                            </svg>
-                                                        </a>
-                                                    </div>
+                                                                   > $ ${f.price}</span>
+                                                    <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
+                                                <a class="add-cart" data-id="${f.id}">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <rect class="circle-1" width="24" height="24"
+                                                              rx="12"
+                                                              fill="currentColor"/>
+                                                        <rect class="circle-2" x="11.168" y="7"
+                                                              width="1.66667"
+                                                              height="10" rx="0.833333"
+                                                              fill="currentColor"/>
+                                                        <rect class="circle-3" x="7" y="12.834"
+                                                              width="1.66666"
+                                                              height="10" rx="0.833332"
+                                                              transform="rotate(-90 7 12.834)"
+                                                              fill="currentColor"/>
+                                                    </svg>
+                                                </a>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
 
                     `;
                         $("#render-table").append(htmlMenu);
@@ -2065,6 +2289,14 @@
 
                 }
             });
+        });
+
+        $(document).on("click", ".btn", function () {
+
+            $(".btn").removeClass("btn-primary");
+
+            $(this).addClass(" btn-primary");
+
         });
     </script>
 

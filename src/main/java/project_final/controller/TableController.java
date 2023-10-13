@@ -66,4 +66,5 @@ public class TableController {
         tableService.delete(id);
         return "redirect:/table";
     }
+
 }

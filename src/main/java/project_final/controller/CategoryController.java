@@ -7,11 +7,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project_final.entity.Category;
 import project_final.model.dto.request.CategoryRequest;
 import project_final.service.ICategoryService;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -19,6 +22,7 @@ import javax.validation.Valid;
 public class CategoryController {
 
     private final ICategoryService categoryService;
+
     @GetMapping
     public String findAllCategory(Model model, @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         model.addAttribute("category", categoryService.findAll(name, page, size));
@@ -27,28 +31,37 @@ public class CategoryController {
     }
 
     @GetMapping("/add")
-    public ModelAndView add(){
-        return new ModelAndView("dashboard/page/category/category-add","category",new Category());
+    public ModelAndView add() {
+        return new ModelAndView("dashboard/page/category/category-add", "category", new Category());
     }
 
     @PostMapping("/add")
-    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return "dashboard/page/category/category-add";
+    @ResponseBody
+    public Map<String, String> addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest, BindingResult bindingResult) {
+        Map<String, String> response = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            // Truyền thông báo lỗi khi validation thất bại
+            response.put("success", "false");
+            response.put("message", "Validation failed. Please check your input.");
+            return response;
         }
+        response.put("success", "true");
+        response.put("message", "Category created successfully.");
         categoryService.save(categoryRequest);
-        return "redirect:/category";
+        return response;
+
     }
 
-    @GetMapping("/edit/{id}")
-    public ModelAndView edit(@PathVariable Long id){
 
-        return new ModelAndView("dashboard/page/category/category-update","category",categoryService.findById(id));
+    @GetMapping("/edit/{id}")
+    public ModelAndView edit(@PathVariable Long id) {
+
+        return new ModelAndView("dashboard/page/category/category-update", "category", categoryService.findById(id));
     }
 
     @PostMapping("/update")
-    public String editCategory(@Valid @ModelAttribute CategoryRequest categoryRequest,BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public String editCategory(@Valid @ModelAttribute CategoryRequest categoryRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "dashboard/page/category/category-update";
         }
         categoryService.save(categoryRequest);
@@ -56,13 +69,13 @@ public class CategoryController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable Long id){
+    public String deleteCategory(@PathVariable Long id) {
         categoryService.delete(id);
         return "redirect:/category";
     }
 
     @GetMapping("/status/{id}")
-    public String changeStatus(@PathVariable Long id){
+    public String changeStatus(@PathVariable Long id) {
         categoryService.changeStatus(id);
         return "redirect:/category";
     }

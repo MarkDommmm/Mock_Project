@@ -23,7 +23,7 @@ public class CategoryMapper implements ICategoryMapper{
         if (oldImage.isEmpty()) {
             Optional<Category> category = categoryRepository.findById(categoryRequest.getId());
             return Category.builder().id(categoryRequest.getId())
-                    .name(categoryRequest.getName())
+                    .name( categoryRequest.getName())
                     .image(category.get().getImage())
                     .description(categoryRequest.getDescription())
                     .status(true).build();

@@ -27,7 +27,7 @@ public class UserPrinciple implements UserDetails {
     @JsonIgnore
     private String password;
     private boolean status;
-    private Collection<GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrinciple build(User user){
         List<GrantedAuthority> authorities = user.getRoles().stream().map(
