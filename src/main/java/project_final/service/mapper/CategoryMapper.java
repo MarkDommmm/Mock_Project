@@ -19,22 +19,32 @@ public class CategoryMapper implements ICategoryMapper{
     private final ICategoryRepository categoryRepository;
     @Override
     public Category toEntity(CategoryRequest categoryRequest) {
-        MultipartFile oldImage = categoryRequest.getImage();
-        if (oldImage.isEmpty()) {
-            Optional<Category> category = categoryRepository.findById(categoryRequest.getId());
-            return Category.builder().id(categoryRequest.getId())
-                    .name( categoryRequest.getName())
-                    .image(category.get().getImage())
-                    .description(categoryRequest.getDescription())
-                    .status(true).build();
+        // check category
+        Optional<Category> existingCategory = categoryRequest.getId() != null ?
+                categoryRepository.findById(categoryRequest.getId()) :
+                Optional.empty();
+
+        String image;
+        if (categoryRequest.getImage() != null && !categoryRequest.getImage().isEmpty()) {
+            // nếu có ảnh mới
+            image = uploadService.uploadFile(categoryRequest.getImage());
+        } else if (existingCategory.isPresent()) {
+            // nếu category  tồn tại
+            image = existingCategory.get().getImage();
+
         } else {
-            String image = uploadService.uploadFile(categoryRequest.getImage());
-            return Category.builder().id(categoryRequest.getId())
-                    .name(categoryRequest.getName())
-                    .image(image)
-                    .description(categoryRequest.getDescription())
-                    .status(true).build();
+            // không có ảnh và không tồn tại category
+            image = "../../assets/images/avatars/01.png";
         }
+
+        // Xây dựng đối tượng Category và trả về
+        return Category.builder()
+                .id(categoryRequest.getId())
+                .name(categoryRequest.getName())
+                .image(image)
+                .description(categoryRequest.getDescription())
+                .status(true)
+                .build();
     }
 
     @Override

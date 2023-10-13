@@ -9,9 +9,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.User;
+import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.ForgotPassForm;
 import project_final.model.dto.request.LoginRequestDto;
@@ -41,13 +43,19 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public String register(@ModelAttribute @Valid UserRequest userRequest) throws RegisterException {
+    public String register(@ModelAttribute("signup") @Valid UserRequest userRequest,BindingResult bindingResult) throws RegisterException {
+        if(bindingResult.hasErrors()){
+            return "redirect:/home/sign-up";
+        }
         userService.save(userRequest);
         return "redirect:/home/sign-in";
     }
 
     @PostMapping("/sign-in")
-    public String signIn(HttpSession session, LoginRequestDto loginRequestDto) throws LoginException {
+    public String signIn(HttpSession session, @Valid @ModelAttribute("signin") LoginRequestDto loginRequestDto, BindingResult bindingResult) throws LoginException {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/home/sign-in";
+        }
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(
@@ -87,9 +95,7 @@ public class AuthController {
 
     @GetMapping("/change-password/{id}")
     private ModelAndView changePassword(@PathVariable("id") Long id) {
-        UpdateUserRequest userRequest = new UpdateUserRequest();
-        userRequest.setId(id);
-        return new ModelAndView("/dashboard/app/user-change-pass", "changePass",userRequest );
+        return new ModelAndView("/dashboard/app/user-change-pass", "user",userService.findById(id) );
     }
 
     @PostMapping("/change-password")
@@ -103,13 +109,18 @@ public class AuthController {
         return "/dashboard/app/user-forgot-pass";
     }
     @PostMapping("/forgot-password")
-    public String sendVerification(@ModelAttribute("user") ForgotPassForm forgotPassForm){
-
-        String verification = userService.sendVerification(forgotPassForm.getEmail());
-        String emailContent = "<p style=\"color: red; font-size: 18px;\">\n" + verification + "</p>";
-        mailService.sendMail(forgotPassForm.getEmail(), "Verification", emailContent);
-        return "redirect: /forgot-password";
+    public String sendVerification(@ModelAttribute("user") ForgotPassForm forgotPassForm) throws ForgotPassWordException {
+        if(forgotPassForm.getVerification() == null){
+            String verification = userService.sendVerification(forgotPassForm.getEmail());
+            String emailContent = "<p style=\"color: red; font-size: 18px;\">\n"+"Your confirmation code is: " + verification + "</p>";
+            mailService.sendMail(forgotPassForm.getEmail(), "Verification", emailContent);
+            return "/dashboard/app/user-forgot-pass";
+        }
+        userService.passwordRetrieval(forgotPassForm);
+        return "redirect: /home";
     }
+
+
 
 
 

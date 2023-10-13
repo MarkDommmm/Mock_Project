@@ -28,6 +28,7 @@ public class TableController {
                           @RequestParam(defaultValue = "") String name,
                           Model model) {
         model.addAttribute("tables", tableService.findAll(name, page, size));
+        model.addAttribute("name", name);
         return "/dashboard/page/table/table-list";
     }
 

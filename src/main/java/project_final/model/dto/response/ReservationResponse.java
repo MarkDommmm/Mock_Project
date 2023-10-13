@@ -18,6 +18,7 @@ public class ReservationResponse {
     private Long id;
     private User user;
     private Tables table;
+    private Date bookingDate;
     private Date createdDate;
     private Date startTime;
     private Date endTime;

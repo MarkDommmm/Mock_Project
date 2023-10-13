@@ -1,7 +1,9 @@
 package project_final.service;
 
 import org.springframework.data.domain.Page;
+import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
+import project_final.model.dto.request.ForgotPassForm;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
@@ -21,5 +23,5 @@ public interface IUserService {
     UserResponse lock(Long id);
     Page<UserResponse> findAll(String name, int page, int size);
     String sendVerification(String email);
-
+    void passwordRetrieval(ForgotPassForm forgotPassForm) throws ForgotPassWordException;
 }

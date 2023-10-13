@@ -18,6 +18,7 @@ public class TableTypeController {
                                @RequestParam(defaultValue= "") String name,
                                @RequestParam(defaultValue ="0") int page,
                                @RequestParam(defaultValue = "5") int size) {
+        model.addAttribute("name", name);
         model.addAttribute("tableTypes", tableTypeService.findAll(name, page, size));
         return "/dashboard/page/table-type/table-type-list";
     }
