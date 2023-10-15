@@ -12,6 +12,7 @@ import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IMenuRepository;
 import project_final.service.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
@@ -24,6 +25,21 @@ public class HomeController {
     private final IMenuService menuService;
     private final ICategoryService categoryService;
     private final IMenuRepository menuRepository;
+    @GetMapping("/vnpay-return")
+    public String showPaymentResult(Model model, HttpServletRequest request) {
+        // ... (Thực hiện xử lý dữ liệu từ request, tương tự như trong JSP)
+
+        model.addAttribute("vnp_TxnRef", request.getParameter("vnp_TxnRef"));
+        // ... (Thêm các thuộc tính khác cần thiết)
+
+            if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
+                model.addAttribute("transactionStatus", "Thành công");
+            } else {
+                model.addAttribute("transactionStatus", "Không thành công");
+            }
+        return "dashboard/payment/vnpay/vnpay_return";
+    }
+
 
     @RequestMapping("/home")
     public String getTableType(Model model,
