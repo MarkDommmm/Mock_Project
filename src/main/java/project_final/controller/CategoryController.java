@@ -32,23 +32,34 @@ public class CategoryController {
 
     @GetMapping("/add")
     public ModelAndView add() {
-        return new ModelAndView("dashboard/page/category/category-add", "category", new Category());
+        return new ModelAndView("dashboard/page/category/category-add", "category", new CategoryRequest());
     }
 
+    //    @PostMapping("/add")
+//    @ResponseBody
+//    public Map<String, String> addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest, BindingResult bindingResult) {
+//        Map<String, String> response = new HashMap<>();
+//        if (categoryRequest.getImage() == null){
+//            response.put("error","false");
+//            response.put("message","Image not null");
+//            return response;
+//        }
+//        if (bindingResult.hasErrors()) {
+//            // Truyền thông báo lỗi khi validation thất bại
+//            response.put("success", "false");
+//            response.put("message", "Validation failed. Please check your input.");
+//            return response;
+//        }
+//        response.put("success", "true");
+//        response.put("message", "Category created successfully.");
+//        categoryService.save(categoryRequest);
+//        return response;
+//
+//    }
     @PostMapping("/add")
-    @ResponseBody
-    public Map<String, String> addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest, BindingResult bindingResult) {
-        Map<String, String> response = new HashMap<>();
-        if (bindingResult.hasErrors()) {
-            // Truyền thông báo lỗi khi validation thất bại
-            response.put("success", "false");
-            response.put("message", "Validation failed. Please check your input.");
-            return response;
-        }
-        response.put("success", "true");
-        response.put("message", "Category created successfully.");
+    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest ) {
         categoryService.save(categoryRequest);
-        return response;
+        return "redirect:/category";
 
     }
 
