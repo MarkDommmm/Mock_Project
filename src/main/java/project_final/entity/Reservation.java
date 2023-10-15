@@ -24,6 +24,7 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tables table;
     private Date createdDate;
+    private Date bookingDate;
     private Date startTime;
     private Date endTime;
     @Enumerated(EnumType.STRING)

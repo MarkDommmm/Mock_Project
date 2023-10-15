@@ -22,6 +22,7 @@ public class UserPrinciple implements UserDetails {
     private Long id;
     private String fullName;
     private String avatar;
+    private String email;
 
     private String username;
     @JsonIgnore
@@ -37,6 +38,7 @@ public class UserPrinciple implements UserDetails {
                 .id(user.getId())
                 .fullName(user.getName())
                 .avatar(user.getAvatar())
+                .email(user.getEmail())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .status(user.isStatus())

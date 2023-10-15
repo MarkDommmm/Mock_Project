@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import project_final.entity.TableType;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
@@ -28,48 +29,57 @@ public class UserMapper implements IUserMapper {
     private final IUserRepository userRepository;
 
 
-
     public User toUpdate(UpdateUserRequest userRequest) {
         Optional<User> user = userRepository.findById(userRequest.getId());
-
-        String newPassword = userRequest.getNew_password();
-        String encodedNewPassword = passwordEncoder.encode(newPassword);
-
-        System.out.println("passOld" + user.get().getPassword());
-        if (userRequest.getAvatar().isEmpty()) {
-            return User.builder()
-                    .id(userRequest.getId())
-                    .name(userRequest.getName())
-                    .avatar(user.get().getAvatar())
-                    .password(user.get().getPassword())
-                    .phone(userRequest.getPhone())
-                    .build();
+        String avatar;
+        if (userRequest.getAvatar() != null && !userRequest.getAvatar().isEmpty()) {
+            // nếu có ảnh mới
+            avatar = uploadService.uploadFile(userRequest.getAvatar());
+        } else {
+            avatar = user.get().getAvatar();
         }
-
-        String url = uploadService.uploadFile(userRequest.getAvatar());
         return User.builder()
                 .id(userRequest.getId())
-                .avatar(url)
-                .password(userRequest.getPassword() != null ?
-                        passwordEncoder.encode(userRequest.getPassword()) :
-                        user.get().getPassword())
+                .name(userRequest.getName())
+                .username(user.get().getUsername())
+                .password(user.get().getPassword())
+                .email(user.get().getEmail())
+                .avatar(avatar)
                 .phone(userRequest.getPhone())
+                .status(user.get().isStatus())
                 .build();
     }
 
 
     @Override
     public User toEntity(UserRequest userRequest) {
+        Optional<User> user = userRequest.getId() != null ?
+                userRepository.findById(userRequest.getId()) :
+                Optional.empty();
+
+        String image;
+        if (userRequest.getAvatar() != null && !userRequest.getAvatar().isEmpty()) {
+            // nếu có ảnh mới
+            image = uploadService.uploadFile(userRequest.getAvatar());
+        } else if (user.isPresent()) {
+            // nếu user  tồn tại
+            image = user.get().getAvatar();
+        } else {
+            // không có ảnh và không tồn tại user
+            image = "../../assets/images/avatars/01.png";
+        }
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.findByRoleName(RoleName.ROLE_USER));
-            return User.builder()
-                    .avatar("../../assets/images/avatars/01.png")
-                    .name(userRequest.getName())
-                    .username(userRequest.getUsername())
-                    .password(passwordEncoder.encode(userRequest.getPassword()))
-                    .email(userRequest.getEmail())
-                    .roles(roles)
-                    .status(true).build();
+        return User.builder()
+                .id(userRequest.getId())
+                .avatar(image)
+                .name(userRequest.getName())
+                .username(userRequest.getUsername())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
+                .email(userRequest.getEmail())
+                .phone(userRequest.getPhone())
+                .roles(roles)
+                .status(true).build();
     }
 
     @Override

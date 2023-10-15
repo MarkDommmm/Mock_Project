@@ -5,7 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
+import project_final.model.dto.request.ForgotPassForm;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 import project_final.model.dto.response.UserResponse;
@@ -71,24 +73,25 @@ public class UserService implements IUserService {
 
     @Override
     public User changePass(UpdateUserRequest userRequest) throws RegisterException {
-        Optional<User> user = userRepository.findById(userRequest.getId());
-
-        if (!checkPassword(userRequest.getNew_password(), userRequest.getConfirm_password())) {
-            throw new RegisterException("New passwords do not match");
-        }
-
-        if (passwordEncoder.matches(userRequest.getPassword(), user.get().getPassword())) {
-
-            String newPassword = userRequest.getNew_password();
-            String encodedNewPassword = passwordEncoder.encode(newPassword);
-            user.get().setPassword(encodedNewPassword);
-            user.get().setName(userRequest.getName());
-            user.get().setPhone(userRequest.getPhone());
-
-            return userRepository.save(user.get());
-        } else {
-            throw new RegisterException("Old password does not match");
-        }
+//        Optional<User> user = userRepository.findById(userRequest.getId());
+//
+//        if (!checkPassword(userRequest.getNew_password(), userRequest.getConfirm_password())) {
+//            throw new RegisterException("New passwords do not match");
+//        }
+//
+//        if (passwordEncoder.matches(userRequest.getPassword(), user.get().getPassword())) {
+//
+//            String newPassword = userRequest.getNew_password();
+//            String encodedNewPassword = passwordEncoder.encode(newPassword);
+//            user.get().setPassword(encodedNewPassword);
+//            user.get().setName(userRequest.getName());
+//            user.get().setPhone(userRequest.getPhone());
+//
+//            return userRepository.save(user.get());
+//        } else {
+//            throw new RegisterException("Old password does not match");
+//        }
+        return null;
     }
 
     @Override
@@ -115,5 +118,20 @@ public class UserService implements IUserService {
             return verification;
         }
         return null;
+    }
+
+    @Override
+    public void passwordRetrieval(ForgotPassForm forgotPassForm) throws ForgotPassWordException{
+        User user = userRepository.findByEmail(forgotPassForm.getEmail());
+        if(user == null){
+            throw new ForgotPassWordException("User not found");
+        }else if (!verificationService.isExpired(user)){
+            throw new ForgotPassWordException("Verification code is not valid ");
+        }else if(!forgotPassForm.getPassword().equals(forgotPassForm.getConfirmPassword())){
+            throw new ForgotPassWordException("Confirm password is not valid");
+        } else {
+            user.setPassword(passwordEncoder.encode(forgotPassForm.getPassword()));
+            userRepository.save(user);
+        }
     }
 }

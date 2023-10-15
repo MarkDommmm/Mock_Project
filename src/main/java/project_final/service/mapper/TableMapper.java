@@ -3,6 +3,7 @@ package project_final.service.mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import project_final.entity.Category;
 import project_final.model.dto.request.TableRequest;
 import project_final.model.dto.response.TableResponse;
 import project_final.entity.Tables;
@@ -20,26 +21,29 @@ public class TableMapper implements ITableMapper {
 
     @Override
     public Tables toEntity(TableRequest tableRequest) {
-        MultipartFile newImage = tableRequest.getTableImage();
-        if (newImage.isEmpty()) {
-            Optional<Tables> tables = tableRepository.findById(tableRequest.getId());
-            return Tables.builder()
-                    .id(tableRequest.getId())
-                    .name(tableRequest.getName())
-                    .tableType(tableRequest.getTableType())
-                    .tableImage(tables.get().getTableImage())
-                    .description(tableRequest.getDescription())
-                    .status(true).build();
+        // check table
+        Optional<Tables> table = tableRequest.getId() != null ?
+                tableRepository.findById(tableRequest.getId()) :
+                Optional.empty();
+
+        String image;
+        if (tableRequest.getTableImage() != null && !tableRequest.getTableImage().isEmpty()) {
+            // nếu có ảnh mới
+            image = uploadService.uploadFile(tableRequest.getTableImage());
+        } else if (table.isPresent()) {
+            // nếu category  tồn tại
+            image = table.get().getTableImage();
         } else {
-            String tableImage = uploadService.uploadFile(tableRequest.getTableImage());
+            // không có ảnh và không tồn tại category
+            image = "../../assets/images/avatars/01.png";
+        }
             return Tables.builder()
                     .id(tableRequest.getId())
                     .name(tableRequest.getName())
                     .tableType(tableRequest.getTableType())
-                    .tableImage(tableImage)
+                    .tableImage(image)
                     .description(tableRequest.getDescription())
                     .status(true).build();
-        }
 
     }
 

@@ -1132,9 +1132,9 @@
                                  </svg><small class="mb-0 text-dark">Lisbon, Portugal</small></span>
                                     </div>
                                     <div class="ms-4">
-                                        <p class="mb-0 text-dark">UI/UX Designer</p>
-                                        <p class="me-2 mb-0 text-dark">Hello@gmail.com</p>
-                                        <p  class="mb-0 text-dark">Profile</p>
+                                        <p class="mb-0 text-dark" th:text="${profile.name}"></p>
+                                        <p class="me-2 mb-0 text-dark" th:text="${profile.email}"></p>
+                                        <p  class ="mb-0 text-dark"  th:text="${profile.phone}"></p>
                                     </div>
                                 </div>
                             </div>
