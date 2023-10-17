@@ -172,6 +172,10 @@ public class HomeController {
     public String homeUser() {
         return "dashboard/ChoseTable";
     }
+    @RequestMapping("/admin")
+    public String admin() {
+        return "dashboard/ChoseTable";
+    }
 
 
 }
