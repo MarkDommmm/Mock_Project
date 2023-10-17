@@ -42,6 +42,12 @@ public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long>
     }
 
     @Override
+    public Page<MenuResponse> findAllByStatusIsTrueAndName(String name, int page, int size) {
+        Page<Menu> menus = menuRepository.findAllByStatusIsTrueAndName(name, PageRequest.of(page, size));
+        return menus.map(menuMapper::toResponse);
+    }
+
+    @Override
     public List<MenuResponse> findTopSellingMenus() {
         return menuRepository.findTopSellingMenus().stream().map(menuMapper::toResponse).collect(Collectors.toList());
     }

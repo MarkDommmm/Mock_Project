@@ -68,4 +68,10 @@ public class TableController {
         return "redirect:/table";
     }
 
+    @GetMapping("status/{id}")
+    public String changeStatus(@PathVariable Long id){
+        tableService.changeStatus(id);
+        return "redirect:/table";
+    }
+
 }

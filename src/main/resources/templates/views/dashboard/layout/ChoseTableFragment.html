@@ -60,6 +60,29 @@
             </div>
         </div>
     </div>
+<!--    Chose Time-->
+
+<form th:method="post" th:action="chose-table" th:object="${reservation}">
+    <div>
+        <div class="form-group col-md-12">
+            <label class="form-label" for="date">Booking date:</label>
+            <input type="date" class="form-control" id="date" >
+<!--            <span style="color: red" th:if="${#fields.hasErrors('bookingDate')}" th:errors="*{bookingDate}"></span>-->
+        </div>
+
+        <div class="form-group col-md-6">
+            <label class="form-label" for="start">Start Time:</label>
+            <input type="time" class="form-control" id="start"
+                   placeholder="start time: ex: 8:30.."   th:format="'HH:mm'" >
+<!--            <span style="color: red" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>-->
+        </div>
+        <div class="form-group col-md-6">
+            <label class="form-label" for="end">End Time:</label>
+            <input type="time" class="form-control" id="end"
+                   placeholder="start time: ex: 10:30" th:format="'HH:mm'">
+<!--            <span style="color: red" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></span>-->
+        </div>
+    </div>
 
     <!-- List Table  -->
     <div class="col-xl-12 col-lg-12 dish-card-horizontal mt-2">
@@ -143,6 +166,7 @@
             </div>
         </div>
     </div>
+</form>
 </div>
 <script>
     $(".swiper-slide").click(function () {

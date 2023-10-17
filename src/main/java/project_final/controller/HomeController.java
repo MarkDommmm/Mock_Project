@@ -51,8 +51,9 @@ public class HomeController {
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size) {
-        model.addAttribute("tables", tableService.findAll(nameTableType, page, size));
-        model.addAttribute("tableTypes", tableTypeService.findAll(name, page, size));
+        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(nameTableType, page, size));
+        model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(name, page, size));
+        model.addAttribute("reservation",new ReservationRequest());
         return "dashboard/ChoseTable";
     }
 
@@ -80,7 +81,7 @@ public class HomeController {
             model.addAttribute("cart", tableMenuService.getAll(u.getId(), page, sizeCart));
         }
         model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("menuAll", menuService.findAll(name, page, size));
+        model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
         model.addAttribute("menuTrending", menuService.findTopSellingMenus());
         model.addAttribute("tableMenu", new TableMenuRequest());
@@ -97,7 +98,7 @@ public class HomeController {
 
         MenuDataDTO menuDataDTO = new MenuDataDTO();
         menuDataDTO.setCategoryResponse(categoryService.findAll());
-        menuDataDTO.setMenu(menuService.findAll(name, page, size));
+        menuDataDTO.setMenu(menuService.findAllByStatusIsTrueAndName(name, page, size));
         return menuDataDTO;
     }
 
@@ -143,10 +144,12 @@ public class HomeController {
                                 @RequestParam(defaultValue = "") String name,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "12") int size) {
+        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+        Long id = reservation.getId();
         Long idTable = (Long) session.getAttribute("idTable");
         model.addAttribute("table", tableService.findById(idTable));
         model.addAttribute("reservation", new ReservationRequest());
-        model.addAttribute("cart", tableMenuService.findAll(name, page, size));
+        model.addAttribute("cart", tableMenuService.getDetails(id));
         return "dashboard/checkoutTable";
     }
 

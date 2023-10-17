@@ -33,6 +33,21 @@ public class TableService implements ITableService {
     }
 
     @Override
+    public Page<TableResponse> findAllByStatusIsTrueAndName(String name, int page, int size) {
+        Page<Tables> tables = tableRepository.findAllByStatusIsTrueAndName(name,PageRequest.of(page, size));
+        return tables.map(tableMapper::toResponse);
+    }
+
+    @Override
+    public void changeStatus(Long id) {
+        Optional<Tables> table = tableRepository.findById(id);
+        if (table.isPresent()) {
+            table.get().setStatus(!table.get().isStatus());
+            tableRepository.save(table.get());
+        }
+    }
+
+    @Override
     public Page<TableResponse> findAll(String name, int page, int size) {
         Page<Tables> tables = tableRepository.findAllByNameContains(name, PageRequest.of(page, size));
         return tables.map(tableMapper::toResponse);
