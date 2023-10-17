@@ -35,6 +35,7 @@ public class CategoryController {
         return new ModelAndView("dashboard/page/category/category-add", "category", new CategoryRequest());
     }
 
+
     @PostMapping("/add")
     public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest,BindingResult bindingResult ) {
         if (bindingResult.hasErrors()){
