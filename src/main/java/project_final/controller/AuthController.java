@@ -58,7 +58,8 @@ public class AuthController {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
+                    new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),
+                            loginRequestDto.getPassword())
             );
 
         } catch (AuthenticationException e) {

@@ -35,29 +35,11 @@ public class CategoryController {
         return new ModelAndView("dashboard/page/category/category-add", "category", new CategoryRequest());
     }
 
-    //    @PostMapping("/add")
-//    @ResponseBody
-//    public Map<String, String> addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest, BindingResult bindingResult) {
-//        Map<String, String> response = new HashMap<>();
-//        if (categoryRequest.getImage() == null){
-//            response.put("error","false");
-//            response.put("message","Image not null");
-//            return response;
-//        }
-//        if (bindingResult.hasErrors()) {
-//            // Truyền thông báo lỗi khi validation thất bại
-//            response.put("success", "false");
-//            response.put("message", "Validation failed. Please check your input.");
-//            return response;
-//        }
-//        response.put("success", "true");
-//        response.put("message", "Category created successfully.");
-//        categoryService.save(categoryRequest);
-//        return response;
-//
-//    }
     @PostMapping("/add")
-    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest ) {
+    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest,BindingResult bindingResult ) {
+        if (bindingResult.hasErrors()){
+            return "dashboard/page/category/category-add";
+        }
         categoryService.save(categoryRequest);
         return "redirect:/category";
 

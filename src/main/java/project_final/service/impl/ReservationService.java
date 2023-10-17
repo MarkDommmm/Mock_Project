@@ -46,6 +46,7 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public void save(ReservationRequest reservationRequest, Reservation reservation) {
+        System.out.println(reservationRequest.getBookingDate().getTime());
        ReservationRequest request = ReservationRequest.builder()
                .id(reservation.getId())
                .table(reservation.getTable())
