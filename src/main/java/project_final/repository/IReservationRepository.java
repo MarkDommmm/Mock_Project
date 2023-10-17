@@ -16,15 +16,12 @@ import java.util.Optional;
 public interface IReservationRepository extends JpaRepository<Reservation,Long> {
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId")
     Page<Reservation> findAllByUser(Pageable pageable, @Param("userId") Long userId);
+    @Query("SELECT R FROM Reservation R WHERE DATE(R.bookingDate) = DATE(:date)")
+    Page<Reservation> findAllByBookingDate(@Param("date") Date date, Pageable pageable);
 
-    Page<Reservation> findAllByCreatedDate(Date date, Pageable pageable);
     Reservation findByUser(User user);
 
-//    @Query(value = "SELECT SUM(T.price * T.quantity) " +
-//            "FROM Reservation R " +
-//            "JOIN TableMenu T ON R = T.reservation " +
-//            "WHERE DATE(R.createdDate) = :date AND R.status = 'COMPLETED'")
-//    double revenuesOnDay(@Param("date") Date date);
+
 
     @Query("SELECT COUNT(R) FROM Reservation R WHERE DATE(R.createdDate) = :date AND  R.status = 'COMPLETED'")
     int countCompletedReservationsOnDay(@Param("date") Date date);

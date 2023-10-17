@@ -5,13 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import project_final.entity.TableMenu;
+
 import project_final.entity.Tables;
 import project_final.entity.User;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Future;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.util.Date;
 @Data
@@ -23,18 +26,20 @@ public class ReservationRequest {
     private User user;
     private Tables table;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Future(message = "Set date is not valid")
+    @NotNull(message = "Cannot be left blank")
     private Date bookingDate;
-
+    @NotBlank(message = "Cannot be left blank")
     private String startTime;
-
+    @NotBlank(message = "Cannot be left blank")
     private String endTime;
-    @NotBlank
+    @NotBlank(message = "Cannot be left blank")
+    @Email(message = "Email is valid")
     private String emailBooking;
-    @NotBlank
+    @NotBlank(message = "Cannot be left blank")
     private String phoneBooking;
-    @NotBlank
+    @NotBlank(message = "Cannot be left blank")
     private String nameBooking;
-
     private String description;
     private String code;
 }

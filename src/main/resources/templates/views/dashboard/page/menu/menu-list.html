@@ -1175,8 +1175,12 @@
                                         <td th:text="${m.creatDate}"></td>
                                         <td th:text="${m.category.name}"></td>
                                         <td>
-                                            <span th:if="${m.status}" class="badge bg-success">Activce</span>
-                                            <span th:unless="${m.status}" class="badge bg-danger">Inactive</span>
+                                            <a     th:href="@{|/menu/status/${m.id}|}">
+                                                <span th:if="${m.status}" class="badge bg-success">Activce</span>
+                                            </a>
+                                            <a  th:href="@{|/menu/status/${m.id}|}">
+                                                <span th:unless="${m.status}" class="badge bg-danger">Inactive</span>
+                                            </a>
                                         </td>
                                         <td>
                                             <div class="flex align-items-center list-user-action">

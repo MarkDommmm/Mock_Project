@@ -50,4 +50,19 @@ public class TableTypeService implements ITableTypeService {
     public List<TableTypeResponse> findAll() {
         return tableTypeRepository.findAll().stream().map(iTableTypeMapper::toResponse).collect(Collectors.toList());
     }
+
+    @Override
+    public Page<TableTypeResponse> findAllByStatusIsTrueAndName(String name, int page, int size) {
+        Page<TableType> tableTypes = tableTypeRepository.findAllByStatusIsTrueAndName(name, PageRequest.of(page, size));
+        return tableTypes.map(iTableTypeMapper::toResponse);
+    }
+
+    @Override
+    public void changeStatus(Long id) {
+        Optional<TableType> tableType = tableTypeRepository.findById(id);
+        if (tableType.isPresent()) {
+            tableType.get().setStatus(!tableType.get().isStatus());
+            tableTypeRepository.save(tableType.get());
+        }
+    }
 }

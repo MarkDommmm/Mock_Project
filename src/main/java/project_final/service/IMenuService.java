@@ -8,6 +8,7 @@ import java.util.List;
 public interface IMenuService<K,V,E> {
    List<V> getAll(String name);
    Page<V> findAll(String name,int page,int size);
+   Page<V> findAllByStatusIsTrueAndName(String name,int page,int size);
    List<V> findTopSellingMenus();
    Page<V> findAllByCategoryName(String category,int page,int size);
    V findById(E id);

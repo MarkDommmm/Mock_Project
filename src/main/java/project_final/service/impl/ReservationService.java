@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import project_final.entity.Reservation;
 import project_final.entity.TableMenu;
 import project_final.entity.User;
+import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.ReservationResponse;
@@ -16,8 +17,12 @@ import project_final.repository.ITableMenuRepository;
 import project_final.service.IReservationService;
 import project_final.service.mapper.IReservationMapper;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,8 +39,13 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public Page<ReservationResponse> findAll(Date date, int page, int size) {
-        Page<Reservation> reservations = reservationRepository.findAllByCreatedDate(date, PageRequest.of(page, size));
+        Page<Reservation> reservations = reservationRepository.findAllByBookingDate(date, PageRequest.of(page, size));
         return reservations.map(reservationMapper::toResponse);
+    }
+
+    @Override
+    public List<ReservationResponse> findAll() {
+        return reservationRepository.findAll().stream().map(reservationMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -45,8 +55,12 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
-    public void save(ReservationRequest reservationRequest, Reservation reservation) {
-        System.out.println(reservationRequest.getBookingDate().getTime());
+
+    public void save(ReservationRequest reservationRequest, Reservation reservation) throws TimeIsValidException {
+        if (isEndTimeAfterStartTime(reservationRequest.getEndTime(),reservationRequest.getStartTime())){
+            throw new TimeIsValidException("End time must be must be larger start time");
+        }
+
        ReservationRequest request = ReservationRequest.builder()
                .id(reservation.getId())
                .table(reservation.getTable())
@@ -59,8 +73,16 @@ public class ReservationService implements IReservationService<ReservationReques
                .emailBooking(reservationRequest.getEmailBooking())
                .description(reservationRequest.getDescription())
                .build();
-        Reservation r = reservationMapper.toEntity(request);
-        reservationRepository.save(r);
+        reservationRepository.save(reservationMapper.toEntity(request));
+    }
+    private boolean isEndTimeAfterStartTime(String startTime, String endTime) {
+        try {
+            LocalTime start = LocalTime.parse(startTime);
+            LocalTime end = LocalTime.parse(endTime);
+            return end.isAfter(start);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
 

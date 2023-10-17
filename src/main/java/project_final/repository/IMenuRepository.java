@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import project_final.entity.Category;
 import project_final.entity.Menu;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 @Repository
 public interface IMenuRepository extends JpaRepository<Menu,Long> {
     Page<Menu> findAllByNameContains(String name, Pageable pageable);
+    @Query("SELECT m FROM Menu m WHERE m.status = true AND m.name LIKE %:name%")
+    Page<Menu> findAllByStatusIsTrueAndName(@Param("name") String name, Pageable pageable);
     @Query(value = "SELECT m.* " +
             "FROM menu m " +
             "JOIN table_menu t ON m.id = t.menu_id " +
