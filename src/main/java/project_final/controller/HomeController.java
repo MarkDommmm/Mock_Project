@@ -7,13 +7,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project_final.entity.Menu;
+import project_final.entity.Reservation;
+import project_final.entity.User;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IMenuRepository;
+import project_final.security.UserPrinciple;
 import project_final.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -25,18 +30,17 @@ public class HomeController {
     private final IMenuService menuService;
     private final ICategoryService categoryService;
     private final IMenuRepository menuRepository;
+
     @GetMapping("/vnpay-return")
     public String showPaymentResult(Model model, HttpServletRequest request) {
-        // ... (Thực hiện xử lý dữ liệu từ request, tương tự như trong JSP)
 
         model.addAttribute("vnp_TxnRef", request.getParameter("vnp_TxnRef"));
-        // ... (Thêm các thuộc tính khác cần thiết)
 
-            if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
-                model.addAttribute("transactionStatus", "Thành công");
-            } else {
-                model.addAttribute("transactionStatus", "Không thành công");
-            }
+        if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
+            model.addAttribute("transactionStatus", "Thành công");
+        } else {
+            model.addAttribute("transactionStatus", "Không thành công");
+        }
         return "dashboard/payment/vnpay/vnpay_return";
     }
 
@@ -64,40 +68,25 @@ public class HomeController {
         return tableDataDTO;
     }
 
-    @GetMapping("/home/chose-table/{id}")
-    public String choseTable(@PathVariable("id") Long id, HttpSession session) {
-        session.setAttribute("idTable",id);
-        Long idTable = (Long) session.getAttribute("idTable");
-
-        return "redirect:/home/menu";
-    }
-
 
     @RequestMapping("/home/menu")
     public String getMenu(@RequestParam(defaultValue = "") String name,
                           @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "12") int size,
                           @RequestParam(defaultValue = "10") int sizeCart,
-                          Model model) {
+                          Model model, HttpSession session) {
+        UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
+        if (u != null) {
+            model.addAttribute("cart", tableMenuService.getAll(u.getId(), page, sizeCart));
+        }
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAll(name, page, size));
         model.addAttribute("name", name);
         model.addAttribute("menuTrending", menuService.findTopSellingMenus());
         model.addAttribute("tableMenu", new TableMenuRequest());
-        model.addAttribute("cart", tableMenuService.getAll(name, page, sizeCart));
+
         return "dashboard/menu";
     }
-//    @RequestMapping("/home/get-menus")
-//    @ResponseBody
-//    public MenuDataDTO getAllMenu(
-//            @RequestParam(defaultValue = "") String name,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "5") int size) {
-//        MenuDataDTO menuDataDTO = new MenuDataDTO();
-//        menuDataDTO.setCategoryResponse(categoryService.findAll());
-//        menuDataDTO.setMenu(menuService.getAll(name));
-//        return menuDataDTO;
-//    }
 
     @RequestMapping("/home/chose-menu-category")
     @ResponseBody
@@ -105,7 +94,7 @@ public class HomeController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "1000") int size) {
-        System.out.println(name + "soutttttttttttttttttttttttttttttttttttttttttttttt");
+
         MenuDataDTO menuDataDTO = new MenuDataDTO();
         menuDataDTO.setCategoryResponse(categoryService.findAll());
         menuDataDTO.setMenu(menuService.findAll(name, page, size));
@@ -121,10 +110,14 @@ public class HomeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
             HttpSession session) {
-
-        tableMenuService.addCart(id);
-        return tableMenuService.findAll(name, page, sizeCart);
+        Long idTable = (Long) session.getAttribute("idTable");
+        UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
+        Reservation reservation = tableMenuService.addCart(id, u.getId(), idTable);
+        session.setAttribute("reservationLocal",reservation);
+        return tableMenuService.getTableMenu(u.getId(), page, sizeCart);
     }
+
+
     @RequestMapping("/remove-cart-item")
     @ResponseBody
     public Page<TableMenuCartResponse> removeCartItem(
@@ -133,36 +126,30 @@ public class HomeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
             HttpSession session) {
-        System.out.println(id);
+
         tableMenuService.removeCartItem(id);
         return tableMenuService.findAll(name, page, sizeCart);
     }
 
-    @GetMapping("/check-out")
-    public  String checkout(@RequestParam(defaultValue = "") String name,
-                            @RequestParam(defaultValue = "0") int page,
-                            @RequestParam(defaultValue = "12") int size,
-                            @RequestParam(defaultValue = "10") int sizeCart,
-                            Model model){
-        model.addAttribute("cart", tableMenuService.getAll(name, page, sizeCart));
-        return "/dashboard/checkout";
+    @GetMapping("/home/chose-table/{id}")
+    public String choseTable(@PathVariable("id") Long id, HttpSession session) {
+        session.setAttribute("idTable", id);
+        return "redirect:/home/menu";
     }
 
-    @RequestMapping("/checkoutTable/{id}")
-    public String checkoutTable(@PathVariable Long id,Model model){
-        model.addAttribute("table",tableService.findById(id));
-        model.addAttribute("reservation",new ReservationRequest());
+    @GetMapping("/check-out")
+    public String checkoutTable(HttpSession session,
+                                Model model,
+                                @RequestParam(defaultValue = "") String name,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "12") int size) {
+        Long idTable = (Long) session.getAttribute("idTable");
+        model.addAttribute("table", tableService.findById(idTable));
+        model.addAttribute("reservation", new ReservationRequest());
+        model.addAttribute("cart", tableMenuService.findAll(name, page, size));
         return "dashboard/checkoutTable";
     }
 
-    @RequestMapping("/checkout")
-    public String checkout(Model model,@RequestParam(defaultValue = "") Long id,
-                           @RequestParam(defaultValue = "") String name,
-                           @RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "10") int sizeCart){
-        model.addAttribute("cart", tableMenuService.findAll(name, page, sizeCart));
-        return "/dashboard/checkout";
-    }
 
     @RequestMapping("/403")
     public String error403() {

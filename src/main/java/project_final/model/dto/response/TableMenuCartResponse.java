@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +16,9 @@ public class TableMenuCartResponse {
     private Long id;
     private String image;
     private String name;
-    private Long reservation;
+    private Date dateBooking;
+    private Time startTime;
+    private Time endTime;
     private int quantity;
     private double price;
     private boolean status;

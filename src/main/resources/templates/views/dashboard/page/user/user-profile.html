@@ -6,14 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Aprycot | Restaurant Management Admin Template</title>
 
+
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../../assets/images/favicon.ico"/>
+    <link rel="shortcut icon" th:href="@{../../assets/images/favicon.ico}"/>
 
     <!-- Library / Plugin Css Build -->
-    <link rel="stylesheet" href="../../assets/css/core/libs.min.css">
+    <link rel="stylesheet" th:href="@{../../assets/css/core/libs.min.css}">
 
     <!-- Custom Css -->
-    <link rel="stylesheet" href="../../assets/css/aprycot.min.css?v=1.0.0">
+    <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
 </head>
 <body class="  "
       th:style="'background-image:url('+@{../assets/images/dashboard.png}+');  background-attachment: fixed; background-size: cover;'">
@@ -1110,71 +1113,223 @@
         <!--Nav End-->
     </div>
     <div class="content-inner mt-5 py-0">
-        <div>
-            <div class="row">
-                <div class="col-xl-2 col-lg-8"></div>
-                <div class="col-xl-8 col-lg-8">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <div class="header-title">
-                                <h4 class="card-title">Update User Information</h4>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="new-user-info">
-                                <!--                                FORM New User Information-->
-                                <form method="post" action="/auth/update" enctype="multipart/form-data" th:object="${profile}">
-                                    <input type="hidden" th:field="${profile.id}">
-                                    <div class="row">
-                                        <div class="form-group">
-                                            <div class="profile-img-edit position-relative">
-                                                <img class="profile-pic rounded avatar-100"
-                                                     th:src="${profile.avatar}" alt="profile-pic">
-                                                <div class="upload-icone bg-primary">
-                                                    <svg class="upload-button" width="14" height="14"
-                                                         viewBox="0 0 24 24">
-                                                        <path fill="#ffffff"
-                                                              d="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z"/>
-                                                    </svg>
-                                                    <input class="file-upload" type="file" accept="image/*" th:field="*{avatar}">
-                                                </div>
-                                            </div>
-                                            <div class="img-extension mt-3">
-                                                <div class="d-inline-block align-items-center">
-                                                    <span>Only</span>
-                                                    <a href="javascript:void();">.jpg</a>
-                                                    <a href="javascript:void();">.png</a>
-                                                    <a href="javascript:void();">.jpeg</a>
-                                                    <span>allowed</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label class="form-label" for="fname">Name:</label>
-                                            <input type="text" class="form-control" id="fname" th:field="*{name}">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label class="form-label" for="email">Phone:</label>
-                                            <input type="text" class="form-control" id="email" th:field="*{phone}">
-                                        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="iq-main">
+                    <div class="card mb-0 iq-content rounded-bottom">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mx-3 my-3">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <div class="profile-img22 position-relative me-3 mb-3 mb-lg-0">
+                                    <img th:src="${profile.avatar}"
+                                         class="img-fluid avatar avatar-100 avatar-rounded" alt="profile-image">
+                                </div>
+                                <div class="d-flex align-items-center mb-3 mb-sm-0">
+                                    <div>
+                                        <h6 class="me-2 text-primary" th:text="${profile.name}"></h6>
+                                        <span><svg width="19" height="19" class="me-2" viewBox="0 0 24 24" fill="none"
+                                                   xmlns="http://www.w3.org/2000/svg">
+                                 <path d="M21 10.8421C21 16.9172 12 23 12 23C12 23 3 16.9172 3 10.8421C3 4.76697 7.02944 1 12 1C16.9706 1 21 4.76697 21 10.8421Z"
+                                       stroke="#07143B" stroke-width="1.5"/>
+                                 <circle cx="12" cy="9" r="3" stroke="#07143B" stroke-width="1.5"/>
+                                 </svg><small class="mb-0 text-dark">Lisbon, Portugal</small></span>
                                     </div>
-
-                                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                                </form>
+                                    <div class="ms-4">
+                                        <p class="mb-0 text-dark" th:text="${profile.name}"></p>
+                                        <p class="me-2 mb-0 text-dark" th:text="${profile.email}"></p>
+                                        <p class="mb-0 text-dark" th:text="${profile.phone}"></p>
+                                    </div>
+                                </div>
                             </div>
+                            <ul class="d-flex mb-0 text-center ">
+                                <li class="badge bg-primary py-2 me-2">
+                                    <p class="mb-3 mt-2">142</p>
+                                    <small class="mb-1 fw-normal">Order</small>
+                                </li>
+                                <li class="badge bg-primary py-2 me-2">
+                                    <p class="mb-3 mt-2">201</p>
+                                    <small class="mb-1 fw-normal">Photos</small>
+                                </li>
+                                <li class="badge bg-primary py-2 me-2">
+                                    <p class="mb-3 mt-2">3.1k</p>
+                                    <small class="mb-1 fw-normal">Followers</small>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                    <div class="iq-header-img">
+                        <img src="../../assets/images/User-profile/01.png" alt="header" class="img-fluid w-100 rounded"
+                             style="object-fit: contain;">
+                    </div>
                 </div>
-                <div class="col-xl-2 col-lg-8"></div>
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <h3>Table Orders</h3>
+                    <table id="user-list-table" class="table table-striped" role="grid"
+                           data-toggle="data-table" style="text-align: center">
+                        <thead>
+                        <tr class="ligth">
+                            <th>STT</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Table</th>
+                            <th>Reservation Details</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th style="min-width: 100px">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="r,loop:${reservation}">
+                            <td th:text="${loop.count}"></td>
+                            <td th:text="${r.nameBooking}"></td>
+                            <td th:text="${r.emailBooking}"></td>
+                            <td th:text="${r.phoneBooking}"></td>
+                            <td th:text="${r.table.name}"></td>
+                            <td>
+                                <button type="button" class="btn btn-primary click-detail" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop" th:data-id-detail="${r.id}">
+                                    Show Detail!!!
+                                </button>
+                            </td>
+
+                            <td th:text="${r.code}"></td>
+                            <td>
+                                <!--                                <span th:if="${r.status}" class="badge bg-success">Activce</span>-->
+                                <!--                                <span th:unless="${r.status}" class="badge bg-danger">Inactive</span>-->
+                                <span th:text="${r.status}"></span>
+                            </td>
+                            <td>
+                                <div class="flex align-items-center list-user-action">
+
+                                    <a class="btn btn-sm btn-icon btn-warning" data-toggle="tooltip"
+                                       data-placement="top" title="" data-original-title="Edit"
+                                       th:href="@{|/table-type/edit/${r.id}|}">
+                                    <span class="btn-inner">
+                                       <svg width="20" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M11.4925 2.78906H7.75349C4.67849 2.78906 2.75049 4.96606 2.75049 8.04806V16.3621C2.75049 19.4441 4.66949 21.6211 7.75349 21.6211H16.5775C19.6625 21.6211 21.5815 19.4441 21.5815 16.3621V12.3341"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M8.82812 10.921L16.3011 3.44799C17.2321 2.51799 18.7411 2.51799 19.6721 3.44799L20.8891 4.66499C21.8201 5.59599 21.8201 7.10599 20.8891 8.03599L13.3801 15.545C12.9731 15.952 12.4211 16.181 11.8451 16.181H8.09912L8.19312 12.401C8.20712 11.845 8.43412 11.315 8.82812 10.921Z"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                          <path d="M15.1655 4.60254L19.7315 9.16854" stroke="currentColor"
+                                                stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                       </svg>
+                                    </span>
+                                    </a>
+                                    <a class="btn btn-sm btn-icon btn-danger" data-toggle="tooltip"
+                                       data-placement="top" title="" data-original-title="Delete"
+                                       th:href="@{|/table-type/delete/${r.id}|}">
+                                    <span class="btn-inner">
+                                       <svg width="20" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                          <path d="M19.3248 9.46826C19.3248 9.46826 18.7818 16.2033 18.4668 19.0403C18.3168 20.3953 17.4798 21.1893 16.1088 21.2143C13.4998 21.2613 10.8878 21.2643 8.27979 21.2093C6.96079 21.1823 6.13779 20.3783 5.99079 19.0473C5.67379 16.1853 5.13379 9.46826 5.13379 9.46826"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                          <path d="M20.708 6.23975H3.75" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                          <path d="M17.4406 6.23973C16.6556 6.23973 15.9796 5.68473 15.8256 4.91573L15.5826 3.69973C15.4326 3.13873 14.9246 2.75073 14.3456 2.75073H10.1126C9.53358 2.75073 9.02558 3.13873 8.87558 3.69973L8.63258 4.91573C8.47858 5.68473 7.80258 6.23973 7.01758 6.23973"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                       </svg>
+                                    </span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="left: -16%;top: 10%">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 203%;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <h3>Table Orders</h3>
+                            <table class="table table-striped" role="grid"
+                                   data-toggle="data-table" style="text-align: center">
+                                <thead>
+                                <tr class="ligth">
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Food</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Date Booking</th>
+                                    <th>Start time</th>
+                                    <th>End time</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody class="render-details"> </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).on("click", ".click-detail", function () {
+
+            var id = $(this).data("id-detail");
+            $.ajax({
+                url: "/auth/reservation-detail",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    console.log(data)
+                    $(".render-details").html("");
+                    $.each(data, function (index, d) {
+                        let htmlMenu = `
+                        <tr >
+                            <td>${d.id}</td>
+<td class="text-center">
+       <img class="bg-soft-primary rounded img-fluid avatar-40 me-3" src="${d.image}" alt="profile">
+ </td>
+  <td>${d.name}</td>
+  <td>$ ${d.price}</td>
+  <td>${d.quantity}</td>
+  <td>${d.dateBooking}</td>
+  <td>${d.startTime}</td>
+  <td>${d.endTime}</td>
+  <td>${d.status}</td>
+
+     </tr>
+                    `;
+                        $(".render-details").append(htmlMenu);
+                    })
+
+                }
+            });
+        });
+    </script>
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
             <ul class="left-panel list-inline mb-0 p-0">
-                <li class="list-inline-item"><a href="../../dashboard/extra/privacy-policy.html">Privacy Policy</a></li>
-                <li class="list-inline-item"><a href="../../dashboard/extra/terms-of-service.html">Terms of Use</a></li>
+                <li class="list-inline-item"><a href="../../extra/privacy-policy.html">Privacy Policy</a></li>
+                <li class="list-inline-item"><a href="../../extra/terms-of-service.html">Terms of Use</a></li>
             </ul>
             <div class="right-panel">
                 ©

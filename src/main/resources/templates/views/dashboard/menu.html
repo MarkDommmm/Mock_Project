@@ -22,6 +22,7 @@
           integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
     <style>
         .boxs {
             border-radius: 30px;
@@ -1879,7 +1880,6 @@
                                 <h4 class="list-main">My Cart</h4>
                             </div>
 
-
                             <div class="card-body">
 
                                 <div class="horizontal-scroll" id="render-cart">
@@ -1944,7 +1944,7 @@
                                 <a type="button" href="/check-out"
 
                                    style="margin-bottom: 20px"
-                                   class="btn btn-primary rounded-pill">Checkout!!!</a>
+                                   class="btn btn-primary rounded-pill checkout">Checkout!!!</a>
                             </div>
                         </div>
                     </div>
@@ -2089,9 +2089,20 @@
                     `;
                         $("#render-cart").append(htmlCart);
                     })
+                },
+                error: function () {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Please log in to add to cart!!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             });
         });
+
+
         // Remove Cart
         $(document).on("click", ".remove-cart", function () {
             const id = $(this).data("menu-id");
@@ -2298,7 +2309,22 @@
             $(".btn").removeClass("btn-primary");
 
             $(this).addClass(" btn-primary");
-
+            $.ajax({
+                url: "/check-out",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                error: function () {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Please log in to check out!!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
         });
     </script>
 

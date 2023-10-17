@@ -12,6 +12,7 @@ public class TableMenuMapper implements ITableMenuMapper{
         return TableMenu.builder()
                 .id(tableMenuRequest.getId())
                 .menu(tableMenuRequest.getMenu())
+
                 .reservation(tableMenuRequest.getReservation())
                 .quantity(tableMenuRequest.getQuantity())
                 .price(tableMenuRequest.getMenu().getPrice())
@@ -26,6 +27,9 @@ public class TableMenuMapper implements ITableMenuMapper{
                 .name(tableMenu.getMenu().getName())
                 .quantity(tableMenu.getQuantity())
                 .price(tableMenu.getPrice())
+                .dateBooking(tableMenu.getReservation().getBookingDate())
+                .startTime(tableMenu.getReservation().getStartTime())
+                .endTime(tableMenu.getReservation().getEndTime())
                 .status(tableMenu.isStatus()).build();
     }
 

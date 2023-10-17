@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import project_final.model.domain.Status;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +26,14 @@ public class Reservation {
     private Tables table;
     private Date createdDate;
     private Date bookingDate;
-    private Date startTime;
-    private Date endTime;
+    private Time startTime;
+    private Time endTime;
+    private String emailBooking;
+    private String phoneBooking;
+    private String nameBooking;
+    private String description;
+    private String code;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 }
