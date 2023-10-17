@@ -55,10 +55,12 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+
     public void save(ReservationRequest reservationRequest, Reservation reservation) throws TimeIsValidException {
         if (isEndTimeAfterStartTime(reservationRequest.getEndTime(),reservationRequest.getStartTime())){
             throw new TimeIsValidException("End time must be must be larger start time");
         }
+
        ReservationRequest request = ReservationRequest.builder()
                .id(reservation.getId())
                .table(reservation.getTable())

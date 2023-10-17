@@ -37,7 +37,10 @@ public class CategoryController {
 
 
     @PostMapping("/add")
-    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest ) {
+    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest,BindingResult bindingResult ) {
+        if (bindingResult.hasErrors()){
+            return "dashboard/page/category/category-add";
+        }
         categoryService.save(categoryRequest);
         return "redirect:/category";
 
