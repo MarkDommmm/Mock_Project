@@ -45,6 +45,12 @@ public class ReservationController {
         return "dashboard/page/reservation/reservation-list";
     }
 
+    @GetMapping("/statistics")
+    public String getStatistics(Model model,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5")int size) {
+       model.addAttribute("statistics",reservationService.findReservationStatistics(page, size));
+        return "dashboard/page/reservation/statistics";
+    }
+
 
 
 

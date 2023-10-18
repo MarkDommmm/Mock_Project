@@ -3,10 +3,8 @@ package project_final.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project_final.entity.Reservation;
-import project_final.entity.TableMenu;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
@@ -21,6 +19,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -101,7 +100,8 @@ public class ReservationService implements IReservationService<ReservationReques
     public void cancel(Long id, User user) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
-            if (user.equals(reservation.get().getUser())) {}
+            if (user.equals(reservation.get().getUser())) {
+            }
             reservation.get().setStatus(Status.CANCEL);
             reservationRepository.save(reservation.get());
         }
@@ -109,14 +109,16 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public double revenuesOnDay(Date date ) {
-//        double revenue = reservationRepository.revenuesOnDay(date);
-//        return revenue;
         return 0;
     }
 
     @Override
     public int countCompletedReservationsOnDay(Date date) {
-        int count = reservationRepository.countCompletedReservationsOnDay(date);
-        return count;
+        return reservationRepository.countCompletedReservationsOnDay(date);
+    }
+
+    @Override
+    public Page<Map<String, Object>> findReservationStatistics(int page, int size) {
+        return reservationRepository.getReservationStatistics(PageRequest.of(page, size));
     }
 }

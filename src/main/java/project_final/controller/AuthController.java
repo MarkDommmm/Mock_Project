@@ -98,6 +98,12 @@ public class AuthController {
         return new ModelAndView("/dashboard/page/user/user-update", "profile", userService.findById(id));
     }
 
+    @GetMapping("/status/{id}")
+    public String lockAndUnlock(@PathVariable("id") Long id){
+        userService.lock(id);
+        return "redirect:/user";
+    }
+
     @PostMapping("/update")
     private String update(@ModelAttribute("profile") UpdateUserRequest userRequest) throws RegisterException {
         userService.update(userRequest);
