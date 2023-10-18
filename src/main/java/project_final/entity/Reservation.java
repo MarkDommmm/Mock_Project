@@ -17,22 +17,22 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Reservation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Tables table;
-    private Date createdDate;
-    private Date bookingDate;
-    private Time startTime;
-    private Time endTime;
-    private String emailBooking;
-    private String phoneBooking;
-    private String nameBooking;
-    private String description;
-    private String code;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+        @ManyToOne(fetch = FetchType.LAZY)
+        private User user;
+        @ManyToOne(fetch = FetchType.LAZY)
+        private Tables table;
+        private Date createdDate;
+        private Date bookingDate;
+        private Time startTime;
+        private Time endTime;
+        private String emailBooking;
+        private String phoneBooking;
+        private String nameBooking;
+        private String description;
+        private String code;
 
     @Enumerated(EnumType.STRING)
     private Status status;

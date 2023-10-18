@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import project_final.exception.CustomsException;
 import project_final.model.dto.request.MenuRequest;
 import project_final.model.dto.response.MenuResponse;
 import project_final.service.ICategoryService;
@@ -59,7 +60,7 @@ public class MenuController {
     }
 
     @PostMapping("/add")
-    public String addMenu(@ModelAttribute MenuRequest menuRequest) {
+    public String addMenu(@ModelAttribute MenuRequest menuRequest) throws CustomsException {
         menuService.save(menuRequest);
         return "redirect:/menu";
     }
@@ -72,7 +73,7 @@ public class MenuController {
     }
 
     @PostMapping("/update")
-    public String updateMenu(@ModelAttribute("menu") MenuRequest menuRequest) {
+    public String updateMenu(@ModelAttribute("menu") MenuRequest menuRequest) throws CustomsException {
         menuService.save(menuRequest);
         return "redirect:/menu";
     }

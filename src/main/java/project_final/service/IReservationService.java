@@ -14,7 +14,7 @@ public interface IReservationService<K,V,E> {
     V findById(E id);
     void save(K k, Reservation reservation);
     void confirm(E id);
-    void cancel(E id, User user);
+    void cancel(E id, Long idUser);
     double revenuesOnDay( Date date);
     int countCompletedReservationsOnDay(Date date);
 }

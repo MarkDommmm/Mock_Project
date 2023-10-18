@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import project_final.exception.CustomsException;
 import project_final.model.dto.request.TableRequest;
 import project_final.model.dto.response.TableResponse;
 import project_final.entity.Tables;

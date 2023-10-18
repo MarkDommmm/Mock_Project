@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import project_final.exception.CustomsException;
 import project_final.model.dto.request.TableTypeRequest;
 import project_final.model.dto.response.TableTypeResponse;
 import project_final.entity.TableType;
@@ -29,7 +30,7 @@ public class TableTypeService implements ITableTypeService {
     }
 
     @Override
-    public void save(TableTypeRequest tableTypeRequest) {
+    public void save(TableTypeRequest tableTypeRequest)  {
         tableTypeRepository.save(iTableTypeMapper.toEntity(tableTypeRequest));
     }
 

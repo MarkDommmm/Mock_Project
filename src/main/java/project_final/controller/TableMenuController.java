@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import project_final.exception.CustomsException;
 import project_final.model.dto.request.TableMenuRequest;
 import project_final.service.ITableMenuService;
 
@@ -28,7 +29,7 @@ public class TableMenuController {
     }
 
     @PostMapping("/add")
-    public String addTableMenu(@ModelAttribute("tableMenu") TableMenuRequest tableMenuRequest ){
+    public String addTableMenu(@ModelAttribute("tableMenu") TableMenuRequest tableMenuRequest ) throws CustomsException {
         tableMenuService.save(tableMenuRequest);
         return "redirect:/tableMenu";
     }
@@ -40,7 +41,7 @@ public class TableMenuController {
     }
 
     @PostMapping("/update")
-    public String updateTableMenu(@ModelAttribute("tableMenu") TableMenuRequest tableMenuRequest ){
+    public String updateTableMenu(@ModelAttribute("tableMenu") TableMenuRequest tableMenuRequest ) throws CustomsException {
         tableMenuService.save(tableMenuRequest);
         return "redirect:/tableMenu";
     }

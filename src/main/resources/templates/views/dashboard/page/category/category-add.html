@@ -79,22 +79,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="furl">Name:</label>
-                                    <input type="text" class="form-control" id="furl"  th:field="${category.name}">
+                                    <label class="form-label" for="name">Name:</label>
+                                    <input type="text" class="form-control" id="name"  th:field="${category.name}">
                                     <span style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="turl">Description:</label>
-                                    <input type="text" class="form-control" id="turl" th:field="${category.description}">
+                                    <label class="form-label" for="description">Description:</label>
+                                    <input type="text" class="form-control" id="description" th:field="${category.description}">
                                     <span style="color: red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
                                 </div>
-<!--                                <div class="form-group">-->
-<!--                                    <label class="form-label">Status: </label>-->
-<!--                                    <select name="type" class="selectpicker form-control" data-style="py-0" th:field="${category.status}">-->
-<!--                                        <option value="true">True</option>-->
-<!--                                        <option value="false">False</option>-->
-<!--                                    </select>-->
-<!--                                </div>-->
                                 <br>
                                 <button type="submit" class="btn btn-primary">Add Category</button>
                             </form>
@@ -127,42 +120,6 @@
         </div>
     </footer>
     <!-- Footer Section End -->
-    <script>
-        $(document).on("click", ".btn", function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: "/category/add",
-                type: "POST",
-                data: $("#form").serialize(), // Thay yourForm bằng đối tượng form của bạn
-                success: function (data) {
-                    Swal.fire({
-                        position: 'center',
-                        icon: data.success === "true" ? 'success' : 'error',
-                        title: data.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-
-                    // Nếu thành công, có thể thực hiện các hành động khác tại đây
-                },
-                error: function () {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Error during Ajax request.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-
-            return false; // Ngăn chặn sự kiện mặc định của nút submit
-        });
-
-
-
-    </script>
-
 </main>
 <!-- Wrapper End-->
 <!-- offcanvas start -->

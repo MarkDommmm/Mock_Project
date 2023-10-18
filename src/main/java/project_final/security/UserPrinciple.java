@@ -1,6 +1,7 @@
 package project_final.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,34 +10,35 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import project_final.entity.User;
-//
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UserPrinciple implements UserDetails {
     private Long id;
-    private String fullName;
-    private String avatar;
+    private String name;
     private String email;
-
+    private String avatar;
     private String username;
     @JsonIgnore
     private String password;
     private boolean status;
-    private Collection<? extends GrantedAuthority> authorities;
+    private List<GrantedAuthority> authorities;
 
     public static UserPrinciple build(User user){
         List<GrantedAuthority> authorities = user.getRoles().stream().map(
-         role -> new SimpleGrantedAuthority(role.getRoleName().name())
+                role -> new SimpleGrantedAuthority(role.getRoleName().name())
         ).collect(Collectors.toList());
         return UserPrinciple.builder()
                 .id(user.getId())
-                .fullName(user.getName())
+                .name(user.getName())
                 .avatar(user.getAvatar())
                 .email(user.getEmail())
                 .username(user.getUsername())
@@ -49,6 +51,7 @@ public class UserPrinciple implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
+
 
     @Override
     public String getPassword() {
@@ -79,5 +82,4 @@ public class UserPrinciple implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }
