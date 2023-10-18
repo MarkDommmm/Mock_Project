@@ -2,6 +2,7 @@ package project_final.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import project_final.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public class HomeController {
     private final ITableTypeService tableTypeService;
     private final IMenuService menuService;
     private final ICategoryService categoryService;
-    private final IMenuRepository menuRepository;
+    private final IUserService userService;
 
     @GetMapping("/vnpay-return")
     public String showPaymentResult(Model model, HttpServletRequest request) {
@@ -50,10 +52,14 @@ public class HomeController {
                                @RequestParam(defaultValue = "") String nameTableType,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size) {
-        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(nameTableType, page, size));
-        model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(name, page, size));
-        model.addAttribute("reservation",new ReservationRequest());
+                               @RequestParam(defaultValue = "5") int size,
+                               @RequestParam(name = "date", required = false)
+                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                               @RequestParam(name = "start", required = false, defaultValue = "") String start,
+                               @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+        model.addAttribute("tables", tableService.findAvailableTables(date, start, end, page, size));
+        model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
+        model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
     }
 
@@ -114,7 +120,7 @@ public class HomeController {
         Long idTable = (Long) session.getAttribute("idTable");
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         Reservation reservation = tableMenuService.addCart(id, u.getId(), idTable);
-        session.setAttribute("reservationLocal",reservation);
+        session.setAttribute("reservationLocal", reservation);
         return tableMenuService.getTableMenu(u.getId(), page, sizeCart);
     }
 
@@ -172,9 +178,14 @@ public class HomeController {
     }
 
     @RequestMapping("/user")
-    public String homeUser() {
-        return "dashboard/ChoseTable";
+    public String homeUser(Model model,@RequestParam(defaultValue = "") String name,@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "5") int size) {
+        model.addAttribute("users", userService.findAll(name,page,size) );
+        model.addAttribute("name",name);
+        return "dashboard/page/user/user-list";
     }
+
+
+
     @RequestMapping("/admin")
     public String admin() {
         return "dashboard/ChoseTable";

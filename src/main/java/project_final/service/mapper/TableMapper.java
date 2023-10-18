@@ -31,7 +31,7 @@ public class TableMapper implements ITableMapper {
             // nếu có ảnh mới
             image = uploadService.uploadFile(tableRequest.getTableImage());
         } else if (table.isPresent()) {
-            // nếu category  tồn tại
+            // nếu table tồn tại
             image = table.get().getTableImage();
         } else {
             // không có ảnh và không tồn tại category

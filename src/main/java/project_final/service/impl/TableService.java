@@ -11,7 +11,9 @@ import project_final.repository.ITableRepository;
 import project_final.service.ITableService;
 import project_final.service.mapper.ITableMapper;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,18 @@ public class TableService implements ITableService {
     public Page<TableResponse> findAllByStatusIsTrueAndName(String name, int page, int size) {
         Page<Tables> tables = tableRepository.findAllByStatusIsTrueAndName(name,PageRequest.of(page, size));
         return tables.map(tableMapper::toResponse);
+    }
+
+    @Override
+    public Page<TableResponse> findAvailableTables(Date date, String start, String end, int page, int size) {
+        Page<Tables> tables = tableRepository.findAvailableTables(date, start,end,PageRequest.of(page, size));
+        return tables.map(tableMapper::toResponse);
+    }
+
+    @Override
+    public Page<Map<String, Object>> getTableStatusForDate(Date date, String startTime, String endTime, int page, int size) {
+        Page<Map<String,Object>> map =tableRepository.getTableStatusForDate(date, startTime, endTime, PageRequest.of(page, size));
+        return tableRepository.getTableStatusForDate(date, startTime, endTime, PageRequest.of(page, size));
     }
 
     @Override

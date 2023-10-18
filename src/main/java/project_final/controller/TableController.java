@@ -2,8 +2,10 @@ package project_final.controller;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import project_final.model.dto.request.TableRequest;
@@ -12,6 +14,12 @@ import project_final.service.ITableService;
 import project_final.service.ITableTypeService;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 
 @Controller
@@ -31,6 +39,25 @@ public class TableController {
         model.addAttribute("name", name);
         return "/dashboard/page/table/table-list";
     }
+
+    @GetMapping("/details")
+    public String getDetailsTable(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "5") int size,
+                                  @RequestParam(name = "date", required = false)
+                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                  @RequestParam(name = "start",required = false, defaultValue = "") String start,
+                                  @RequestParam(name = "end",required = false, defaultValue = "") String end,
+                                  Model model) {
+        if (date == null) {
+            date = new Date();
+        }
+        model.addAttribute("date", date);
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+        model.addAttribute("objects", tableService.getTableStatusForDate(date, start, end, page, size));
+        return "/dashboard/page/table/table-details";
+    }
+
 
     @GetMapping("/add")
     public String add(Model model) {
@@ -57,7 +84,7 @@ public class TableController {
     }
 
     @PostMapping("/update")
-    public String updateTable(@ModelAttribute("tables") TableRequest tableRequest,Model model) {
+    public String updateTable(@ModelAttribute("tables") TableRequest tableRequest, Model model) {
         tableService.save(tableRequest);
         return "redirect:/table";
     }
@@ -69,7 +96,7 @@ public class TableController {
     }
 
     @GetMapping("status/{id}")
-    public String changeStatus(@PathVariable Long id){
+    public String changeStatus(@PathVariable Long id) {
         tableService.changeStatus(id);
         return "redirect:/table";
     }

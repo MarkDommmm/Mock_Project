@@ -10,6 +10,7 @@ import project_final.entity.Reservation;
 import project_final.entity.User;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +30,20 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
     @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.status = 'PENDING'")
     Optional<Reservation> findPendingReservationByUserId(@Param("userId") Long userId);
 
+    @Query(value = "SELECT r.booking_date as bookingDate, " +
+            "(SELECT COUNT(DISTINCT r1.id) FROM reservation r1 " +
+            " JOIN table_menu t1 ON r1.id = t1.reservation_id " +
+            " WHERE r1.status = 'COMPLETED' AND r1.booking_date = r.booking_date) as successfulOrders, " +
+            "(SELECT COUNT(DISTINCT r2.id) FROM reservation r2 " +
+            " JOIN table_menu t2 ON r2.id = t2.reservation_id " +
+            " WHERE r2.status = 'CANCEL' AND r2.booking_date = r.booking_date) as failedOrders, " +
+            "(SELECT SUM(t3.quantity * t3.price) FROM reservation r3 " +
+            " JOIN table_menu t3 ON r3.id = t3.reservation_id " +
+            " WHERE r3.status = 'COMPLETED' AND r3.booking_date = r.booking_date) as totalAmount " +
+            " FROM reservation r GROUP BY r.booking_date",
+            nativeQuery = true)
+    Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
 }
+
+
+
