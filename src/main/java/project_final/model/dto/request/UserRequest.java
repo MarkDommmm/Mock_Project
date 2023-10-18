@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +26,6 @@ public class UserRequest {
     @NotBlank(message="Email not blank")
     private String email;
     private String phone;
+    private Set<Long> role;
+
 }

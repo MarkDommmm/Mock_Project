@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Aprycot | Responsive Bootstrap 5 Admin Dashboard Template</title>
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" th:href="@{../../assets/images/favicon.ico}"/>
+        <!-- Favicon -->
+        <link rel="shortcut icon" th:href="@{../../assets/images/favicon.ico}"/>
 
-    <!-- Library / Plugin Css Build -->
-    <link rel="stylesheet" th:href="@{../../assets/css/core/libs.min.css}">
+        <!-- Library / Plugin Css Build -->
+        <link rel="stylesheet" th:href="@{../../assets/css/core/libs.min.css}">
 
-    <!-- Custom Css -->
-    <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
+        <!-- Custom Css -->
+        <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
+
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
+
 </head>
 <body class=" " data-bs-spy="scroll" data-bs-target="#elements-section" data-bs-offset="0" tabindex="0">
 <!-- loader Start -->
@@ -1098,13 +1102,15 @@
                     <h2 class="mb-2 text-center">Sign In</h2>
                     <p class="text-center">Sign in to stay connected.</p>
 <!--                    FORM SIGN IN-->
-                    <form method="post" th:action="@{/auth/sign-in}" name='login-form' th:object="${signin}">
+                    <form method="post" th:action="@{/public/login}" name='login-form' th:object="${login}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" class="form-control form-control-sm" id="username"
-                                           aria-describedby="username" th:field="${signin.username}">
+                                           aria-describedby="username" th:field="*{username}">
                                     <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                                 </div>
                             </div>
@@ -1112,7 +1118,7 @@
                                 <div class="form-group">
                                     <label for="password" class="form-label">Password</label>
                                     <input type="password" class="form-control form-control-sm" id="password"
-                                           aria-describedby="password" th:field="${signin.password}">
+                                           aria-describedby="password" th:field="*{password}">
                                     <span style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                                 </div>
                             </div>
@@ -1121,7 +1127,7 @@
                                     <input type="checkbox" class="form-check-input" id="customCheck1">
                                     <label class="form-check-label" for="customCheck1">Remember Me</label>
                                 </div>
-                                <a href="recoverpw.html">Forgot Password?</a>
+                                <a href="/public/forgot-password">Forgot Password?</a>
                             </div>
                         </div>
 
@@ -1148,7 +1154,7 @@
                             </ul>
                         </div>
                         <p class="mt-3 text-center">Don’t have an account?
-                            <a href="/home/sign-up" class="text-underline">Click here to sign up.</a>
+                            <a href="/public/sign-up" class="text-underline">Click here to sign up.</a>
                         </p>
                     </form>
                 </div>

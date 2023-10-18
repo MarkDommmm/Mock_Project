@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import project_final.exception.CustomsException;
 import project_final.model.dto.request.TableTypeRequest;
 import project_final.service.ITableTypeService;
 
@@ -29,7 +30,7 @@ public class TableTypeController {
     }
 
     @PostMapping("/add")
-    public String addTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest){
+    public String addTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest) throws CustomsException {
 
         tableTypeService.save(tableTypeRequest);
         return "redirect:/table-type";
@@ -40,7 +41,7 @@ public class TableTypeController {
     }
 
     @PostMapping("/update")
-    public String updateTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest){
+    public String updateTableType(@ModelAttribute("tableType") TableTypeRequest tableTypeRequest) throws CustomsException {
         tableTypeService.save(tableTypeRequest);
         return "redirect:/table-type";
     }

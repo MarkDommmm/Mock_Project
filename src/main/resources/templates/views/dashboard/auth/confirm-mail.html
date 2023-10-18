@@ -2,20 +2,21 @@
 
 
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <title>Aprycot | Responsive Bootstrap 5 Admin Dashboard Template</title>
-      
-      <!-- Favicon -->
-      <link rel="shortcut icon" href="../../assets/images/favicon.ico" />
-      
-      <!-- Library / Plugin Css Build -->
-      <link rel="stylesheet" href="../../assets/css/core/libs.min.css">
-      
-      <!-- Custom Css -->
-      <link rel="stylesheet" href="../../assets/css/aprycot.min.css?v=1.0.0">  </head>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" th:href="@{../../assets/images/favicon.ico}"/>
+
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" th:href="@{../../assets/css/core/libs.min.css}">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
+  </head>
   <body class=" " data-bs-spy="scroll" data-bs-target="#elements-section" data-bs-offset="0" tabindex="0">
     <!-- loader Start -->
     <div id="loading">
@@ -490,7 +491,7 @@
          <div class="row align-items-center">            
             <div class="col-md-12 col-lg-7 col-xl-4">
                <a href="../../dashboard/">
-                  <img src="../../assets/images/favicon.png" class="img-fluid logo-img ms-5" alt="img2">
+                 <img th:src="@{../../assets/images/favicon.png}" class="img-fluid logo-img ms-5" alt="img2">
                </a>
                <div class="card-body text-center">
                   <svg width="86" viewBox="0 0 86 91" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -498,45 +499,44 @@
                      <path d="M40.0136 54.5643L76.8701 18.1495C78.1796 16.8557 80.2738 16.8169 81.6303 18.0614V18.0614C83.0887 19.3993 83.1259 21.687 81.7118 23.0717L40.0135 63.9056L21.8386 46.082C20.6265 44.8933 20.6169 42.9441 21.8173 41.7435V41.7435C22.9764 40.5842 24.8443 40.5472 26.0483 41.6598L40.0136 54.5643Z" fill="#EA6A12"/>
                   </svg>                     
                   <h2 class="mt-3 mb-0 ">Success !</h2>
-                  <p class="cnf-mail mb-1">A email has been send to youremail@domain.com. Please check for an
-                     email from company and click
-                     on the included link to reset your password.</p>
+                  <p class="cnf-mail mb-1">Your password has been changed successfully. Please log in with the changed password. Have a nice day.</p>
                   <div class="d-inline-block w-100">
-                     <a href="../menu.html" class="btn btn-primary mt-3">Back to Home</a>
+                     <a href="/home" class="btn btn-primary mt-3">Back to Home</a>
                   </div>
                </div> 
             </div>
             <div class="col-md-12 col-lg-5 col-xl-8 d-lg-block d-none vh-100 overflow-hidden">
-               <div>
-                  <img src="../../assets/images/auth/01.png" class="rounded-circle first-img" alt="images">
-                  <img src="../../assets/images/auth/02.png" class="rounded-circle second-img" alt="images">
-                  <img src="../../assets/images/auth/03.png" class="rounded-circle third-img" alt="images">
-                  <img src="../../assets/images/auth/04.png" class="rounded-circle fourth-img" alt="images">
-                  <img src="../../assets/images/auth/05.png" class="rounded-circle fifth-img" alt="images">
-                  <img src="../../assets/images/auth/06.png" class="rounded-circle six-img" alt="images">
-                  <img src="../../assets/images/auth/01.png" class="rounded-circle seventh-img" alt="images">
-                  <img src="../../assets/images/auth/02.png" class="rounded-circle eight-img" alt="images">
-               </div>
+              <div>
+                <img th:src="@{../../assets/images/auth/01.png}" class="rounded-circle first-img" alt="images">
+                <img th:src="@{../../assets/images/auth/02.png}" class="rounded-circle second-img" alt="images">
+                <img th:src="@{../../assets/images/auth/03.png}" class="rounded-circle third-img" alt="images">
+                <img th:src="@{../../assets/images/auth/04.png}" class="rounded-circle fourth-img" alt="images">
+                <img th:src="@{../../assets/images/auth/05.png}" class="rounded-circle fifth-img" alt="images">
+                <img th:src="@{../../assets/images/auth/06.png}" class="rounded-circle six-img" alt="images">
+                <img th:src="@{../../assets/images/auth/01.png}" class="rounded-circle seventh-img" alt="images">
+                <img th:src="@{../../assets/images/auth/02.png}" class="rounded-circle eight-img" alt="images">
+              </div>
             </div>
          </div>
       </section>
       </div>
-    
+
     <!-- Required Library Bundle Script -->
-    <script src="../../assets/js/core/libs.min.js"></script>
-    
+    <script th:src="@{../../assets/js/core/libs.min.js}"></script>
+
     <!-- External Library Bundle Script -->
-    <script src="../../assets/js/core/external.min.js"></script>
-    
+    <script th:src="@{../../assets/js/core/external.min.js}"></script>
+
     <!-- Mapchart JavaScript -->
-    <script src="../../assets/js/charts/dashboard.js"></script>
-    
+    <script th:src="@{../../assets/js/charts/dashboard.js}"></script>
+
     <!-- fslightbox JavaScript -->
-    <script src="../../assets/js/fslightbox.js"></script>
-    
+    <script th:src="@{../../assets/js/fslightbox.js}"></script>
+
     <!-- app JavaScript -->
-    <script src="../../assets/js/app.js"></script>
-    
+    <script th:src="@{../../assets/js/app.js}"></script>
+
     <!-- moment JavaScript -->
-    <script src="../../assets/vendor/moment.min.js"></script>  </body>
+    <script th:src="@{../../assets/vendor/moment.min.js}"></script>
+  </body>
 </html>

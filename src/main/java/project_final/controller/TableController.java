@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import project_final.exception.CustomsException;
 import project_final.model.dto.request.TableRequest;
 import project_final.model.dto.response.TableResponse;
 import project_final.service.ITableService;
@@ -41,7 +42,7 @@ public class TableController {
     }
 
     @PostMapping("/add")
-    public String addTable(@ModelAttribute TableRequest tableRequest) {
+    public String addTable(@ModelAttribute TableRequest tableRequest) throws CustomsException {
         tableService.save(tableRequest);
         return "redirect:/table";
     }
@@ -57,7 +58,7 @@ public class TableController {
     }
 
     @PostMapping("/update")
-    public String updateTable(@ModelAttribute("tables") TableRequest tableRequest,Model model) {
+    public String updateTable(@ModelAttribute("tables") TableRequest tableRequest,Model model) throws CustomsException {
         tableService.save(tableRequest);
         return "redirect:/table";
     }

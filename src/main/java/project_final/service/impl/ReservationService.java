@@ -46,6 +46,7 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public void save(ReservationRequest reservationRequest, Reservation reservation) {
+        System.out.println(reservationRequest.getBookingDate().getTime());
        ReservationRequest request = ReservationRequest.builder()
                .id(reservation.getId())
                .table(reservation.getTable())
@@ -75,10 +76,10 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
-    public void cancel(Long id, User user) {
+    public void cancel(Long id, Long idUser) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
-            if (user.equals(reservation.get().getUser())) {}
+            if (idUser.equals(reservation.get().getUser().getId())) {}
             reservation.get().setStatus(Status.CANCEL);
             reservationRepository.save(reservation.get());
         }

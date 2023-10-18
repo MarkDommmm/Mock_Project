@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.entity.*;
+import project_final.exception.CustomsException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.TableMenuRequest;
 import project_final.model.dto.response.TableMenuCartResponse;

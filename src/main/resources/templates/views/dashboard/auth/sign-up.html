@@ -1098,27 +1098,27 @@
                         </a>
                         <h2 class="mb-2 text-center">Sign Up</h2>
                         <p class="text-center">Create your Aprycot account.</p>
-                        <form method="post" th:object="${signup}" action="/auth/register">
+                        <form method="post" th:object="${signup}" th:action="@{/public/sign-up}">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="full-name" class="form-label">UserName</label>
                                         <input type="text"
-                                               class="form-control form-control-sm" id="full-name" th:field="${signup.username}">
+                                               class="form-control form-control-sm" id="full-name" th:field="*{username}">
                                         <span style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control form-control-sm" id="email" th:field="${signup.email}">
+                                        <input type="email" class="form-control form-control-sm" id="email" th:field="*{email}">
                                         <span style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control form-control-sm" id="password" th:field="${signup.password}">
+                                        <input type="password" class="form-control form-control-sm" id="password" th:field="*{password}">
                                         <span style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                                     </div>
                                 </div>
@@ -1127,7 +1127,7 @@
                                     <div class="form-group">
                                         <label for="confirm-password" class="form-label">Confirm Password</label>
                                         <input type="password" class="form-control form-control-sm"
-                                               id="confirm-password" th:field="${signup.confirm_password}">
+                                               id="confirm-password" th:field="*{confirm_password}">
 <!--                                        <span style="color: red" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirm_password}"></span>-->
                                     </div>
                                 </div>
@@ -1160,7 +1160,7 @@
                                 </ul>
                             </div>
                             <p class="mt-3 text-center">Already have an Account
-                                <a href="/home/sign-in" class="text-underline">Sign In</a>
+                                <a href="/public/login" class="text-underline">Sign In</a>
                             </p>
                         </form>
                     </div>

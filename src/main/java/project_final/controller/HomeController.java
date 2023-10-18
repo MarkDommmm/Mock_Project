@@ -1,25 +1,23 @@
 package project_final.controller;
-
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import project_final.entity.Menu;
+import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.Reservation;
-import project_final.entity.User;
+import project_final.exception.CustomsException;
+import project_final.exception.ForgotPassWordException;
+import project_final.exception.RegisterException;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IMenuRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import javax.validation.Valid;
 
 @Controller
 @AllArgsConstructor
@@ -30,29 +28,71 @@ public class HomeController {
     private final IMenuService menuService;
     private final ICategoryService categoryService;
     private final IMenuRepository menuRepository;
+    private final IUserService userService;
+    private final IMailService mailService;
 
-    @GetMapping("/vnpay-return")
-    public String showPaymentResult(Model model, HttpServletRequest request) {
-
-        model.addAttribute("vnp_TxnRef", request.getParameter("vnp_TxnRef"));
-
-        if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
-            model.addAttribute("transactionStatus", "Thành công");
-        } else {
-            model.addAttribute("transactionStatus", "Không thành công");
-        }
-        return "dashboard/payment/vnpay/vnpay_return";
+    @RequestMapping("/public/login")
+    public ModelAndView login() {
+        return new ModelAndView("/dashboard/auth/sign-in", "login", new LoginRequestDto());
     }
 
+    @RequestMapping("/public/sign-up")
+    public ModelAndView signUp() {
+        return new ModelAndView("/dashboard/auth/sign-up", "signup", new UserRequest());
+    }
+
+    @PostMapping("/public/sign-up")
+    public String register(@ModelAttribute("signup") @Valid UserRequest userRequest, BindingResult bindingResult) throws RegisterException, CustomsException {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/public/sign-up";
+        }
+        userService.save(userRequest);
+        return "redirect:/public/login";
+    }
+
+    @RequestMapping("/public/forgot-password")
+    public ModelAndView recoverPw() {
+        return new ModelAndView("/dashboard/auth/recoverpw", "forgotPw", new ForgotPassForm());
+    }
+
+    @PostMapping("/public/forgot-password")
+    public String sendVerification(@ModelAttribute("forgotPw") ForgotPassForm forgotPassForm,Model model) throws ForgotPassWordException {
+        if (forgotPassForm.getVerification() == null) {
+            String verification = userService.sendVerification(forgotPassForm.getEmail());
+            if (verification == null) {
+                String emailContent = "Invalid email, please try again";
+                mailService.sendMail(forgotPassForm.getEmail(), "Aprycot Alert", emailContent);
+                return "/dashboard/auth/recoverpw-confirm";
+            }
+            String content = "Hello " + forgotPassForm.getEmail() + ",\n\n" +
+                    "For security reasons, you are required to use the following One Time Password to log in:\n" +
+                    "\n" + verification +
+                    "\n\nNote: This OTP is set to expire in 5 minutes.\n\n" +
+                    "If you did not request this password reset, please contact us immediately at support@example.com.";
+
+
+            mailService.sendMail(forgotPassForm.getEmail(), "Verification", content);
+            return "/dashboard/auth/recoverpw-confirm";
+        }
+        userService.passwordRetrieval(forgotPassForm);
+        return "redirect:/public/confirm-mail";
+    }
+
+    @RequestMapping("/public/confirm-mail")
+    public String confirmMail() {
+
+        return "/dashboard/auth/confirm-mail";
+    }
 
     @RequestMapping("/home")
     public String getTableType(Model model,
                                @RequestParam(defaultValue = "") String nameTableType,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size) {
+                               @RequestParam(defaultValue = "5") int size, @AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
         model.addAttribute("tables", tableService.findAll(nameTableType, page, size));
         model.addAttribute("tableTypes", tableTypeService.findAll(name, page, size));
+        session.setAttribute("currentUser", userPrinciple);
         return "dashboard/ChoseTable";
     }
 
@@ -75,10 +115,13 @@ public class HomeController {
                           @RequestParam(defaultValue = "12") int size,
                           @RequestParam(defaultValue = "10") int sizeCart,
                           Model model, HttpSession session) {
+
+
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         if (u != null) {
             model.addAttribute("cart", tableMenuService.getAll(u.getId(), page, sizeCart));
         }
+
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAll(name, page, size));
         model.addAttribute("name", name);
@@ -109,11 +152,11 @@ public class HomeController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
-            HttpSession session) {
+            HttpSession session) throws CustomsException {
         Long idTable = (Long) session.getAttribute("idTable");
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         Reservation reservation = tableMenuService.addCart(id, u.getId(), idTable);
-        session.setAttribute("reservationLocal",reservation);
+        session.setAttribute("reservationLocal", reservation);
         return tableMenuService.getTableMenu(u.getId(), page, sizeCart);
     }
 
@@ -150,28 +193,23 @@ public class HomeController {
         return "dashboard/checkoutTable";
     }
 
+    @RequestMapping("/user")
+    public String User(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
+        session.setAttribute("currentUser", userPrinciple);
+        return "dashboard/ChoseTable";
+    }
+
+    @RequestMapping("/admin")
+    public String admin() {
+        return "dashboard/page/user/user-list";
+    }
 
     @RequestMapping("/403")
     public String error403() {
         return "/dashboard/errors/error403";
     }
 
-    @RequestMapping("/home/sign-in")
-    public String signIn(Model model) {
-        model.addAttribute("signin", new LoginRequestDto());
-        return "dashboard/auth/sign-in";
-    }
 
-    @RequestMapping("/home/sign-up")
-    public String signUp(Model model) {
-        model.addAttribute("signup", new UserRequest());
-        return "dashboard/auth/sign-up";
-    }
-
-    @RequestMapping("/user")
-    public String homeUser() {
-        return "dashboard/ChoseTable";
-    }
 
 
 }

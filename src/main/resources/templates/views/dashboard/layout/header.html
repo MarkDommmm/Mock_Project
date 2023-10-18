@@ -1479,7 +1479,10 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item" th:href="@{/auth/logout}">Logout</a>
+
+
+                                <a href="/logout" class="dropdown-item" >Logout</a>
+
                             </li>
                         </ul>
                     </li>
@@ -1488,7 +1491,7 @@
                 <th:block th:unless="${session.currentUser}">
                     <li class="nav-item  ">
                         <a class="nav-link py-0 d-flex align-items-center"
-                           href="/home/sign-in" id="navbarDropdown"
+                           href="/public/login" id="navbarDropdown"
                            role="button" aria-expanded="false">
                             <img th:src="@{../../assets/images/avatars/avatar-icon.webp}" alt="User-Profile"
                                  class="img-fluid avatar avatar-50 avatar-rounded">

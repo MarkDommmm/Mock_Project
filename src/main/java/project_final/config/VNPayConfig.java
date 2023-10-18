@@ -1,5 +1,7 @@
 package project_final.config;
 
+import org.springframework.stereotype.Component;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -9,12 +11,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class VnpayConfig {
+@Component
+public
+class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:8888/vnpay-return";
+    public static String vnp_Returnurl = "/vnpay-payment";
     public static String vnp_TmnCode = "ETIRJC53";
-    public static String secretKey = "LXCDHVEIITYNGGYIDMLZALBKTAVDPULH";
-    public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+    public static String vnp_HashSecret = "LXCDHVEIITYNGGYIDMLZALBKTAVDPULH";
+    public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
         String digest = null;
@@ -70,7 +74,7 @@ public class VnpayConfig {
                 sb.append("&");
             }
         }
-        return hmacSHA512(secretKey,sb.toString());
+        return hmacSHA512(vnp_HashSecret,sb.toString());
     }
 
     public static String hmacSHA512(final String key, final String data) {
@@ -101,7 +105,7 @@ public class VnpayConfig {
         try {
             ipAdress = request.getHeader("X-FORWARDED-FOR");
             if (ipAdress == null) {
-                ipAdress = request.getRemoteAddr();
+                ipAdress = request.getLocalAddr();
             }
         } catch (Exception e) {
             ipAdress = "Invalid IP:" + e.getMessage();
