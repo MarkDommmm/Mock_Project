@@ -85,11 +85,9 @@ public class TableController {
     }
 
     @PostMapping("/update")
-<<<<<<< HEAD
-    public String updateTable(@ModelAttribute("tables") TableRequest tableRequest,Model model) throws CustomsException {
-=======
+
+
     public String updateTable(@ModelAttribute("tables") TableRequest tableRequest, Model model) {
->>>>>>> origin/master
         tableService.save(tableRequest);
         return "redirect:/table";
     }

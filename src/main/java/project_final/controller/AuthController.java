@@ -51,36 +51,7 @@ public class AuthController {
     private final IReservationService reservationService;
     private final ITableMenuService tableMenuService;
 
-
-<<<<<<< HEAD
-=======
-    @PostMapping("/sign-in")
-    public String signIn(HttpSession session, @Valid @ModelAttribute("signin") LoginRequestDto loginRequestDto, BindingResult bindingResult) throws LoginException {
-        if (bindingResult.hasErrors()) {
-            return "redirect:/home/sign-in";
-        }
-        Authentication authentication = null;
-        try {
-            authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),
-                            loginRequestDto.getPassword())
-            );
-
-        } catch (AuthenticationException e) {
-            throw new LoginException("Username or password is incorrect!");
-        }
-
-        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
-        session.setAttribute("currentUser", userPrinciple);
-        return "redirect:/home";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("currentUser");
-        return "redirect:/home";
-    }
->>>>>>> origin/master
+ 
 
     @GetMapping("/profile/{id}")
     private ModelAndView profile(@PathVariable("id") Long id,

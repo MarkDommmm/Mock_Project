@@ -1,16 +1,13 @@
 package project_final.controller;
 
-import lombok.AllArgsConstructor;
-<<<<<<< HEAD
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-=======
-import org.springframework.format.annotation.DateTimeFormat;
->>>>>>> origin/master
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,11 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import project_final.entity.Reservation;
 import project_final.entity.Tables;
 import project_final.entity.User;
-<<<<<<< HEAD
-import project_final.exception.CustomsException;
-=======
-import project_final.exception.TimeIsValidException;
->>>>>>> origin/master
+
 import project_final.model.dto.request.ReservationRequest;
 import project_final.repository.IUserRepository;
 import project_final.security.UserPrinciple;
@@ -43,11 +36,11 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IUserService userService;
     private final ITableService tableService;
-<<<<<<< HEAD
+
     private final GenerateExcelService generateExcelService;
-=======
+
     private final ITableMenuService tableMenuService;
->>>>>>> origin/master
+
 
     @GetMapping
     public String getAll(Model model,
@@ -70,16 +63,9 @@ public class ReservationController {
     }
 
 
-<<<<<<< HEAD
-    @PostMapping("/add")
-    public String addReservation(@ModelAttribute("reservation") ReservationRequest reservationRequest, HttpSession session) throws CustomsException {
-        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-        reservationService.save(reservationRequest, reservation);
-=======
 
 
 
-    @PostMapping("/add")
     public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
         if (bindingResult.hasErrors()){
@@ -90,7 +76,6 @@ public class ReservationController {
             return "dashboard/checkoutTable";
         }
         reservationService.save(reservationRequest,reservation);
->>>>>>> origin/master
         return "redirect:/home";
     }
 

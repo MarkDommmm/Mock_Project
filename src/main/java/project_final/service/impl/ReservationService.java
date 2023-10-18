@@ -54,17 +54,12 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
-<<<<<<< HEAD
-    public void save(ReservationRequest reservationRequest, Reservation reservation) {
-        System.out.println(reservationRequest.getBookingDate().getTime());
-=======
 
     public void save(ReservationRequest reservationRequest, Reservation reservation) throws TimeIsValidException {
         if (isEndTimeAfterStartTime(reservationRequest.getEndTime(),reservationRequest.getStartTime())){
             throw new TimeIsValidException("End time must be must be larger start time");
         }
 
->>>>>>> origin/master
        ReservationRequest request = ReservationRequest.builder()
                .id(reservation.getId())
                .table(reservation.getTable())
@@ -101,16 +96,11 @@ public class ReservationService implements IReservationService<ReservationReques
         }
     }
 
-    @Override
+     @Override
     public void cancel(Long id, Long idUser) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
-<<<<<<< HEAD
             if (idUser.equals(reservation.get().getUser().getId())) {}
-=======
-            if (user.equals(reservation.get().getUser())) {
-            }
->>>>>>> origin/master
             reservation.get().setStatus(Status.CANCEL);
             reservationRepository.save(reservation.get());
         }

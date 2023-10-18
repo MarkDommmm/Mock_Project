@@ -36,14 +36,10 @@ public class CategoryController {
         return new ModelAndView("dashboard/page/category/category-add", "category", new CategoryRequest());
     }
 
-<<<<<<< HEAD
-    @PostMapping("/add")
-    public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest,BindingResult bindingResult ) throws CustomsException {
-=======
-
+ 
     @PostMapping("/add")
     public String addCategory(@Valid @ModelAttribute("category") CategoryRequest categoryRequest,BindingResult bindingResult ) {
->>>>>>> origin/master
+ 
         if (bindingResult.hasErrors()){
             return "dashboard/page/category/category-add";
         }
