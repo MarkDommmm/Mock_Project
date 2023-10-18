@@ -52,4 +52,10 @@ public class TableTypeController {
         return "redirect:/table-type";
     }
 
+    @GetMapping("status/{id}")
+    public String changeStatus(@PathVariable Long id){
+        tableTypeService.changeStatus(id);
+        return "redirect:/table-type";
+    }
+
 }

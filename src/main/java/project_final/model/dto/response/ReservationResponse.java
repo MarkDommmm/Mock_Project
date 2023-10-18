@@ -22,14 +22,11 @@ public class ReservationResponse {
     private Long id;
     private User user;
     private Tables table;
-
     private Date bookingDate;
     private Date createdDate;
     private Time startTime;
     private Time endTime;
-
     private String emailBooking;
-
     private String phoneBooking;
     private String nameBooking;
     private String description;
