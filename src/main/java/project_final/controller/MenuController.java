@@ -84,5 +84,11 @@ public class MenuController {
         return "redirect:/menu";
     }
 
+    @GetMapping("status/{id}")
+    public String changeStatus(@PathVariable Long id){
+        menuService.changeStatus(id);
+        return "redirect:/menu";
+    }
+
 
 }

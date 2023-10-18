@@ -60,6 +60,26 @@
             </div>
         </div>
     </div>
+<!--    Chose Time-->
+
+    <form action="/home" method="GET">
+        <div class="form-group">
+            <label for="bookingDate">Booking Date:</label>
+            <input type="date" id="bookingDate" name="date" class="form-control"
+                   value="${date != null ? #dates.format(date, 'yyyy-MM-dd') : ''}" required/>
+        </div>
+        <div class="form-group">
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" name="start" class="form-control"
+                   value="${start != null ? start : ''}" required/>
+        </div>
+        <div class="form-group">
+            <label for="endTime">End Time:</label>
+            <input type="time" id="endTime" name="end" class="form-control"
+                   value="${end != null ? end : ''}" required/>
+        </div>
+        <button type="submit">Check Time</button>
+    </form>
 
     <!-- List Table  -->
     <div class="col-xl-12 col-lg-12 dish-card-horizontal mt-2">
@@ -143,6 +163,7 @@
             </div>
         </div>
     </div>
+</form>
 </div>
 <script>
     $(".swiper-slide").click(function () {

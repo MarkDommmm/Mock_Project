@@ -1,7 +1,12 @@
 package project_final.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+<<<<<<< HEAD
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+=======
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
+>>>>>>> origin/master
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +22,14 @@ import project_final.repository.IMenuRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
 import javax.servlet.http.HttpSession;
+<<<<<<< HEAD
 import javax.validation.Valid;
+=======
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+>>>>>>> origin/master
 
 @Controller
 @AllArgsConstructor
@@ -27,9 +39,13 @@ public class HomeController {
     private final ITableTypeService tableTypeService;
     private final IMenuService menuService;
     private final ICategoryService categoryService;
+<<<<<<< HEAD
     private final IMenuRepository menuRepository;
     private final IUserService userService;
     private final IMailService mailService;
+=======
+    private final IUserService userService;
+>>>>>>> origin/master
 
     @RequestMapping("/public/login")
     public ModelAndView login() {
@@ -89,10 +105,21 @@ public class HomeController {
                                @RequestParam(defaultValue = "") String nameTableType,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
+<<<<<<< HEAD
                                @RequestParam(defaultValue = "5") int size, @AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
         model.addAttribute("tables", tableService.findAll(nameTableType, page, size));
         model.addAttribute("tableTypes", tableTypeService.findAll(name, page, size));
         session.setAttribute("currentUser", userPrinciple);
+=======
+                               @RequestParam(defaultValue = "5") int size,
+                               @RequestParam(name = "date", required = false)
+                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                               @RequestParam(name = "start", required = false, defaultValue = "") String start,
+                               @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+        model.addAttribute("tables", tableService.findAvailableTables(date, start, end, page, size));
+        model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
+        model.addAttribute("reservation", new ReservationRequest());
+>>>>>>> origin/master
         return "dashboard/ChoseTable";
     }
 
@@ -123,7 +150,7 @@ public class HomeController {
         }
 
         model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("menuAll", menuService.findAll(name, page, size));
+        model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
         model.addAttribute("menuTrending", menuService.findTopSellingMenus());
         model.addAttribute("tableMenu", new TableMenuRequest());
@@ -140,7 +167,7 @@ public class HomeController {
 
         MenuDataDTO menuDataDTO = new MenuDataDTO();
         menuDataDTO.setCategoryResponse(categoryService.findAll());
-        menuDataDTO.setMenu(menuService.findAll(name, page, size));
+        menuDataDTO.setMenu(menuService.findAllByStatusIsTrueAndName(name, page, size));
         return menuDataDTO;
     }
 
@@ -186,10 +213,12 @@ public class HomeController {
                                 @RequestParam(defaultValue = "") String name,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "12") int size) {
+        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+        Long id = reservation.getId();
         Long idTable = (Long) session.getAttribute("idTable");
         model.addAttribute("table", tableService.findById(idTable));
         model.addAttribute("reservation", new ReservationRequest());
-        model.addAttribute("cart", tableMenuService.findAll(name, page, size));
+        model.addAttribute("cart", tableMenuService.getDetails(id));
         return "dashboard/checkoutTable";
     }
 
@@ -210,6 +239,28 @@ public class HomeController {
     }
 
 
+<<<<<<< HEAD
+=======
+    @RequestMapping("/home/sign-up")
+    public String signUp(Model model) {
+        model.addAttribute("signup", new UserRequest());
+        return "dashboard/auth/sign-up";
+    }
+
+    @RequestMapping("/user")
+    public String homeUser(Model model,@RequestParam(defaultValue = "") String name,@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "5") int size) {
+        model.addAttribute("users", userService.findAll(name,page,size) );
+        model.addAttribute("name",name);
+        return "dashboard/page/user/user-list";
+    }
+
+
+
+    @RequestMapping("/admin")
+    public String admin() {
+        return "dashboard/ChoseTable";
+    }
+>>>>>>> origin/master
 
 
 }
