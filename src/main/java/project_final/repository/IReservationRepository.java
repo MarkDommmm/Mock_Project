@@ -15,8 +15,13 @@ import java.util.Optional;
 
 @Repository
 public interface IReservationRepository extends JpaRepository<Reservation,Long> {
+    @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='PENDING' ")
+    Page<Reservation> findAllByUserAndStatusPending(Pageable pageable, @Param("userId") Long userId);
+
+
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId")
     Page<Reservation> findAllByUser(Pageable pageable, @Param("userId") Long userId);
+
     @Query("SELECT R FROM Reservation R WHERE DATE(R.bookingDate) = DATE(:date)")
     Page<Reservation> findAllByBookingDate(@Param("date") Date date, Pageable pageable);
 

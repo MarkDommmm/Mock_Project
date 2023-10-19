@@ -1535,7 +1535,9 @@
                                     </div>
                                     <p class="mb-4">Get <span class="text-primary">FREE delivery </span>on every
                                         weekend.</p>
-                                    <button type="button" class="btn btn-primary rounded-pill">Check Menu</button>
+                                    <a href="/home">
+                                    <button type="button" class="btn btn-primary rounded-pill">Check Tables</button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -1670,7 +1672,7 @@
                                                                   th:text="'$'+${f.price}"></span>
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
-                                                <a class="add-cart" th:data-id="${f.id}">
+                                                <a sec:authorize="isAuthenticated()" class="add-cart" th:data-id="${f.id}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                          fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
@@ -1930,21 +1932,29 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="show-more">
-                                <p>Scroll left show more!!</p>
-                                <img class="animation--Gl63I"
-                                     src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"
-                                     alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
-                                     style="max-height: 80px;">
-                            </div>
-
-                            <div class="text-center">
-                                <a type="button" href="/check-out"
-
-                                   style="margin-bottom: 20px"
-                                   class="btn btn-primary rounded-pill checkout">Checkout!!!</a>
-                            </div>
+                            <th:block th:if="${!cart.isEmpty()}">
+                                <div class="show-more">
+                                    <p>Scroll left show more!!</p>
+                                    <img class="animation--Gl63I"
+                                         src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"
+                                         alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
+                                         style="max-height: 80px;">
+                                </div>
+                                <div class="text-center" sec:authorize="isAuthenticated()"  >
+                                    <a type="button" href="/check-out"
+                                       style="margin-bottom: 20px"
+                                       class="btn btn-primary rounded-pill checkout">Checkout!!!</a>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${!cart.isEmpty()}">
+                                <div class="show-more">
+                                    <img class="animation--Gl63I"
+                                         src="https://eonbazar.com/images/loading_cart_2.gif"
+                                         alt="Cart isEmpty"
+                                         style="max-height: 80px;">
+                                    <p>Cart isEmpty!!!</p>
+                                </div>
+                            </th:block>
                         </div>
                     </div>
 
@@ -2026,6 +2036,7 @@
                     id: id
                 },
                 success: function (data) {
+
                     Swal.fire({
                         position: 'center',
                         icon: 'success',

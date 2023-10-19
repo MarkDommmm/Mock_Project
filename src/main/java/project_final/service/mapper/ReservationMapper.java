@@ -30,8 +30,9 @@ public class ReservationMapper implements IReservationMapper{
                 .nameBooking(reservationRequest.getNameBooking())
                 .phoneBooking(reservationRequest.getPhoneBooking())
                 .description(reservationRequest.getDescription())
-                .code(UUID.randomUUID().toString().substring(0, 8))
-                .status(Status.PENDING)
+                .payment(reservationRequest.getPayment())
+                .code(reservationRequest.getCode())
+                .status(reservationRequest.getStatus())
                 .build();
     }
 
@@ -51,6 +52,7 @@ public class ReservationMapper implements IReservationMapper{
                 .phoneBooking(reservation.getPhoneBooking())
                 .description(reservation.getDescription())
                 .code(reservation.getCode())
+                .payment(reservation.getPayment().getPaymentMethod())
                 .status(reservation.getStatus()).build();
     }
 }

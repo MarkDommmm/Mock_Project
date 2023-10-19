@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import project_final.entity.Payment;
 import project_final.entity.Reservation;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.ReservationResponse;
+import project_final.repository.IPaymentRepository;
 import project_final.repository.IReservationRepository;
 import project_final.repository.ITableMenuRepository;
 import project_final.service.IReservationService;
@@ -29,6 +31,13 @@ public class ReservationService implements IReservationService<ReservationReques
    private final IReservationRepository reservationRepository;
    private final IReservationMapper reservationMapper;
    private final ITableMenuRepository tableMenuRepository;
+   private final IPaymentRepository paymentRepository;
+
+    @Override
+    public Page<ReservationResponse> findByUserIdAndStatusPending(int page, int size, Long id) {
+        Page<Reservation> reservations = reservationRepository.findAllByUserAndStatusPending(PageRequest.of(page, size), id);
+        return reservations.map(reservationMapper::toResponse);
+    }
 
     @Override
     public Page<ReservationResponse> findByUserId(int page, int size, Long userId) {
@@ -59,6 +68,7 @@ public class ReservationService implements IReservationService<ReservationReques
         if (isEndTimeAfterStartTime(reservationRequest.getEndTime(),reservationRequest.getStartTime())){
             throw new TimeIsValidException("End time must be must be larger start time");
         }
+        Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
 
        ReservationRequest request = ReservationRequest.builder()
                .id(reservation.getId())
@@ -71,6 +81,9 @@ public class ReservationService implements IReservationService<ReservationReques
                .phoneBooking(reservationRequest.getPhoneBooking())
                .emailBooking(reservationRequest.getEmailBooking())
                .description(reservationRequest.getDescription())
+               .payment(payment.get())
+               .code(reservation.getCode())
+               .status(reservation.getStatus())
                .build();
         reservationRepository.save(reservationMapper.toEntity(request));
     }

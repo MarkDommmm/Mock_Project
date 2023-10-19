@@ -21,7 +21,6 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String paymentMethod;
-    private String amount;
-    private Date date;
+    private String IMG;
     private boolean status;
 }

@@ -5,5 +5,6 @@ public enum Status {
     CONFIRM,
     COMPLETED,
     CANCEL,
-    NO_SHOW
+    NO_SHOW,
+    PAID
 }

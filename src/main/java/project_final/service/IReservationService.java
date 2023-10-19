@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface IReservationService<K,V,E> {
+
+    Page<V> findByUserIdAndStatusPending( int page, int size,Long id);
+
     Page<V> findByUserId( int page, int size,Long id);
     Page<V> findAll(Date date, int page, int size);
     List<V> findAll();
