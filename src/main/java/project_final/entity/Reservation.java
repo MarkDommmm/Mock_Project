@@ -34,7 +34,8 @@ public class Reservation {
         private String nameBooking;
         private String description;
         private String code;
-
+        @OneToOne
+        private Payment payment;
 
     @Enumerated(EnumType.STRING)
     private Status status;

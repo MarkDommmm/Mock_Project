@@ -82,7 +82,7 @@ public class HomeController {
         userService.passwordRetrieval(forgotPassForm);
         return "redirect:/public/confirm-mail";
     }
-
+//asddddddddd
 
     @RequestMapping("/public/confirm-mail")
     public String confirmMail() {
@@ -92,6 +92,8 @@ public class HomeController {
 
     @RequestMapping("/home")
     public String getTableType(Model model,
+                               HttpSession session,
+                               @AuthenticationPrincipal UserPrinciple userPrinciple,
                                @RequestParam(defaultValue = "") String nameTableType,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
@@ -100,7 +102,7 @@ public class HomeController {
                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                @RequestParam(name = "start", required = false, defaultValue = "") String start,
                                @RequestParam(name = "end", required = false, defaultValue = "") String end) {
-
+        session.setAttribute("currentUser",userPrinciple);
         model.addAttribute("tables", tableService.findAvailableTables(date, start, end, page, size));
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
@@ -119,7 +121,7 @@ public class HomeController {
         return tableDataDTO;
     }
 
-
+//ada;pa;p
     @RequestMapping("/home/menu")
     public String getMenu(@RequestParam(defaultValue = "") String name,
                           @RequestParam(defaultValue = "0") int page,
