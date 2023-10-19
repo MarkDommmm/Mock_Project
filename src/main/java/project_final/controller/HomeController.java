@@ -1,4 +1,5 @@
 package project_final.controller;
+
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 
@@ -17,8 +18,10 @@ import project_final.exception.TimeIsValidException;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IMenuRepository;
+import project_final.repository.IPaymentRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Date;
@@ -31,7 +34,7 @@ public class HomeController {
     private final ITableTypeService tableTypeService;
     private final IMenuService menuService;
     private final ICategoryService categoryService;
-
+    private final IPaymentRepository paymentRepository;
     private final IMenuRepository menuRepository;
     private final IUserService userService;
     private final IMailService mailService;
@@ -83,7 +86,7 @@ public class HomeController {
         userService.passwordRetrieval(forgotPassForm);
         return "redirect:/public/confirm-mail";
     }
-
+//asddddddddd
 
     @RequestMapping("/public/confirm-mail")
     public String confirmMail() {
@@ -103,8 +106,10 @@ public class HomeController {
                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                @RequestParam(name = "start", required = false, defaultValue = "") String start,
                                @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+ 
         session.setAttribute("currentUser",userPrinciple );
         model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
+ 
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
@@ -129,7 +134,7 @@ public class HomeController {
         return tableDataDTO;
     }
 
-
+    //ada;pa;p
     @RequestMapping("/home/menu")
     public String getMenu(@RequestParam(defaultValue = "") String name,
                           @RequestParam(defaultValue = "0") int page,
@@ -227,6 +232,7 @@ public class HomeController {
         model.addAttribute("table", tableService.findById(idTable));
         model.addAttribute("reservation", new ReservationRequest());
         model.addAttribute("cart", tableMenuService.getDetails(id));
+        model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
     }
 

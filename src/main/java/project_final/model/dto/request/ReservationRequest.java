@@ -6,10 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import project_final.entity.Payment;
 import project_final.entity.Tables;
 import project_final.entity.User;
+import project_final.model.domain.Status;
 
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Future;
 
@@ -41,5 +45,8 @@ public class ReservationRequest {
     @NotBlank(message = "Cannot be left blank")
     private String nameBooking;
     private String description;
+    private Payment payment;
     private String code;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

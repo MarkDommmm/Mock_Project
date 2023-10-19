@@ -18,6 +18,7 @@ import project_final.service.mapper.ITableMenuMapper;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +70,7 @@ public class TableMenuService implements ITableMenuService {
             Optional<User> user = userRepository.findById(idUser);
             Optional<Tables> tables = tableRepository.findById(idTable);
             r = new Reservation();
+            r.setCode(UUID.randomUUID().toString().substring(0, 8));
             r.setUser(user.orElse(null));
             r.setTable(tables.orElse(null));
             r.setCreatedDate(new Date());

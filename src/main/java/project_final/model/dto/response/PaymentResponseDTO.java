@@ -1,4 +1,4 @@
-package project_final.model.dto.request;
+package project_final.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PaymentRequestDTO {
+public class PaymentResponseDTO {
     private Long id;
     private String paymentMethod;
     private boolean status;

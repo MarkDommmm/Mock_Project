@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import project_final.entity.Payment;
 import project_final.entity.TableMenu;
 import project_final.entity.Tables;
 import project_final.entity.User;
@@ -31,5 +32,6 @@ public class ReservationResponse {
     private String nameBooking;
     private String description;
     private String code;
+    private String payment;
     private Status status;
 }

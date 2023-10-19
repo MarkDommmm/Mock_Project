@@ -59,7 +59,14 @@ public class AuthController {
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size) {
         model.addAttribute("reservation", reservationService.findByUserId(page, size, id));
-
+        return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
+    }
+    @GetMapping("/get-order-pending/{id}")
+    private ModelAndView getOrderByStatusPending(@PathVariable("id") Long id,
+                                 Model model,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("reservation", reservationService.findByUserIdAndStatusPending(page, size, id));
         return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
     }
 

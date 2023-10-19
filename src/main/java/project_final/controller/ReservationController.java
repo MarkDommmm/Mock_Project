@@ -1,5 +1,8 @@
 package project_final.controller;
 
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -14,11 +17,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import project_final.config.VNPayConfig;
 import project_final.entity.Reservation;
+import project_final.entity.TableMenu;
 import project_final.entity.Tables;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
+import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
+import project_final.model.dto.response.TableMenuCartResponse;
+import project_final.repository.IPaymentRepository;
 import project_final.repository.IUserRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.IReservationService;
@@ -26,24 +34,33 @@ import project_final.service.ITableMenuService;
 import project_final.service.ITableService;
 import project_final.service.IUserService;
 import project_final.service.impl.GenerateExcelService;
+import project_final.service.impl.PaypalService;
+import project_final.service.impl.VNPayService;
 
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/reservation")
+
 public class ReservationController {
     private final IReservationService reservationService;
-    private final IUserService userService;
-    private final ITableService tableService;
+
     private final ITableMenuService tableMenuService;
     private final GenerateExcelService generateExcelService;
 
-    @GetMapping
+    private final PaypalService paypalService;
+    private final VNPayService vnPayService;
+    public static final String SUCCESS_URL = "payment-success";
+    public static final String CANCEL_URL = "payment-cancel";
+
+    @GetMapping("/reservation")
     public String getAll(Model model,
-       @RequestParam(name = "date", required = false)
+                         @RequestParam(name = "date", required = false)
                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                          @RequestParam(name = "page", defaultValue = "0") int page,
                          @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -51,71 +68,136 @@ public class ReservationController {
             date = new Date();
         }
         model.addAttribute("date", date);
-        model.addAttribute("reservations", reservationService.findAll(date,page,size));
+        model.addAttribute("reservations", reservationService.findAll(date, page, size));
         return "dashboard/page/reservation/reservation-list";
     }
 
-    @GetMapping("/statistics")
-    public String getStatistics(Model model,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5")int size) {
-       model.addAttribute("statistics",reservationService.findReservationStatistics(page, size));
+    @GetMapping("/reservation/statistics")
+    public String getStatistics(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        model.addAttribute("statistics", reservationService.findReservationStatistics(page, size));
         return "dashboard/page/reservation/statistics";
     }
 
 
-
-
-
-
-    @PostMapping("/add")
-    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
+    @PostMapping("/reservation/add")
+    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,
+                                 BindingResult bindingResult, HttpSession session,
+                                 Model model, HttpServletRequest request) throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-        if (bindingResult.hasErrors()){
-            Long idTable = (Long) session.getAttribute("idTable");
-            model.addAttribute("table", tableService.findById(idTable));
-            model.addAttribute("reservation", new ReservationRequest());
-            model.addAttribute("cart", tableMenuService.getDetails(reservation.getId()));
-            return "dashboard/checkoutTable";
+//        if (bindingResult.hasErrors()) {
+//            Long idTable = (Long) session.getAttribute("idTable");
+//            model.addAttribute("table", tableService.findById(idTable));
+//            model.addAttribute("reservation", new ReservationRequest());
+//            model.addAttribute("cart", tableMenuService.getDetails(reservation.getId()));
+//            model.addAttribute("payment", paymentRepository.findAll());
+//            return "dashboard/checkoutTable";
+//        }
+
+
+        List<TableMenuCartResponse> tableMenu = tableMenuService.getDetails(reservation.getId());
+        double totalPrice = 0.0;
+        for (TableMenuCartResponse item : tableMenu) {
+            double price = item.getPrice();
+            totalPrice += price;
         }
-        reservationService.save(reservationRequest,reservation);
+
+        if (reservationRequest.getPayment().getId().equals(2L)) {
+            String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+            String vnPayUrl = vnPayService.createOrder(totalPrice, reservation.getCode(), baseUrl);
+            reservationService.save(reservationRequest, reservation);
+            return "redirect:" + vnPayUrl;
+        } else if (reservationRequest.getPayment().getId().equals(3L)) {
+            try {
+                Payment payment = paypalService.createPayment(totalPrice, "USD", "Paypal",
+                        "sale", reservationRequest.getDescription(), "http://localhost:8888/" + CANCEL_URL,
+                        "http://localhost:8888/" + SUCCESS_URL);
+                session.setAttribute("reservationForPayment", reservationRequest);
+                for (Links link : payment.getLinks()) {
+                    if (link.getRel().equals("approval_url")) {
+                        return "redirect:" + link.getHref();
+                    }
+                }
+            } catch (PayPalRESTException e) {
+
+                e.printStackTrace();
+            }
+        }
+
+
         return "redirect:/home";
     }
 
-    @GetMapping("/edit/{id}")
+
+    @GetMapping(value = CANCEL_URL)
+    public String cancelPay(HttpSession session) throws TimeIsValidException {
+        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+        ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
+        reservation.setStatus(Status.PENDING);
+        reservationService.save(reservationRequest, reservation);
+        return "/dashboard/errors/CancelPayment";
+    }
+
+    @GetMapping(value = SUCCESS_URL)
+    public String successPay(HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+        try {
+            Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+            ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
+            Payment payment = paypalService.executePayment(paymentId, payerId);
+            System.out.println(payment.toJSON());
+            session.setAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
+            if (payment.getState().equals("approved")) {
+
+                reservation.setStatus(Status.PAID);
+                reservationService.save(reservationRequest, reservation);
+                return "/dashboard/errors/SuccessPayment";
+            }
+
+        } catch (PayPalRESTException e) {
+            System.out.println(e.getMessage());
+        } catch (TimeIsValidException e) {
+            throw new RuntimeException(e);
+        }
+        return "redirect:/home";
+    }
+
+    @GetMapping("/reservation/edit/{id}")
     public String edir(Model model, @PathVariable Long id) {
         model.addAttribute("reservation", reservationService.findById(id));
         return "/dashboard/page/reservation/add";
     }
 
-    @PostMapping("/update")
+    @PostMapping("/reservation/update")
     public String updateReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest, BindingResult bindingResult, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
         reservationRequest.setUser(user);
         return "redirect:/reservation";
     }
 
-    @GetMapping("/confirm/{id}")
+    @GetMapping("/reservation/confirm/{id}")
     public String confirm(@PathVariable Long id) {
         reservationService.confirm(id);
         return "redirect:/reservation";
     }
-    @GetMapping("/completed/{id}")
+
+    @GetMapping("/reservation/completed/{id}")
     public String completed(@PathVariable Long id) {
         reservationService.completed(id);
         return "redirect:/reservation";
     }
-    @GetMapping("/noShow/{id}")
+
+    @GetMapping("/reservation/noShow/{id}")
     public String noShow(@PathVariable Long id) {
         reservationService.noShow(id);
         return "redirect:/reservation";
     }
 
-    @GetMapping("/cancel/{id}")
+    @GetMapping("/reservation/cancel/{id}")
     public String cancel(@PathVariable("id") Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
         reservationService.cancel(id, userPrinciple.getId());
         return "redirect:/auth/profile/" + userPrinciple.getId();
     }
 
-    @GetMapping("/download/{id}")
+    @GetMapping("/reservation/download/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable("id") Long id) {
         String filename = "Reservation.xlsx";
         InputStreamResource file = new InputStreamResource(generateExcelService.load(id));
