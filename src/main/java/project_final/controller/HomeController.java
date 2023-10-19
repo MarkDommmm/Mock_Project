@@ -14,6 +14,7 @@ import project_final.entity.Reservation;
 import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
+import project_final.exception.TimeIsValidException;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IMenuRepository;
@@ -105,8 +106,10 @@ public class HomeController {
                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                @RequestParam(name = "start", required = false, defaultValue = "") String start,
                                @RequestParam(name = "end", required = false, defaultValue = "") String end) {
-        session.setAttribute("currentUser", userPrinciple);
-        model.addAttribute("tables", tableService.findAvailableTables(date, start, end, page, size));
+ 
+        session.setAttribute("currentUser",userPrinciple );
+        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
+ 
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
@@ -117,10 +120,17 @@ public class HomeController {
     public TableDataDTO getTableByIdTableType(
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(name = "date", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+            @RequestParam(name = "start", required = false, defaultValue = "") String start,
+            @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+        if (date==null) {
+            date = new Date();
+        }
         TableDataDTO tableDataDTO = new TableDataDTO();
         tableDataDTO.setTableTypes(tableTypeService.findAll(name, page, size));
-        tableDataDTO.setTables(tableService.getTables(name));
+        tableDataDTO.setTables(tableService.findAvailableTables(name,date,start,end, page, size).getContent());
         return tableDataDTO;
     }
 
@@ -188,8 +198,19 @@ public class HomeController {
     }
 
     @GetMapping("/home/chose-table/{id}")
-    public String choseTable(@PathVariable("id") Long id, HttpSession session) {
+    public String choseTable(@PathVariable("id") Long id,
+                             @RequestParam(name = "date", required = false)
+                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                             @RequestParam(name = "start", required = false, defaultValue = "") String start,
+                             @RequestParam(name = "end", required = false, defaultValue = "") String end,
+                             HttpSession session) throws  TimeIsValidException{
+        if (tableService.isTableAvailable(id,date,start,end)){
+            throw new TimeIsValidException("bàn đã được sử dụng");
+        }
         session.setAttribute("idTable", id);
+        session.setAttribute("date", date);
+        session.setAttribute("start", start);
+        session.setAttribute("end", end);
         return "redirect:/home/menu";
     }
 
@@ -200,8 +221,14 @@ public class HomeController {
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "12") int size) {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+        Date date = (Date) session.getAttribute("date");
+        String start = (String) session.getAttribute("start");
+        String end = (String) session.getAttribute("end");
         Long id = reservation.getId();
         Long idTable = (Long) session.getAttribute("idTable");
+        model.addAttribute("date",date);
+        model.addAttribute("start",start);
+        model.addAttribute("end",end);
         model.addAttribute("table", tableService.findById(idTable));
         model.addAttribute("reservation", new ReservationRequest());
         model.addAttribute("cart", tableMenuService.getDetails(id));

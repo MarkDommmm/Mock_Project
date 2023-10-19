@@ -138,6 +138,11 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public ReservationResponse findByUserAndCode(User user, String code) {
+        return reservationMapper.toResponse(reservationRepository.findByUserAndCode(user, code));
+    }
+
+    @Override
     public double revenuesOnDay(Date date ) {
         return 0;
     }

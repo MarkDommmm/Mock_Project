@@ -42,8 +42,8 @@ public class TableService implements ITableService {
     }
 
     @Override
-    public Page<TableResponse> findAvailableTables(Date date, String start, String end, int page, int size) {
-        Page<Tables> tables = tableRepository.findAvailableTables(date, start,end,PageRequest.of(page, size));
+    public Page<TableResponse> findAvailableTables(String name,Date date, String start, String end, int page, int size) {
+        Page<Tables> tables = tableRepository.findTablesByCriteria(name,date, start,end,PageRequest.of(page, size));
         return tables.map(tableMapper::toResponse);
     }
 
@@ -60,6 +60,11 @@ public class TableService implements ITableService {
             table.get().setStatus(!table.get().isStatus());
             tableRepository.save(table.get());
         }
+    }
+
+    @Override
+    public boolean isTableAvailable(Long tableId, Date bookingDate, String startTime, String endTime) {
+        return tableRepository.isTableAvailable(tableId, bookingDate, startTime, endTime);
     }
 
     @Override
