@@ -25,6 +25,7 @@ import project_final.service.IReservationService;
 import project_final.service.ITableMenuService;
 import project_final.service.ITableService;
 import project_final.service.IUserService;
+import project_final.service.impl.GenerateExcelService;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -38,6 +39,7 @@ public class ReservationController {
     private final IUserService userService;
     private final ITableService tableService;
     private final ITableMenuService tableMenuService;
+    private final GenerateExcelService generateExcelService;
 
     @GetMapping
     public String getAll(Model model,
