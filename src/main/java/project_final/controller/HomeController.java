@@ -100,6 +100,7 @@ public class HomeController {
                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                @RequestParam(name = "start", required = false, defaultValue = "") String start,
                                @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+
         model.addAttribute("tables", tableService.findAvailableTables(date, start, end, page, size));
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
