@@ -1883,8 +1883,7 @@
                             <div class="card-body">
 
                                 <div class="horizontal-scroll" id="render-cart">
-                                    <div class="rounded-pill bg-soft-primary iq-my-cart"
-                                         th:each="c:${cart}">
+                                    <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
                                         <div class="d-flex align-items-center justify-content-between profile-img4">
                                             <div class="profile-img11">
                                                 <img th:src="${c.menu.image}"
@@ -1925,7 +1924,7 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                                <p class="mb-0 text-dark" th:text="${c.price}+'$'">$7.49</p>
+                                                <p class="mb-0 text-dark" th:text="${c.price} + '$'"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -2163,7 +2162,7 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                            <p class="mb-0 text-dark" >${c.price}</p>
+                                            <p class="mb-0 text-dark" >${c.price}$</p>
                                         </div>
                                     </div>
                                 </div>
