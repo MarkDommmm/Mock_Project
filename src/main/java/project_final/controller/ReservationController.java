@@ -1,13 +1,7 @@
 package project_final.controller;
 
-
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
+import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import project_final.entity.Reservation;
 import project_final.entity.Tables;
 import project_final.entity.User;
-
+import project_final.exception.TimeIsValidException;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.repository.IUserRepository;
 import project_final.security.UserPrinciple;
@@ -23,7 +17,6 @@ import project_final.service.IReservationService;
 import project_final.service.ITableMenuService;
 import project_final.service.ITableService;
 import project_final.service.IUserService;
-import project_final.service.impl.GenerateExcelService;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -36,11 +29,7 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IUserService userService;
     private final ITableService tableService;
-
-    private final GenerateExcelService generateExcelService;
-
     private final ITableMenuService tableMenuService;
-
 
     @GetMapping
     public String getAll(Model model,
@@ -66,6 +55,7 @@ public class ReservationController {
 
 
 
+    @PostMapping("/add")
     public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
         if (bindingResult.hasErrors()){
@@ -93,25 +83,15 @@ public class ReservationController {
     }
 
     @GetMapping("/confirm/{id}")
-    public String confirm(@PathVariable("id") Long id) {
+    public String confirm(@PathVariable Long id) {
         reservationService.confirm(id);
         return "redirect:/";
     }
 
     @GetMapping("/cancel/{id}")
-    public String cancel(@PathVariable("id") Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
-        reservationService.cancel(id, userPrinciple.getId());
-        return "redirect:/auth/profile/" + userPrinciple.getId();
+    public String cancel(@PathVariable Long id, HttpSession session) {
+        User user = (User) session.getAttribute("currentUser");
+        reservationService.cancel(id, user);
+        return "redirect:/";
     }
-
-    @GetMapping("/download/{id}")
-    public ResponseEntity<Resource> getFile(@PathVariable("id") Long id) {
-        String filename = "Merge_cell_handle.xlsx";
-        InputStreamResource file = new InputStreamResource(generateExcelService.load(id));
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .body(file);
-    }
-
 }
