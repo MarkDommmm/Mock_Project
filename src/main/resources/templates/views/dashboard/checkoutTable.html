@@ -1353,23 +1353,22 @@
                                           th:object="${reservation}">
                                         <div class="form-group col-md-12">
                                             <label class="form-label" for="date">Booking date:</label>
-                                            <input type="date" class="form-control" id="date" th:field="*{bookingDate}">
+                                            <input type="date" class="form-control" id="date" th:field="*{bookingDate}" th:value="${date}" readonly>
                                             <span style="color: red" th:if="${#fields.hasErrors('bookingDate')}"
                                                   th:errors="*{bookingDate}"></span>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="start">Start Time:</label>
-                                            <input type="time" class="form-control" id="start"
-                                                   placeholder="start time: ex: 8:30.." th:field="*{startTime}"
-                                                   th:format="'HH:mm'">
+                                            <input type="text" class="form-control" id="start" th:field="*{startTime}"
+                                                   th:format="'HH:mm'" th:value="${start}" readonly>
                                             <span style="color: red" th:if="${#fields.hasErrors('startTime')}"
                                                   th:errors="*{startTime}"></span>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="end">End Time:</label>
-                                            <input type="time" class="form-control" id="end"
-                                                   placeholder="start time: ex: 10:30" th:field="*{endTime}"
-                                                   th:format="'HH:mm'">
+                                            <input type="text" class="form-control" id="end"
+                                                   th:field="*{endTime}" th:value="${end}"
+                                                   th:format="'HH:mm'" readonly>
                                             <span style="color: red" th:if="${#fields.hasErrors('endTime')}"
                                                   th:errors="*{endTime}"></span>
                                         </div>

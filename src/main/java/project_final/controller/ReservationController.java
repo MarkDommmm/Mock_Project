@@ -126,4 +126,11 @@ public class ReservationController {
 
 
     }
+
+    @GetMapping("/search")
+    public  String searchByCode(@RequestParam String code,HttpSession session) {
+        User user = (User) session.getAttribute("currentUser");
+        reservationService.findByUserAndCode(user,code);
+        return "redirect:/reservation";
+    }
 }

@@ -22,6 +22,8 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
 
     Reservation findByUser(User user);
 
+    Reservation findByUserAndCode(User user,String code);
+
 
 
     @Query("SELECT COUNT(R) FROM Reservation R WHERE DATE(R.createdDate) = :date AND  R.status = 'COMPLETED'")

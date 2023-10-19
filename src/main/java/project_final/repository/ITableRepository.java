@@ -36,6 +36,23 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
                                      @Param("endTime") String endTime,
                                      Pageable pageable);
 
+    @Query("SELECT DISTINCT t FROM Tables t " +
+            "JOIN t.tableType tt " +
+            "LEFT JOIN Reservation r ON t.id = r.table.id " +
+            "WHERE tt.name LIKE %:name% " +
+            "AND (r.id IS NULL OR " +
+            "NOT (DATE(r.bookingDate) = :date AND (" +
+            "(r.startTime IS NULL AND r.endTime IS NULL) OR " +
+            "(r.startTime IS NOT NULL AND r.endTime IS NOT NULL AND (TIME(r.endTime) > :end OR TIME(r.startTime) < :start)) OR " +
+            "(r.startTime IS NULL AND r.endTime IS NOT NULL AND TIME(r.endTime) > :end) OR " +
+            "(r.startTime IS NOT NULL AND r.endTime IS NULL AND TIME(r.startTime) < :start)" +
+            ")))")
+    Page<Tables> findTablesByCriteria(@Param("name") String name,
+                                     @Param("date") Date date,
+                                     @Param("start") String start,
+                                     @Param("end") String end,
+                                      Pageable pageable);
+
     @Query(value = "SELECT t.name as name, " +
             "CASE " +
             "    WHEN r.id IS NOT NULL AND (" +
@@ -56,4 +73,13 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
                                                     Pageable pageable);
 
 
+    @Query("SELECT COUNT(t) > 0 FROM Reservation r JOIN Tables t ON r.table = t " +
+            "WHERE t.id = :tableId " +
+            "AND DATE(r.bookingDate) = :bookingDate " +
+            "AND ((TIME(r.startTime) <= :endTime AND TIME(r.endTime) >= :startTime) " +
+            "OR (TIME(r.startTime) >= :startTime AND TIME(r.endTime) <= :endTime))")
+    boolean isTableAvailable(@Param("tableId") Long tableId,
+                             @Param("bookingDate") Date bookingDate,
+                             @Param("startTime") String startTime,
+                             @Param("endTime") String endTime);
 }

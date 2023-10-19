@@ -1,11 +1,14 @@
 package project_final.advice;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import project_final.exception.*;
 
 import java.time.LocalDate;
@@ -33,14 +36,14 @@ public class AdviceHandlerController {
     }
 
     @ExceptionHandler(TimeIsValidException.class)
-    public String TimeFail(TimeIsValidException timeIsValidException, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "/error";
-        }
-        return null;
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // Đặt HTTP status code cho response
+    public String handleTimeIsValidException(TimeIsValidException ex, Model model) {
+        // Xử lý exception ở đây và truyền thông tin lỗi đến view thông qua Model
+        model.addAttribute("error", ex.getMessage());
+        return "/home";
     }
     @ExceptionHandler(CustomsException.class)
-    public String customFaeil(CustomsException customsException, BindingResult bindingResult) {
+    public String customFail(CustomsException customsException, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/error";
         }

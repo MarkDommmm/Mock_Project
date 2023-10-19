@@ -19,6 +19,7 @@ public interface IReservationService<K,V,E> {
     void cancel(E id, Long idUser);
     void completed(E id);
     void noShow(E id);
+    V findByUserAndCode(User user,String code);
     double revenuesOnDay( Date date);
     int countCompletedReservationsOnDay(Date date);
     Page<Map<String,Object>>  findReservationStatistics(int page, int size);
