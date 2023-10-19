@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<aside class="sidebar sidebar-default sidebar-hover sidebar-mini navs-pill-all ">
+<aside sec:authorize="hasAuthority('ROLE_ADMIN')" class="sidebar sidebar-default sidebar-hover sidebar-mini navs-pill-all ">
     <div class="sidebar-header d-flex align-items-center justify-content-start">
         <a href="/home" class="navbar-brand">
             <!--Logo start-->
@@ -1299,7 +1299,7 @@
                     </a>
                 </li>
 <!--                Restaurant-->
-                <li class="nav-item">
+                <li  class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-auth" role="button"
                        aria-expanded="false" aria-controls="sidebar-user">
                         <i class="icon">
@@ -1353,7 +1353,7 @@
                     </ul>
                 </li>
 <!--                User-->
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-user" role="button"
                        aria-expanded="false" aria-controls="sidebar-user">
                         <i class="icon">
@@ -1433,7 +1433,7 @@
                     </ul>
                 </li>
 <!--                Table-->
-                <li class="nav-item">
+                <li  class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#utilities-error" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
@@ -1480,7 +1480,7 @@
                     </ul>
                 </li>
 <!--                Table Type-->
-                <li class="nav-item">
+                <li  class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#tabletye" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
