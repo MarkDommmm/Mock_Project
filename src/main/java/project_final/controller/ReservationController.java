@@ -1,7 +1,15 @@
 package project_final.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,6 +63,7 @@ public class ReservationController {
 
 
 
+
     @PostMapping("/add")
     public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
@@ -99,9 +108,20 @@ public class ReservationController {
     }
 
     @GetMapping("/cancel/{id}")
-    public String cancel(@PathVariable Long id, HttpSession session) {
-        User user = (User) session.getAttribute("currentUser");
-        reservationService.cancel(id, user.getId());
-        return "redirect:/";
+    public String cancel(@PathVariable("id") Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        reservationService.cancel(id, userPrinciple.getId());
+        return "redirect:/auth/profile/" + userPrinciple.getId();
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> getFile(@PathVariable("id") Long id) {
+        String filename = "Reservation.xlsx";
+        InputStreamResource file = new InputStreamResource(generateExcelService.load(id));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
+
+
     }
 }
