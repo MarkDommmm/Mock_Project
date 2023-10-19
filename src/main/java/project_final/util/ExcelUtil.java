@@ -26,7 +26,7 @@ import java.util.*;
 @AllArgsConstructor
 public class ExcelUtil {
     private final ITableMenuRepository tableMenuRepository;
-    private final String SHEET_NAME = "Merge_cell_handle";
+    private final String SHEET_NAME = "Reservation";
 
     private CellStyle getGlobalCellStyle(Workbook workbook) {
         CellStyle globalCellStyle = workbook.createCellStyle();

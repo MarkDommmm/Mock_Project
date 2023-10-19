@@ -82,7 +82,7 @@ public class ReservationController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable("id") Long id) {
-        String filename = "Merge_cell_handle.xlsx";
+        String filename = "Reservation.xlsx";
         InputStreamResource file = new InputStreamResource(generateExcelService.load(id));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
