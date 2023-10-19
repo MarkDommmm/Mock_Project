@@ -1,6 +1,5 @@
 package project_final.controller;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -10,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import project_final.entity.Reservation;
 import project_final.entity.Tables;
 import project_final.entity.User;
-
 import project_final.exception.TimeIsValidException;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.repository.IUserRepository;
@@ -39,15 +38,12 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IUserService userService;
     private final ITableService tableService;
-
-    private final GenerateExcelService generateExcelService;
-
     private final ITableMenuService tableMenuService;
-
+    private final GenerateExcelService generateExcelService;
 
     @GetMapping
     public String getAll(Model model,
-                         @RequestParam(name = "date", required = false)
+       @RequestParam(name = "date", required = false)
                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                          @RequestParam(name = "page", defaultValue = "0") int page,
                          @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -68,8 +64,10 @@ public class ReservationController {
 
 
 
+
+
     @PostMapping("/add")
-    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model) throws TimeIsValidException, TimeIsValidException {
+    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
         if (bindingResult.hasErrors()){
             Long idTable = (Long) session.getAttribute("idTable");
@@ -92,13 +90,23 @@ public class ReservationController {
     public String updateReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest, BindingResult bindingResult, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
         reservationRequest.setUser(user);
-        return "redirect:/";
+        return "redirect:/reservation";
     }
 
     @GetMapping("/confirm/{id}")
-    public String confirm(@PathVariable("id") Long id) {
+    public String confirm(@PathVariable Long id) {
         reservationService.confirm(id);
-        return "redirect:/";
+        return "redirect:/reservation";
+    }
+    @GetMapping("/completed/{id}")
+    public String completed(@PathVariable Long id) {
+        reservationService.completed(id);
+        return "redirect:/reservation";
+    }
+    @GetMapping("/noShow/{id}")
+    public String noShow(@PathVariable Long id) {
+        reservationService.noShow(id);
+        return "redirect:/reservation";
     }
 
     @GetMapping("/cancel/{id}")
@@ -115,6 +123,7 @@ public class ReservationController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(file);
-    }
 
+
+    }
 }
