@@ -1316,8 +1316,7 @@
     <div class="content-inner mt-5 py-0">
         <div>
             <div class="row">
-
-                <div class="col-xl-8 col-lg-8">
+                <div class="col-md-12 col-lg-8">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="header-title">
@@ -1326,9 +1325,7 @@
                         </div>
                         <div class="card-body">
                             <div class="new-user-info">
-
                                 <div class="row" th:object="${table}">
-
                                     <div class="form-group col-md-12" style="display: flex;justify-content: center">
                                         <img th:src="*{tableImage}"
                                              class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
@@ -1351,84 +1348,98 @@
                                         <input type="text" class="form-control" id="des"
                                                placeholder="Description" th:field="*{description}" readonly>
                                     </div>
-
-
                                     <h4 class="card-title">Chose Time</h4>
-                                    <form class="row" action="/reservation/add" method="post" th:object="${reservation}">
-
-
+                                    <form class="row" action="/reservation/add" method="post"
+                                          th:object="${reservation}">
                                         <div class="form-group col-md-12">
                                             <label class="form-label" for="date">Booking date:</label>
                                             <input type="date" class="form-control" id="date" th:field="*{bookingDate}">
-                                            <span style="color: red" th:if="${#fields.hasErrors('bookingDate')}" th:errors="*{bookingDate}"></span>
+                                            <span style="color: red" th:if="${#fields.hasErrors('bookingDate')}"
+                                                  th:errors="*{bookingDate}"></span>
                                         </div>
-
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="start">Start Time:</label>
                                             <input type="time" class="form-control" id="start"
-                                                   placeholder="start time: ex: 8:30.." th:field="*{startTime}" th:format="'HH:mm'">
-                                            <span style="color: red" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>
+                                                   placeholder="start time: ex: 8:30.." th:field="*{startTime}"
+                                                   th:format="'HH:mm'">
+                                            <span style="color: red" th:if="${#fields.hasErrors('startTime')}"
+                                                  th:errors="*{startTime}"></span>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="end">End Time:</label>
                                             <input type="time" class="form-control" id="end"
-                                                   placeholder="start time: ex: 10:30" th:field="*{endTime}" th:format="'HH:mm'">
-                                            <span style="color: red" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></span>
+                                                   placeholder="start time: ex: 10:30" th:field="*{endTime}"
+                                                   th:format="'HH:mm'">
+                                            <span style="color: red" th:if="${#fields.hasErrors('endTime')}"
+                                                  th:errors="*{endTime}"></span>
                                         </div>
                                         <h4 class="card-title">Table reservation time</h4>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="mobno">Mobile Number:</label>
                                             <input type="text" class="form-control" id="mobno"
                                                    placeholder="Phone Number" th:field="*{phoneBooking}">
-                                            <span style="color: red" th:if="${#fields.hasErrors('phoneBooking')}" th:errors="*{phoneBooking}"></span>
+                                            <span style="color: red" th:if="${#fields.hasErrors('phoneBooking')}"
+                                                  th:errors="*{phoneBooking}"></span>
 
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label class="form-label" for="username">Name of the person booking the table:</label>
-                                            <input type="text" class="form-control" id="username" th:field="*{nameBooking}">
-                                            <span style="color: red" th:if="${#fields.hasErrors('nameBooking')}" th:errors="*{nameBooking}"></span>
+                                            <label class="form-label" for="username">Name of the person booking the
+                                                table:</label>
+                                            <input type="text" class="form-control" id="username"
+                                                   th:field="*{nameBooking}">
+                                            <span style="color: red" th:if="${#fields.hasErrors('nameBooking')}"
+                                                  th:errors="*{nameBooking}"></span>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="email">Email:</label>
-                                            <input type="email" class="form-control" id="email" th:field="*{emailBooking}">
-                                            <span style="color: red" th:if="${#fields.hasErrors('emailBooking')}" th:errors="*{emailBooking}"></span>
+                                            <input type="email" class="form-control" id="email"
+                                                   th:field="*{emailBooking}">
+                                            <span style="color: red" th:if="${#fields.hasErrors('emailBooking')}"
+                                                  th:errors="*{emailBooking}"></span>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div glass="form-group col-md-6">
                                             <label class="form-label" for="pno">Description:</label>
-                                            <textarea style="height: 20px" type="text" class="form-control" id="pno" th:field="*{description}"></textarea>
+                                            <textarea style="height: 20px" type="text" class="form-control" id="pno"
+                                                      th:field="*{description}"></textarea>
                                         </div>
-                                        <div class="form-group col-md-12">
+                                        <h6 class="card-title" style="margin-top: 20px">Payment Method</h6>
+                                        <div class="form-check form-check-inline form-group col-md-2" >
+                                            <input type="radio" class="form-check-input" name="bsradio" id="radio1"
+                                                   checked="">
+                                            <img width="100px" src="https://icon-library.com/images/cash-on-delivery-icon/cash-on-delivery-icon-8.jpg" alt="erorr">
 
-                                         </div>
+                                        </div>
+                                        <div class="form-check form-check-inline form-group col-md-4">
+                                            <input type="radio" class="form-check-input" name="bsradio" id="radio2">
+                                            <img width="100px" src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" alt="erorr">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Checkout</button>
+                                    </form>
                                 </div>
-                            </div>
-
-                                <button type="submit" class="btn btn-primary">Checkout</button>
-                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4">
+                <div class="col-md-12 col-lg-4">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="list-main">My Cart</h4>
                         </div>
                         <div class="card-body">
                             <div class="horizontal-scroll" id="render-cart">
-                            <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
-                                <div class="d-flex align-items-center justify-content-between profile-img4">
-                                    <div class="profile-img11">
-                                        <img th:src="${c.image}"
-                                             class="img-fluid rounded-pill avatar-115 blur-shadow position-end"
-                                             alt="img">
-                                        <img th:src="${c.image}"
-                                             class="img-fluid rounded-pill avatar-115" alt="img">
-                                    </div>
-                                    <div class="d-flex align-items-center profile-content">
-                                        <div>
-                                            <h6 class="mb-1 heading-title fw-bolder" th:text="${c.name}"></h6>
-                                            <span class="d-flex align-items-center ">
+                                <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
+                                    <div class="d-flex align-items-center justify-content-between profile-img4">
+                                        <div class="profile-img11">
+                                            <img th:src="${c.image}"
+                                                 class="img-fluid rounded-pill avatar-115 blur-shadow position-end"
+                                                 alt="img">
+                                            <img th:src="${c.image}"
+                                                 class="img-fluid rounded-pill avatar-115" alt="img">
+                                        </div>
+                                        <div class="d-flex align-items-center profile-content">
+                                            <div>
+                                                <h6 class="mb-1 heading-title fw-bolder" th:text="${c.name}"></h6>
+                                                <span class="d-flex align-items-center ">
                                               <svg width="10" height="10"
                                                    viewBox="0 0 10 10"
                                                    fill="none"
@@ -1443,9 +1454,9 @@
                                               <small class="text-dark ms-1"
                                                      th:text="${c.quantity}">1</small>
                                                 </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="me-4 text-end">
+                                        <div class="me-4 text-end">
                                           <span class="mb-1 remove-cart" th:data-menu-id="${c.id}">
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg">
@@ -1457,10 +1468,10 @@
                                                             fill="#E60A0A"/>
                                                 </svg>
                                             </span>
-                                        <p class="mb-0 text-dark" th:text="${c.price} + '$'"></p>
+                                            <p class="mb-0 text-dark" th:text="${c.price} + '$'"></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -1468,6 +1479,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Footer Section Start -->
     <footer class="footer">

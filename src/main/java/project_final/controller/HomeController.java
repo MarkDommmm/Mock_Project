@@ -1,7 +1,9 @@
 package project_final.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
- 
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +19,9 @@ import project_final.repository.IMenuRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
 import javax.servlet.http.HttpSession;
- 
+import javax.validation.Valid;
+import java.util.Date;
+
 @Controller
 @AllArgsConstructor
 public class HomeController {
@@ -26,11 +30,11 @@ public class HomeController {
     private final ITableTypeService tableTypeService;
     private final IMenuService menuService;
     private final ICategoryService categoryService;
- 
+
     private final IMenuRepository menuRepository;
     private final IUserService userService;
     private final IMailService mailService;
- 
+
 
     @RequestMapping("/public/login")
     public ModelAndView login() {
@@ -57,7 +61,7 @@ public class HomeController {
     }
 
     @PostMapping("/public/forgot-password")
-    public String sendVerification(@ModelAttribute("forgotPw") ForgotPassForm forgotPassForm,Model model) throws ForgotPassWordException {
+    public String sendVerification(@ModelAttribute("forgotPw") ForgotPassForm forgotPassForm, Model model) throws ForgotPassWordException {
         if (forgotPassForm.getVerification() == null) {
             String verification = userService.sendVerification(forgotPassForm.getEmail());
             if (verification == null) {
@@ -79,7 +83,7 @@ public class HomeController {
         return "redirect:/public/confirm-mail";
     }
 
- 
+
     @RequestMapping("/public/confirm-mail")
     public String confirmMail() {
 
@@ -87,18 +91,18 @@ public class HomeController {
     }
 
     @RequestMapping("/home")
-    public String getTableType(Model model, @AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session
-      @RequestParam(defaultValue = "5") int size,
+    public String getTableType(Model model,
+                               @RequestParam(defaultValue = "") String nameTableType,
+                               @RequestParam(defaultValue = "") String name,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "5") int size,
                                @RequestParam(name = "date", required = false)
                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                @RequestParam(name = "start", required = false, defaultValue = "") String start,
                                @RequestParam(name = "end", required = false, defaultValue = "") String end) {
-  
-        session.setAttribute("currentUser", userPrinciple);
         model.addAttribute("tables", tableService.findAvailableTables(date, start, end, page, size));
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
-
         return "dashboard/ChoseTable";
     }
 
@@ -121,13 +125,10 @@ public class HomeController {
                           @RequestParam(defaultValue = "12") int size,
                           @RequestParam(defaultValue = "10") int sizeCart,
                           Model model, HttpSession session) {
-
-
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         if (u != null) {
             model.addAttribute("cart", tableMenuService.getAll(u.getId(), page, sizeCart));
         }
-
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
@@ -216,6 +217,6 @@ public class HomeController {
     public String error403() {
         return "/dashboard/errors/error403";
     }
- 
+}
 
  

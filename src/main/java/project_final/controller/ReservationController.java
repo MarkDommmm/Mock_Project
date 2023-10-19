@@ -1,8 +1,10 @@
 package project_final.controller;
 
 
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import project_final.entity.Reservation;
 import project_final.entity.Tables;
 import project_final.entity.User;
 
+import project_final.exception.TimeIsValidException;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.repository.IUserRepository;
 import project_final.security.UserPrinciple;
@@ -65,8 +68,8 @@ public class ReservationController {
 
 
 
-
-    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
+    @PostMapping("/add")
+    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model) throws TimeIsValidException, TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
         if (bindingResult.hasErrors()){
             Long idTable = (Long) session.getAttribute("idTable");
