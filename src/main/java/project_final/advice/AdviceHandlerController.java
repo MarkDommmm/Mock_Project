@@ -6,10 +6,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import project_final.exception.ForgotPassWordException;
-import project_final.exception.RegisterException;
-import project_final.exception.ReviewException;
-import project_final.exception.TimeIsValidException;
+import project_final.exception.*;
 
 import java.time.LocalDate;
 
@@ -42,6 +39,12 @@ public class AdviceHandlerController {
         }
         return null;
     }
-
+    @ExceptionHandler(CustomsException.class)
+    public String customFaeil(CustomsException customsException, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "/error";
+        }
+        return null;
+    }
 
 }
