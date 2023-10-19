@@ -17,6 +17,8 @@ public interface IReservationService<K,V,E> {
     void save(K k, Reservation reservation)  throws TimeIsValidException;
     void confirm(E id);
     void cancel(E id, Long idUser);
+    void completed(E id);
+    void noShow(E id);
     double revenuesOnDay( Date date);
     int countCompletedReservationsOnDay(Date date);
     Page<Map<String,Object>>  findReservationStatistics(int page, int size);

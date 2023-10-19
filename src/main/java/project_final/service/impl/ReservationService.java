@@ -107,6 +107,24 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public void completed(Long id) {
+        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (reservation.isPresent()) {
+            reservation.get().setStatus(Status.COMPLETED);
+            reservationRepository.save(reservation.get());
+        }
+    }
+
+    @Override
+    public void noShow(Long id) {
+        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (reservation.isPresent()) {
+            reservation.get().setStatus(Status.NO_SHOW);
+            reservationRepository.save(reservation.get());
+        }
+    }
+
+    @Override
     public double revenuesOnDay(Date date ) {
         return 0;
     }

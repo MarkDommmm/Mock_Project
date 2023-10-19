@@ -33,7 +33,7 @@ public class ReservationController {
 
     @GetMapping
     public String getAll(Model model,
-                         @RequestParam(name = "date", required = false)
+       @RequestParam(name = "date", required = false)
                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                          @RequestParam(name = "page", defaultValue = "0") int page,
                          @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -79,19 +79,29 @@ public class ReservationController {
     public String updateReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest, BindingResult bindingResult, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
         reservationRequest.setUser(user);
-        return "redirect:/";
+        return "redirect:/reservation";
     }
 
     @GetMapping("/confirm/{id}")
     public String confirm(@PathVariable Long id) {
         reservationService.confirm(id);
-        return "redirect:/";
+        return "redirect:/reservation";
+    }
+    @GetMapping("/completed/{id}")
+    public String completed(@PathVariable Long id) {
+        reservationService.completed(id);
+        return "redirect:/reservation";
+    }
+    @GetMapping("/noShow/{id}")
+    public String noShow(@PathVariable Long id) {
+        reservationService.noShow(id);
+        return "redirect:/reservation";
     }
 
     @GetMapping("/cancel/{id}")
     public String cancel(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
-        reservationService.cancel(id, user);
+        reservationService.cancel(id, user.getId());
         return "redirect:/";
     }
 }
