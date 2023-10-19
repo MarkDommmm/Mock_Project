@@ -1171,8 +1171,12 @@
                                                 th:src="${t.tableImage}" alt="profile"></td>
                                         <td th:text="${t.description}"></td>
                                         <td>
-                                            <span th:if="${t.status}" class="badge bg-success">Activce</span>
-                                            <span th:unless="${t.status}" class="badge bg-danger">Inactive</span>
+                                            <a th:href="@{|/table/status/${t.id}|}">
+                                                <span th:if="${t.status}" class="badge bg-success">Activce</span>
+                                            </a>
+                                            <a th:href="@{|/table/status/${t.id}|}">
+                                                <span th:unless="${t.status}" class="badge bg-danger">Inactive</span>
+                                            </a>
                                         </td>
                                         <td>
                                             <div class="flex align-items-center list-user-action">

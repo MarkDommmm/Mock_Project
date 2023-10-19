@@ -51,7 +51,7 @@ public class AuthController {
     private final IReservationService reservationService;
     private final ITableMenuService tableMenuService;
 
-
+ 
 
     @GetMapping("/profile/{id}")
     private ModelAndView profile(@PathVariable("id") Long id,
@@ -72,6 +72,12 @@ public class AuthController {
     @GetMapping("/edit/{id}")
     private ModelAndView edit(@PathVariable("id") Long id) {
         return new ModelAndView("/dashboard/page/user/user-update", "profile", userService.findById(id));
+    }
+
+    @GetMapping("/status/{id}")
+    public String lockAndUnlock(@PathVariable("id") Long id){
+        userService.lock(id);
+        return "redirect:/user";
     }
 
     @PostMapping("/update")

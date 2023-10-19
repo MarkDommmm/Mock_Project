@@ -31,9 +31,10 @@ public class CategoryService implements ICategoryService {
         return categories.map(categoryMapper::toResponse);
     }
 
+
     @Override
     public List<CategoryResponse> findAll() {
-        return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
+        return categoryRepository.findAllByStatusIsTrue().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override

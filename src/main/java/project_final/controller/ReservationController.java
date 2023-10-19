@@ -1,28 +1,32 @@
 package project_final.controller;
 
-import lombok.AllArgsConstructor;
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project_final.entity.Reservation;
 import project_final.entity.Tables;
 import project_final.entity.User;
-import project_final.exception.CustomsException;
+
 import project_final.model.dto.request.ReservationRequest;
 import project_final.repository.IUserRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.IReservationService;
+import project_final.service.ITableMenuService;
 import project_final.service.ITableService;
 import project_final.service.IUserService;
 import project_final.service.impl.GenerateExcelService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Date;
 
 @Controller
@@ -32,25 +36,46 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IUserService userService;
     private final ITableService tableService;
+
     private final GenerateExcelService generateExcelService;
 
+    private final ITableMenuService tableMenuService;
+
+
     @GetMapping
-    public String getAll(Model model, @RequestParam Date date,
-                         @RequestParam(defaultValue = "0") int page,
-                         @RequestParam(defaultValue = "5") int size) {
+    public String getAll(Model model,
+                         @RequestParam(name = "date", required = false)
+                         @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                         @RequestParam(name = "page", defaultValue = "0") int page,
+                         @RequestParam(name = "size", defaultValue = "5") int size) {
         if (date == null) {
-            date = new Date(Long.MIN_VALUE);
+            date = new Date();
         }
         model.addAttribute("date", date);
-        model.addAttribute("reservations", reservationService.findAll(date, page, size));
-        return "/dashboard/page/reservation/list";
+        model.addAttribute("reservations", reservationService.findAll(date,page,size));
+        return "dashboard/page/reservation/reservation-list";
+    }
+
+    @GetMapping("/statistics")
+    public String getStatistics(Model model,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5")int size) {
+       model.addAttribute("statistics",reservationService.findReservationStatistics(page, size));
+        return "dashboard/page/reservation/statistics";
     }
 
 
-    @PostMapping("/add")
-    public String addReservation(@ModelAttribute("reservation") ReservationRequest reservationRequest, HttpSession session) throws CustomsException {
+
+
+
+    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,BindingResult bindingResult ,HttpSession session,Model model)throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-        reservationService.save(reservationRequest, reservation);
+        if (bindingResult.hasErrors()){
+            Long idTable = (Long) session.getAttribute("idTable");
+            model.addAttribute("table", tableService.findById(idTable));
+            model.addAttribute("reservation", new ReservationRequest());
+            model.addAttribute("cart", tableMenuService.getDetails(reservation.getId()));
+            return "dashboard/checkoutTable";
+        }
+        reservationService.save(reservationRequest,reservation);
         return "redirect:/home";
     }
 
@@ -61,10 +86,9 @@ public class ReservationController {
     }
 
     @PostMapping("/update")
-    public String updateReservation(@ModelAttribute("reservation") ReservationRequest reservationRequest, HttpSession session) {
+    public String updateReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest, BindingResult bindingResult, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
         reservationRequest.setUser(user);
-//        reservationService.save(reservationRequest);
         return "redirect:/";
     }
 
