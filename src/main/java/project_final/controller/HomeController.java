@@ -226,11 +226,12 @@ public class HomeController {
         String end = (String) session.getAttribute("end");
         Long id = reservation.getId();
         Long idTable = (Long) session.getAttribute("idTable");
-        model.addAttribute("date",date);
-        model.addAttribute("start",start);
-        model.addAttribute("end",end);
+        ReservationRequest reservationRequest = new ReservationRequest();
+        reservationRequest.setBookingDate(date);
+        reservationRequest.setStartTime(start);
+        reservationRequest.setEndTime(end);
         model.addAttribute("table", tableService.findById(idTable));
-        model.addAttribute("reservation", new ReservationRequest());
+        model.addAttribute("reservationRequest",reservationRequest );
         model.addAttribute("cart", tableMenuService.getDetails(id));
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";

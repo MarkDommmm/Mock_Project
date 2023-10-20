@@ -189,21 +189,8 @@
         // Chuyển hướng đến URL được xây dựng với các tham số
         window.location.href = url;
     });
-    // Gửi yêu cầu Ajax đến máy chủ
-    $.ajax({
-        type: "POST",
-        url: `/home/chose-table/${idTable}?date=${bookingDate}&start=${startTime}&end=${endTime}`,
-        error: function (xhr, status, error) {
-            // Xử lý lỗi từ máy chủ và hiển thị thông báo lỗi bằng Swal
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
+
+
 </script>
 <script>
     function updateTableInfo() {

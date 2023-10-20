@@ -71,7 +71,7 @@ public class ReservationService implements IReservationService<ReservationReques
         Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
 
        ReservationRequest request = ReservationRequest.builder()
-               .id(reservation.getId())
+               .id(reservationRequest.getId())
                .table(reservation.getTable())
                .user(reservation.getUser())
                .bookingDate(reservationRequest.getBookingDate())
