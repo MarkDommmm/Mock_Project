@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project_final.config.VNPayConfig;
 import project_final.entity.Reservation;
 import project_final.entity.TableMenu;
@@ -42,7 +44,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -185,16 +189,22 @@ public class ReservationController {
         return "redirect:/reservation";
     }
 
-    @GetMapping("/reservation/cancel/{id}")
-    public String cancel(@PathVariable("id") Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
-        reservationService.cancel(id, userPrinciple.getId());
-        return "redirect:/auth/profile/" + userPrinciple.getId();
+    @GetMapping("/reservation/cancel")
+    @ResponseBody
+    public Map<String, String> cancel(@RequestParam("id") Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        String message = reservationService.cancel(id, userPrinciple.getId());
+        Map<String, String> map = new HashMap<>();
+        map.put("error", "error");
+        map.put("message", message);
+        return map;
     }
+
 
     @GetMapping("/reservation/download/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable("id") Long id) {
         String filename = "Reservation.xlsx";
         InputStreamResource file = new InputStreamResource(generateExcelService.load(id));
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
@@ -203,10 +213,10 @@ public class ReservationController {
 
     }
 
-    @GetMapping("/search")
-    public  String searchByCode(@RequestParam String code,HttpSession session) {
-        User user = (User) session.getAttribute("currentUser");
-        reservationService.findByUserAndCode(user,code);
-        return "redirect:/reservation";
-    }
+//    @GetMapping("/search")
+//    public  String searchByCode(@RequestParam String code,HttpSession session) {
+//        User user = (User) session.getAttribute("currentUser");
+//        reservationService.findByUserAndCode(user,code);
+//        return "redirect:/reservation";
+//    }
 }

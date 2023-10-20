@@ -1932,29 +1932,29 @@
                                     </div>
                                 </div>
                             </div>
-                            <th:block th:if="${!cart.isEmpty()}">
-                                <div class="show-more">
-                                    <p>Scroll left show more!!</p>
-                                    <img class="animation--Gl63I"
-                                         src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"
-                                         alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
-                                         style="max-height: 80px;">
-                                </div>
-                                <div class="text-center" sec:authorize="isAuthenticated()"  >
-                                    <a type="button" href="/check-out"
-                                       style="margin-bottom: 20px"
-                                       class="btn btn-primary rounded-pill checkout">Checkout!!!</a>
-                                </div>
-                            </th:block>
-                            <th:block th:unless="${!cart.isEmpty()}">
-                                <div class="show-more">
-                                    <img class="animation--Gl63I"
-                                         src="https://eonbazar.com/images/loading_cart_2.gif"
-                                         alt="Cart isEmpty"
-                                         style="max-height: 80px;">
-                                    <p>Cart isEmpty!!!</p>
-                                </div>
-                            </th:block>
+<!--                            <th:block th:if="${!cart.isEmpty()}">-->
+<!--                                <div class="show-more">-->
+<!--                                    <p>Scroll left show more!!</p>-->
+<!--                                    <img class="animation&#45;&#45;Gl63I"-->
+<!--                                         src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"-->
+<!--                                         alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"-->
+<!--                                         style="max-height: 80px;">-->
+<!--                                </div>-->
+<!--                                <div class="text-center" sec:authorize="isAuthenticated()"  >-->
+<!--                                    <a type="button" href="/check-out"-->
+<!--                                       style="margin-bottom: 20px"-->
+<!--                                       class="btn btn-primary rounded-pill checkout">Checkout!!!</a>-->
+<!--                                </div>-->
+<!--                            </th:block>-->
+<!--                            <th:block th:unless="${!cart.isEmpty()}">-->
+<!--                                <div class="show-more">-->
+<!--                                    <img class="animation&#45;&#45;Gl63I"-->
+<!--                                         src="https://eonbazar.com/images/loading_cart_2.gif"-->
+<!--                                         alt="Cart isEmpty"-->
+<!--                                         style="max-height: 80px;">-->
+<!--                                    <p>Cart isEmpty!!!</p>-->
+<!--                                </div>-->
+<!--                            </th:block>-->
                         </div>
                     </div>
 

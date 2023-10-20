@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import project_final.entity.Reservation;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
+import project_final.model.dto.response.ReservationCheckCodeResponse;
 
 import java.util.Date;
 import java.util.List;
@@ -19,10 +20,10 @@ public interface IReservationService<K,V,E> {
     V findById(E id);
     void save(K k, Reservation reservation)  throws TimeIsValidException;
     void confirm(E id);
-    void cancel(E id, Long idUser);
+    String cancel(E id, Long idUser);
     void completed(E id);
     void noShow(E id);
-    V findByUserAndCode(User user,String code);
+    ReservationCheckCodeResponse findByCode(String code);
     double revenuesOnDay( Date date);
     int countCompletedReservationsOnDay(Date date);
     Page<Map<String,Object>>  findReservationStatistics(int page, int size);

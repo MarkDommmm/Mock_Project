@@ -29,11 +29,15 @@
 <div class="row">
     <div class="form-group col-lg-4">
         <label for="bookingDate">Booking Date:</label>
-        <input type="date" id="bookingDate" class="form-control" required/>
+        <div class="input-group">
+            <input type="date" class="form-control" id="bookingDate" placeholder="dd/mm/yyyy">
+        </div>
+
+        <!--        <input type="date" id="bookingDate" class="form-control" required/>-->
     </div>
     <div class="form-group col-lg-4">
         <label for="startTime">Start Time:</label>
-        <input type="time" id="startTime" class="form-control" required/>
+        <input type="time" id="startTime" class="form-control " required/>
     </div>
     <div class="form-group col-lg-4">
         <label for="endTime">End Time:</label>
@@ -189,9 +193,9 @@
             type: "GET",
             data: {
                 name: tableTypeName,
-                date:bookingDate,
-                start:startTime,
-                end:endTime
+                date: bookingDate,
+                start: startTime,
+                end: endTime
             },
             success: function (data) {
 
@@ -289,19 +293,19 @@
         var bookingDate = $("#bookingDate").val();
         var startTime = $("#startTime").val();
         var endTime = $("#endTime").val();
-      
+
 
         $.ajax({
             url: "/home/chose-idTable",
             type: "GET",
             data: {
                 id: idTable,
-                date:bookingDate,
-                start:startTime,
-                end:endTime
+                date: bookingDate,
+                start: startTime,
+                end: endTime
             },
             success: function (data) {
-              window.location.href = "/home/menu"
+                window.location.href = "/home/menu"
             }
         });
     });
