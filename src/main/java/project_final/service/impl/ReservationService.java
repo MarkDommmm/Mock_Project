@@ -13,7 +13,7 @@ import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.ReservationResponse;
 import project_final.repository.IPaymentRepository;
 import project_final.repository.IReservationRepository;
-import project_final.repository.ITableMenuRepository;
+import project_final.repository.IReservationMenuRepository;
 import project_final.service.IReservationService;
 import project_final.service.mapper.IReservationMapper;
 
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class ReservationService implements IReservationService<ReservationRequest, ReservationResponse,Long> {
    private final IReservationRepository reservationRepository;
    private final IReservationMapper reservationMapper;
-   private final ITableMenuRepository tableMenuRepository;
+   private final IReservationMenuRepository reservationMenuRepository;
    private final IPaymentRepository paymentRepository;
 
     @Override

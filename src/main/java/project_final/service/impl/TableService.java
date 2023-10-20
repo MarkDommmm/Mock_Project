@@ -43,7 +43,7 @@ public class TableService implements ITableService {
 
     @Override
     public Page<TableResponse> findAvailableTables(String name,Date date, String start, String end, int page, int size) {
-        Page<Tables> tables = tableRepository.findTablesByCriteria(name,date, start,end,PageRequest.of(page, size));
+        Page<Tables> tables = tableRepository.findAvailableTables(name,date, start,end,PageRequest.of(page, size));
         return tables.map(tableMapper::toResponse);
     }
 

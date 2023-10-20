@@ -30,7 +30,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class HomeController {
     private final ITableService tableService;
-    private final ITableMenuService tableMenuService;
+    private final IReservationMenuService reservationMenuService;
     private final ITableTypeService tableTypeService;
     private final IMenuService menuService;
     private final ICategoryService categoryService;
@@ -160,8 +160,9 @@ public class HomeController {
                           @RequestParam(defaultValue = "10") int sizeCart,
                           Model model, HttpSession session) {
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
+        Reservation reservation = new Reservation();
         if (u != null) {
-            model.addAttribute("cart", tableMenuService.getAll(u.getId(), page, sizeCart));
+            model.addAttribute("cart", reservationMenuService.getDetails(null));
         }
         Long idTable = (Long) session.getAttribute("idTable");
         session.setAttribute("idTable",  idTable);
@@ -169,8 +170,7 @@ public class HomeController {
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
         model.addAttribute("menuTrending", menuService.findTopSellingMenus());
-        model.addAttribute("tableMenu", new TableMenuRequest());
-
+        model.addAttribute("tableMenu", new ReservationMenuRequest());
         return "dashboard/menu";
     }
 
@@ -198,9 +198,9 @@ public class HomeController {
             HttpSession session) throws CustomsException {
         Long idTable = (Long) session.getAttribute("idTable");
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
-        Reservation reservation = tableMenuService.addCart(id, u.getId(), idTable);
+        Reservation reservation = reservationMenuService.addCart(id, u.getId(), idTable);
         session.setAttribute("reservationLocal", reservation);
-        return tableMenuService.getTableMenu(u.getId(), page, sizeCart);
+        return reservationMenuService.getTableMenu(u.getId(), page, sizeCart);
     }
 
 
@@ -213,8 +213,8 @@ public class HomeController {
             @RequestParam(defaultValue = "10") int sizeCart,
             HttpSession session) {
 
-        tableMenuService.removeCartItem(id);
-        return tableMenuService.findAll(name, page, sizeCart);
+        reservationMenuService.removeCartItem(id);
+        return reservationMenuService.findAll(name, page, sizeCart);
     }
 
 
@@ -239,7 +239,7 @@ public class HomeController {
 
         model.addAttribute("table", tableService.findById(idTable));
         model.addAttribute("reservationRequest",reservationRequest );
-        model.addAttribute("cart", tableMenuService.getDetails(id));
+        model.addAttribute("cart", reservationMenuService.getDetails(id));
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
     }

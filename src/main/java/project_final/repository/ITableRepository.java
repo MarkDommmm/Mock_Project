@@ -23,35 +23,23 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
     @Query("Select T from Tables T join T.tableType TableType where TableType.name=:name " )
     List<Tables> findAllByTableTypeName(@Param("name")String name);
 
-    @Query("SELECT t FROM Tables t " +
-            "WHERE t.id NOT IN " +
-            "(SELECT r.table.id FROM Reservation r " +
-            "WHERE t.status = true " +
-            "AND DATE(r.bookingDate) = :bookingDate " +
-            "AND ((TIME(r.startTime) <= :endTime AND TIME(r.endTime) >= :endTime) " +
-            "OR (TIME(r.startTime) <= :startTime AND TIME(r.endTime) >= :startTime) " +
-            "OR (TIME(r.startTime) >= :startTime AND TIME(r.endTime) <= :endTime)))")
-    Page<Tables> findAvailableTables(@Param("bookingDate") Date bookingDate,
-                                     @Param("startTime") String startTime,
-                                     @Param("endTime") String endTime,
-                                     Pageable pageable);
 
-    @Query("SELECT DISTINCT t FROM Tables t " +
+    @Query("SELECT t FROM Tables t " +
             "JOIN t.tableType tt " +
-            "LEFT JOIN Reservation r ON t.id = r.table.id " +
-            "WHERE tt.name LIKE %:name% " +
-            "AND (r.id IS NULL OR " +
-            "NOT (DATE(r.bookingDate) = :date AND (" +
-            "(r.startTime IS NULL AND r.endTime IS NULL) OR " +
-            "(r.startTime IS NOT NULL AND r.endTime IS NOT NULL AND (TIME(r.endTime) > :end OR TIME(r.startTime) < :start)) OR " +
-            "(r.startTime IS NULL AND r.endTime IS NOT NULL AND TIME(r.endTime) > :end) OR " +
-            "(r.startTime IS NOT NULL AND r.endTime IS NULL AND TIME(r.startTime) < :start)" +
-            ")))")
-    Page<Tables> findTablesByCriteria(@Param("name") String name,
+            "JOIN Reservation r ON t.id = r.table.id " +
+            "WHERE tt.name = :name " +
+            "AND DATE(r.bookingDate) = :date " +
+            "AND NOT (" +
+            "   (TIME(r.startTime) < :start AND TIME(r.endTime) > :start AND TIME(r.endTime) < :end) OR " +
+            "   (TIME(r.startTime) > :start AND TIME(r.startTime) < :end AND TIME(r.endTime) > :end) OR " +
+            "   (TIME(r.startTime) < :start AND TIME(r.endTime) > :end)" +
+            ")")
+    Page<Tables> findAvailableTables(@Param("name") String name,
                                      @Param("date") Date date,
                                      @Param("start") String start,
                                      @Param("end") String end,
-                                      Pageable pageable);
+                                     Pageable pageable);
+
 
     @Query(value = "SELECT t.name as name, " +
             "CASE " +

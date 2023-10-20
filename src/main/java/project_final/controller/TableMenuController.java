@@ -5,31 +5,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project_final.exception.CustomsException;
-import project_final.model.dto.request.TableMenuRequest;
-import project_final.service.ITableMenuService;
+import project_final.model.dto.request.ReservationMenuRequest;
+import project_final.service.IReservationMenuService;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/tableMenu")
 public class TableMenuController {
-    private final ITableMenuService tableMenuService;
+    private final IReservationMenuService tableMenuService;
     @GetMapping
     public String getTableMenu(Model model,@RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size) {
         model.addAttribute("tableMenus", tableMenuService.findAll(name,page,size));
         model.addAttribute("name", name);
-        return "/dashboard/page/tableMenu";
+        return "/dashboard/page/reservationMenus";
     }
 
     @GetMapping("/add")
     public String add(Model model){
-        model.addAttribute("tableMenu",new TableMenuRequest());
-        return "/dashboard/page/tableMenu/add";
+        model.addAttribute("tableMenu",new ReservationMenuRequest());
+        return "/dashboard/page/reservationMenus/add";
     }
 
     @PostMapping("/add")
-    public String addTableMenu(@ModelAttribute("tableMenu") TableMenuRequest tableMenuRequest ) throws CustomsException {
+    public String addTableMenu(@ModelAttribute("tableMenu") ReservationMenuRequest tableMenuRequest ) throws CustomsException {
         tableMenuService.save(tableMenuRequest);
         return "redirect:/tableMenu";
     }
@@ -37,11 +37,11 @@ public class TableMenuController {
     @GetMapping("/edit/{id}")
     public String edit(Model model,@PathVariable Long id){
         model.addAttribute("tableMenu",tableMenuService.findById(id));
-        return "/dashboard/page/tableMenu/add";
+        return "/dashboard/page/reservationMenus/add";
     }
 
     @PostMapping("/update")
-    public String updateTableMenu(@ModelAttribute("tableMenu") TableMenuRequest tableMenuRequest ) throws CustomsException {
+    public String updateTableMenu(@ModelAttribute("tableMenu") ReservationMenuRequest tableMenuRequest ) throws CustomsException {
         tableMenuService.save(tableMenuRequest);
         return "redirect:/tableMenu";
     }
