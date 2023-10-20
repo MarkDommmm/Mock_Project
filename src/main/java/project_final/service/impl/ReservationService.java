@@ -10,6 +10,7 @@ import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
+import project_final.model.dto.response.ReservationCheckCodeResponse;
 import project_final.model.dto.response.ReservationResponse;
 import project_final.repository.IPaymentRepository;
 import project_final.repository.IReservationRepository;
@@ -17,8 +18,12 @@ import project_final.repository.IReservationMenuRepository;
 import project_final.service.IReservationService;
 import project_final.service.mapper.IReservationMapper;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +32,13 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+ 
 public class ReservationService implements IReservationService<ReservationRequest, ReservationResponse,Long> {
    private final IReservationRepository reservationRepository;
    private final IReservationMapper reservationMapper;
    private final IReservationMenuRepository reservationMenuRepository;
    private final IPaymentRepository paymentRepository;
+ 
 
     @Override
     public Page<ReservationResponse> findByUserIdAndStatusPending(int page, int size, Long id) {
@@ -65,28 +72,29 @@ public class ReservationService implements IReservationService<ReservationReques
     @Override
 
     public void save(ReservationRequest reservationRequest, Reservation reservation) throws TimeIsValidException {
-        if (isEndTimeAfterStartTime(reservationRequest.getEndTime(),reservationRequest.getStartTime())){
+        if (isEndTimeAfterStartTime(reservationRequest.getEndTime(), reservationRequest.getStartTime())) {
             throw new TimeIsValidException("End time must be must be larger start time");
         }
         Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
 
-       ReservationRequest request = ReservationRequest.builder()
-               .id(reservationRequest.getId())
-               .table(reservation.getTable())
-               .user(reservation.getUser())
-               .bookingDate(reservationRequest.getBookingDate())
-               .startTime(reservationRequest.getStartTime())
-               .endTime(reservationRequest.getEndTime())
-               .nameBooking(reservationRequest.getNameBooking())
-               .phoneBooking(reservationRequest.getPhoneBooking())
-               .emailBooking(reservationRequest.getEmailBooking())
-               .description(reservationRequest.getDescription())
-               .payment(payment.get())
-               .code(reservation.getCode())
-               .status(reservation.getStatus())
-               .build();
+        ReservationRequest request = ReservationRequest.builder()
+                .id(reservationRequest.getId())
+                .table(reservation.getTable())
+                .user(reservation.getUser())
+                .bookingDate(reservationRequest.getBookingDate())
+                .startTime(reservationRequest.getStartTime())
+                .endTime(reservationRequest.getEndTime())
+                .nameBooking(reservationRequest.getNameBooking())
+                .phoneBooking(reservationRequest.getPhoneBooking())
+                .emailBooking(reservationRequest.getEmailBooking())
+                .description(reservationRequest.getDescription())
+                .payment(payment.get())
+                .code(reservation.getCode())
+                .status(reservation.getStatus())
+                .build();
         reservationRepository.save(reservationMapper.toEntity(request));
     }
+
     private boolean isEndTimeAfterStartTime(String startTime, String endTime) {
         try {
             LocalTime start = LocalTime.parse(startTime);
@@ -98,8 +106,6 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
 
-
-
     @Override
     public void confirm(Long id) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
@@ -109,15 +115,34 @@ public class ReservationService implements IReservationService<ReservationReques
         }
     }
 
-     @Override
-    public void cancel(Long id, Long idUser) {
+    @Override
+    public String cancel(Long id, Long idUser) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
-            if (idUser.equals(reservation.get().getUser().getId())) {}
-            reservation.get().setStatus(Status.CANCEL);
-            reservationRepository.save(reservation.get());
+            LocalDateTime currentTime = LocalDateTime.now();
+            Date reservationDate = reservation.get().getBookingDate();
+            Time reservationTime = reservation.get().getStartTime();
+
+            LocalDateTime reservationDateTime = LocalDateTime.ofInstant(reservationDate.toInstant(), ZoneId.systemDefault())
+                    .plusHours(reservationTime.toLocalTime().getHour())
+                    .plusMinutes(reservationTime.toLocalTime().getMinute());
+
+            // Kiểm tra nếu thời điểm đặt phòng cách thời điểm hiện tại ít nhất 4 tiếng
+            if (ChronoUnit.HOURS.between(currentTime, reservationDateTime) >= 4) {
+                if (idUser.equals(reservation.get().getUser().getId())) {
+                    reservation.get().setStatus(Status.CANCEL);
+                    reservationRepository.save(reservation.get());
+                    return "Reservation canceled successfully";
+                } else {
+                    return "You don't have permission to cancel this reservation";
+                }
+            } else {
+                return "You cannot cancel reservation within 4 hours of booking";
+            }
         }
+        return "Reservation not found";
     }
+
 
     @Override
     public void completed(Long id) {
@@ -138,12 +163,12 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
-    public ReservationResponse findByUserAndCode(User user, String code) {
-        return reservationMapper.toResponse(reservationRepository.findByUserAndCode(user, code));
+    public ReservationCheckCodeResponse findByCode(String code) {
+        return reservationMapper.toResponseCheckCode(reservationRepository.findByCode(code));
     }
 
     @Override
-    public double revenuesOnDay(Date date ) {
+    public double revenuesOnDay(Date date) {
         return 0;
     }
 
