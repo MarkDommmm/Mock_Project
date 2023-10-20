@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import project_final.entity.Reservation;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
+import project_final.model.dto.response.ReservationCheckCodeResponse;
 import project_final.model.dto.response.ReservationResponse;
 import project_final.repository.ITableMenuRepository;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 @Component
 
-public class ReservationMapper implements IReservationMapper{
+public class ReservationMapper implements IReservationMapper {
 
     @Override
     public Reservation toEntity(ReservationRequest reservationRequest) {
@@ -36,6 +37,23 @@ public class ReservationMapper implements IReservationMapper{
                 .build();
     }
 
+    public ReservationCheckCodeResponse toResponseCheckCode(Reservation reservation) {
+        return ReservationCheckCodeResponse.builder()
+                .id(reservation.getId())
+                .idUser(reservation.getUser().getId())
+                .table(reservation.getTable().getName())
+                .createdDate(reservation.getCreatedDate())
+                .bookingDate(reservation.getBookingDate())
+                .startTime(reservation.getStartTime())
+                .endTime(reservation.getEndTime())
+                .nameBooking(reservation.getNameBooking())
+                .emailBooking(reservation.getEmailBooking())
+                .phoneBooking(reservation.getPhoneBooking())
+                .description(reservation.getDescription())
+                .code(reservation.getCode())
+                .payment(reservation.getPayment().getPaymentMethod())
+                .status(reservation.getStatus()).build();
+    }
 
     @Override
     public ReservationResponse toResponse(Reservation reservation) {

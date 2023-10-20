@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
           integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
     <style>
         .delete-admin {
             position: absolute;
@@ -1457,8 +1459,14 @@
                                 <p class="mb-4">Get <span class="text-primary">FREE delivery </span>on every
                                     weekend.</p>
                                 <a href="/home/menu">
-                                    <button type="button" class="btn btn-primary rounded-pill">Check Menu</button>
+                                    <button type="button" style="border-radius: 30px !important;"
+                                            class="btn btn-primary rounded-pill">Check Menu
+                                    </button>
                                 </a>
+                                <button type="button" style="border-radius: 30px !important;margin-left: 15px"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                        class="btn btn-primary rounded-pill">Look up orders
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1469,7 +1477,7 @@
             <div class="card-transparent bg-transparent mb-0" id="nav-table">
                 <div class="card-header border-0  ">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3>Tables category</h3>
+                        <h3>Tables category & Check time</h3>
                         <a href="#" class="text-dark d-flex">View All
                             <svg width="24" height="24" class="ms-1" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -1485,7 +1493,6 @@
             </div>
         </div>
     </div>
-
 
 
     <!-- Footer Section Start -->
@@ -1513,7 +1520,184 @@
     </footer>
     <!-- Footer Section End -->
 
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="left: 4%;top: 17%">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 77%;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Check Code Order!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <div class="bd-example" id="render-modal">
+                        <form>
+                            <div class="mb-3">
+                                <label for="code" class="form-label text-center">Enter your code:</label>
+                                <input type="text" class="form-control" id="code">
+                            </div>
+                            <button style="float: right" class="checkCode btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        $(document).on("click", ".checkCode", function (e) {
+            e.preventDefault();
+            const code = $("#code").val();
+
+            $.ajax({
+                url: "/auth/check-code-order",
+                type: "GET",
+                data: {
+                    code: code
+                },
+                success: function (data) {
+                    console.log(data)
+                    $("#staticBackdrop").css({
+                        "left": "-16%",
+                        "top": "10%"
+                    });
+                    $(".modal-content").css({
+                        "width":"203%"
+                    })
+                    $("#modal-body").html("");
+                    let htmlCode = `
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <h3>Table Orders</h3>
+                            <table class="table table-striped" role="grid"
+                                   data-toggle="data-table" style="text-align: center">
+                                <thead>
+                                <tr class="ligth">
+
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Table</th>
+                            <th>Payment</th>
+                            <th>Reservation Details</th>
+                            <th>Status</th>
+                             <th style="min-width: 100px">Export Excecl</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                            <td>${data.code}</td>
+                            <td>${data.nameBooking}</td>
+                            <td>${data.emailBooking}</td>
+                            <td>${data.phoneBooking}</td>
+                            <td>${data.table}</td>
+                            <td>${data.payment}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary click-detail"
+                                 data-id-detail="${data.id}"> Show Detail!!!
+                                </button>
+                            </td>
+                            <td>
+                                <!--                                <span th:if="${data.status}" class="badge bg-success">Activce</span>-->
+                                <!--                                <span th:unless="${data.status}" class="badge bg-danger">Inactive</span>-->
+                                <span  >${data.status}</span>
+                            </td>
+                            <td>
+                                <div class="flex align-items-center list-user-action">
+                                    <a class="btn btn-sm btn-icon " data-toggle="tooltip"
+                                       data-placement="top" title="" data-original-title="Excel"
+                                       th:href="@{|/reservation/download/${data.id}|}">
+                                    <span class="btn-inner">
+                                      <img width="30px"
+                                           src="https://cdn.icon-icons.com/icons2/2107/PNG/512/file_type_excel_icon_130611.png">
+                                    </span>
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+</tbody>
+                            </table>
+                        </div>
+                    </div>
+                    `;
+                    $("#modal-body").append(htmlCode);
+                },
+
+            });
+        });
+        $(document).on("click", ".click-detail", function () {
+
+            var id = $(this).data("id-detail");
+
+            $.ajax({
+                url: "/auth/reservation-detail",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    console.log(data)
+                    $("#staticBackdrop").css({
+                        "left": "-16%",
+                        "top": "10%"
+                    });
+                    $(".modal-content").css({
+                        "width":"203%"
+                    })
+                    $("#modal-body").html("");
+                    let htmlCode = `
+                     <div class="col-lg-12">
+                        <div class="table-responsive">
+
+                            <h3>Table Orders</h3>
+                            <table class="table table-striped" role="grid"
+                                   data-toggle="data-table" style="text-align: center">
+                                <thead>
+                                <tr class="ligth">
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Food</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Date Booking</th>
+                                    <th>Start time</th>
+                                    <th>End time</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody class="render-details"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    `;
+                    $("#modal-body").append(htmlCode);
+
+                    $(".render-details").html("");
+                    $.each(data, function (index, d) {
+                        let htmlMenu = `
+                        <tr >
+                            <td>${d.id}</td>
+<td class="text-center">
+       <img class="bg-soft-primary rounded img-fluid avatar-40 me-3" src="${d.image}" alt="profile">
+ </td>
+  <td>${d.name}</td>
+  <td>$ ${d.price}</td>
+  <td>${d.quantity}</td>
+  <td>${d.dateBooking}</td>
+  <td>${d.startTime}</td>
+  <td>${d.endTime}</td>
+  <td>${d.status}</td>
+
+     </tr>
+                    `;
+                        $(".render-details").append(htmlMenu);
+                    })
+
+                }
+            });
+        });
+    </script>
 </main>
 <!-- Wrapper End-->
 <!-- offcanvas start -->

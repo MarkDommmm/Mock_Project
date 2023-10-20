@@ -27,6 +27,7 @@ import project_final.model.dto.request.LoginRequestDto;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
 
+import project_final.model.dto.response.ReservationResponse;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.service.*;
 
@@ -51,7 +52,6 @@ public class AuthController {
     private final IReservationService reservationService;
     private final ITableMenuService tableMenuService;
 
- 
 
     @GetMapping("/profile/{id}")
     private ModelAndView profile(@PathVariable("id") Long id,
@@ -61,11 +61,12 @@ public class AuthController {
         model.addAttribute("reservation", reservationService.findByUserId(page, size, id));
         return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
     }
+
     @GetMapping("/get-order-pending/{id}")
     private ModelAndView getOrderByStatusPending(@PathVariable("id") Long id,
-                                 Model model,
-                                 @RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size) {
+                                                 Model model,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
         model.addAttribute("reservation", reservationService.findByUserIdAndStatusPending(page, size, id));
         return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
     }
@@ -76,13 +77,21 @@ public class AuthController {
         return tableMenuService.getDetails(id);
     }
 
+    @GetMapping("/check-code-order")
+    @ResponseBody
+    public Object getCheckCodeOrder(@RequestParam(name = "code") String code) {
+
+        return reservationService.findByCode(code);
+    }
+
+
     @GetMapping("/edit/{id}")
     private ModelAndView edit(@PathVariable("id") Long id) {
         return new ModelAndView("/dashboard/page/user/user-update", "profile", userService.findById(id));
     }
 
     @GetMapping("/status/{id}")
-    public String lockAndUnlock(@PathVariable("id") Long id){
+    public String lockAndUnlock(@PathVariable("id") Long id) {
         userService.lock(id);
         return "redirect:/user";
     }
@@ -103,7 +112,6 @@ public class AuthController {
         userService.changePass(userRequest);
         return "redirect:/home";
     }
-
 
 
 }
