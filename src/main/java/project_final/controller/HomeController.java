@@ -106,10 +106,10 @@ public class HomeController {
                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                @RequestParam(name = "start", required = false, defaultValue = "") String start,
                                @RequestParam(name = "end", required = false, defaultValue = "") String end) {
- 
-        session.setAttribute("currentUser",userPrinciple );
-        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
- 
+
+        session.setAttribute("currentUser", userPrinciple);
+//        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
+
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
@@ -125,16 +125,34 @@ public class HomeController {
             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
             @RequestParam(name = "start", required = false, defaultValue = "") String start,
             @RequestParam(name = "end", required = false, defaultValue = "") String end) {
-        if (date==null) {
+        if (date == null) {
             date = new Date();
         }
+
         TableDataDTO tableDataDTO = new TableDataDTO();
         tableDataDTO.setTableTypes(tableTypeService.findAll(name, page, size));
-        tableDataDTO.setTables(tableService.findAvailableTables(name,date,start,end, page, size).getContent());
+        tableDataDTO.setTables(tableService.findAvailableTables(name, date, start, end, page, size).getContent());
         return tableDataDTO;
     }
+    @GetMapping("/home/chose-idTable")
+    public String choseTable(
+            @RequestParam(name = "id") Long id,
+            @RequestParam(name = "date", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+            @RequestParam(name = "start", required = false, defaultValue = "") String start,
+            @RequestParam(name = "end", required = false, defaultValue = "") String end,
+            HttpSession session) throws TimeIsValidException {
+        if (tableService.isTableAvailable(id, date, start, end)) {
+            throw new TimeIsValidException("bàn đã được sử dụng");
+        }
 
-    //ada;pa;p
+        session.setAttribute("idTable", id);
+        session.setAttribute("date", date);
+        session.setAttribute("start", start);
+        session.setAttribute("end", end);
+        return "redirect:/home/menu";
+    }
+
     @RequestMapping("/home/menu")
     public String getMenu(@RequestParam(defaultValue = "") String name,
                           @RequestParam(defaultValue = "0") int page,
@@ -145,6 +163,8 @@ public class HomeController {
         if (u != null) {
             model.addAttribute("cart", tableMenuService.getAll(u.getId(), page, sizeCart));
         }
+        Long idTable = (Long) session.getAttribute("idTable");
+        session.setAttribute("idTable",  idTable);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
@@ -197,22 +217,7 @@ public class HomeController {
         return tableMenuService.findAll(name, page, sizeCart);
     }
 
-    @GetMapping("/home/chose-table/{id}")
-    public String choseTable(@PathVariable("id") Long id,
-                             @RequestParam(name = "date", required = false)
-                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                             @RequestParam(name = "start", required = false, defaultValue = "") String start,
-                             @RequestParam(name = "end", required = false, defaultValue = "") String end,
-                             HttpSession session) throws  TimeIsValidException{
-        if (tableService.isTableAvailable(id,date,start,end)){
-            throw new TimeIsValidException("bàn đã được sử dụng");
-        }
-        session.setAttribute("idTable", id);
-        session.setAttribute("date", date);
-        session.setAttribute("start", start);
-        session.setAttribute("end", end);
-        return "redirect:/home/menu";
-    }
+
 
     @GetMapping("/check-out")
     public String checkoutTable(HttpSession session,
@@ -226,9 +231,9 @@ public class HomeController {
         String end = (String) session.getAttribute("end");
         Long id = reservation.getId();
         Long idTable = (Long) session.getAttribute("idTable");
-        model.addAttribute("date",date);
-        model.addAttribute("start",start);
-        model.addAttribute("end",end);
+        model.addAttribute("date", date);
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
         model.addAttribute("table", tableService.findById(idTable));
         model.addAttribute("reservation", new ReservationRequest());
         model.addAttribute("cart", tableMenuService.getDetails(id));
