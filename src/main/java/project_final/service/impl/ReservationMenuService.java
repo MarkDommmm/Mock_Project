@@ -5,27 +5,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.entity.*;
-import project_final.exception.CustomsException;
 import project_final.model.domain.Status;
-import project_final.model.dto.request.TableMenuRequest;
+import project_final.model.dto.request.ReservationMenuRequest;
 import project_final.model.dto.response.TableMenuCartResponse;
-import project_final.model.dto.response.TableMenuResponse;
+import project_final.model.dto.response.ReservationMenuResponse;
 import project_final.repository.*;
-import project_final.service.ITableMenuService;
-import project_final.service.mapper.CartMapper;
-import project_final.service.mapper.ITableMenuMapper;
+import project_final.service.IReservationMenuService;
+import project_final.service.mapper.IReservationMenuMapper;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class TableMenuService implements ITableMenuService {
-    private final ITableMenuRepository tableMenuRepository;
-    private final ITableMenuMapper tableMenuMapper;
+public class ReservationMenuService implements IReservationMenuService {
+    private final IReservationMenuRepository reservationMenuRepository;
+    private final IReservationMenuMapper reservationMenuMapper;
     private final IMenuRepository menuRepository;
     private final ITableRepository tableRepository;
     private final IUserRepository userRepository;
@@ -33,30 +28,30 @@ public class TableMenuService implements ITableMenuService {
 
     @Override
     public Page<TableMenuCartResponse> findAll(String name, int page, int size) {
-        Page<TableMenu> tableMenus = tableMenuRepository.findAllByMenuName(
+        Page<ReservationMenu> tableMenus = reservationMenuRepository.findAllByMenuName(
                 name, PageRequest.of(page, size));
-        return tableMenus.map(tableMenuMapper::toResponse);
+        return tableMenus.map(reservationMenuMapper::toResponse);
     }
 
     @Override
-    public Page<TableMenuResponse> getAll(Long id, int page, int size) {
-        Page<TableMenu> tableMenus = tableMenuRepository.findAllByUser(
+    public Page<ReservationMenuResponse> getAll(Long id, int page, int size) {
+        Page<ReservationMenu> tableMenus = reservationMenuRepository.findAllByUser(
                 id, PageRequest.of(page, size));
-        return tableMenus.map(tableMenuMapper::toRepon);
+        return tableMenus.map(reservationMenuMapper::toReponse);
 
     }
 
     @Override
     public Page<TableMenuCartResponse> getTableMenu(Long id, int page, int size) {
-        Page<TableMenu> tableMenus = tableMenuRepository.findAllByUser(
+        Page<ReservationMenu> tableMenus = reservationMenuRepository.findAllByUser(
                 id, PageRequest.of(page, size));
-        return tableMenus.map(tableMenuMapper::toResponse);
+        return tableMenus.map(reservationMenuMapper::toResponse);
     }
 
     @Override
     public List<TableMenuCartResponse> getDetails(Long id) {
-        List<TableMenu> tableMenus = tableMenuRepository.findAllByReservation(id);
-        return tableMenus.stream().map(tableMenuMapper::toResponse).collect(Collectors.toList());
+        List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllByReservation(id);
+        return reservationMenus.stream().map(reservationMenuMapper::toResponse).collect(Collectors.toList());
     }
 
 
@@ -83,21 +78,21 @@ public class TableMenuService implements ITableMenuService {
         Optional<Menu> menuOptional = menuRepository.findById(id);
         if (menuOptional.isPresent()) {
             Menu menu = menuOptional.get();
-            List<TableMenu> tableMenuCartResponses = tableMenuRepository.findAll();
+            List<ReservationMenu> reservationMenuCartRespons = reservationMenuRepository.findAll();
             boolean menuInCart = false;
 
-            for (TableMenu tableMenu : tableMenuCartResponses) {
-                if (tableMenu.getMenu().getId().equals(menu.getId()) && tableMenu.getReservation().getId().equals(r.getId())) {
-                    tableMenu.setQuantity(tableMenu.getQuantity() + 1);
-                    tableMenu.setPrice(menu.getPrice() * tableMenu.getQuantity());
+            for (ReservationMenu reservationMenu : reservationMenuCartRespons) {
+                if (reservationMenu.getMenu().getId().equals(menu.getId()) && reservationMenu.getReservation().getId().equals(r.getId())) {
+                    reservationMenu.setQuantity(reservationMenu.getQuantity() + 1);
+                    reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantity());
                     menuInCart = true;
-                    tableMenuRepository.save(tableMenu);
+                    reservationMenuRepository.save(reservationMenu);
                     break;
                 }
             }
 
             if (!menuInCart) {
-                TableMenuRequest tableMenuRequest = new TableMenuRequest();
+                ReservationMenuRequest tableMenuRequest = new ReservationMenuRequest();
                 tableMenuRequest.setMenu(menu);
                 tableMenuRequest.setReservation(r);
                 tableMenuRequest.setPrice(menu.getPrice());
@@ -108,15 +103,16 @@ public class TableMenuService implements ITableMenuService {
     }
 
 
+
     @Override
     public void removeCartItem(Long id) {
-        for (TableMenu tableMenu : tableMenuRepository.findAll()) {
-            if (tableMenu.getId().equals(id)) {
-                if (tableMenu.getQuantity() <= 1) {
-                    tableMenuRepository.deleteById(tableMenu.getId());
+        for (ReservationMenu reservationMenu : reservationMenuRepository.findAll()) {
+            if (reservationMenu.getId().equals(id)) {
+                if (reservationMenu.getQuantity() <= 1) {
+                    reservationMenuRepository.deleteById(reservationMenu.getId());
                 } else {
-                    tableMenu.setQuantity(tableMenu.getQuantity() - 1);
-                    tableMenuRepository.save(tableMenu);
+                    reservationMenu.setQuantity(reservationMenu.getQuantity() - 1);
+                    reservationMenuRepository.save(reservationMenu);
                 }
                 break;
             }
@@ -126,33 +122,33 @@ public class TableMenuService implements ITableMenuService {
 
     @Override
     public TableMenuCartResponse findById(Long id) {
-        Optional<TableMenu> tableMenu = tableMenuRepository.findById(id);
+        Optional<ReservationMenu> tableMenu = reservationMenuRepository.findById(id);
         if (tableMenu.isPresent()) {
-            return tableMenuMapper.toResponse(tableMenu.get());
+            return reservationMenuMapper.toResponse(tableMenu.get());
         }
         return null;
     }
 
     @Override
-    public void save(TableMenuRequest tableMenuRequest) {
-        tableMenuRepository.save(tableMenuMapper.toEntity(tableMenuRequest));
+    public void save(ReservationMenuRequest tableMenuRequest) {
+        reservationMenuRepository.save(reservationMenuMapper.toEntity(tableMenuRequest));
     }
 
     @Override
     public void delete(Long id) {
-        Optional<TableMenu> tableMenu = tableMenuRepository.findById(id);
+        Optional<ReservationMenu> tableMenu = reservationMenuRepository.findById(id);
         if (tableMenu.isPresent()) {
-            tableMenuRepository.deleteById(id);
+            reservationMenuRepository.deleteById(id);
         }
     }
 
 
     @Override
     public void changeStatus(Long id) {
-        Optional<TableMenu> tableMenu = tableMenuRepository.findById(id);
+        Optional<ReservationMenu> tableMenu = reservationMenuRepository.findById(id);
         if (tableMenu.isPresent()) {
             tableMenu.get().setStatus(!tableMenu.get().isStatus());
-            tableMenuRepository.save(tableMenu.get());
+            reservationMenuRepository.save(tableMenu.get());
         }
     }
 

@@ -17,24 +17,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+ 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project_final.config.VNPayConfig;
+ 
 import project_final.entity.Reservation;
-import project_final.entity.TableMenu;
-import project_final.entity.Tables;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.TableMenuCartResponse;
-import project_final.repository.IPaymentRepository;
-import project_final.repository.IUserRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.IReservationService;
-import project_final.service.ITableMenuService;
-import project_final.service.ITableService;
-import project_final.service.IUserService;
+import project_final.service.IReservationMenuService;
 import project_final.service.impl.GenerateExcelService;
 import project_final.service.impl.PaypalService;
 import project_final.service.impl.VNPayService;
@@ -54,7 +50,7 @@ import java.util.Map;
 public class ReservationController {
     private final IReservationService reservationService;
 
-    private final ITableMenuService tableMenuService;
+    private final IReservationMenuService tableMenuService;
     private final GenerateExcelService generateExcelService;
 
     private final PaypalService paypalService;
@@ -94,8 +90,9 @@ public class ReservationController {
             double price = item.getPrice();
             totalPrice += price;
         }
-
-        if (reservationRequest.getPayment().getId().equals(2L)) {
+        if (reservationRequest.getPayment().getId().equals(1L)) {
+            reservationService.save(reservationRequest, reservation);
+        } else if (reservationRequest.getPayment().getId().equals(2L)) {
             String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
             String vnPayUrl = vnPayService.createOrder(totalPrice, reservation.getCode(), baseUrl);
             reservationService.save(reservationRequest, reservation);
@@ -213,10 +210,12 @@ public class ReservationController {
 
     }
 
-//    @GetMapping("/search")
-//    public  String searchByCode(@RequestParam String code,HttpSession session) {
-//        User user = (User) session.getAttribute("currentUser");
-//        reservationService.findByUserAndCode(user,code);
-//        return "redirect:/reservation";
-//    }
+ 
+    @GetMapping("/search")
+    public String searchByCode(@RequestParam String code, HttpSession session) {
+        User user = (User) session.getAttribute("currentUser");
+        reservationService.findByUserAndCode(user, code);
+        return "redirect:/reservation";
+    }
+ 
 }

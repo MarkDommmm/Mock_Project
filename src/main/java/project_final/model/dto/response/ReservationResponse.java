@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import project_final.entity.Payment;
-import project_final.entity.TableMenu;
 import project_final.entity.Tables;
 import project_final.entity.User;
 import project_final.model.domain.Status;
 
 
-import javax.validation.constraints.NotBlank;
 import java.sql.Time;
 import java.util.Date;
 @Data

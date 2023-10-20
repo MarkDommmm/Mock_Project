@@ -1,17 +1,13 @@
 package project_final.service.mapper;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import project_final.entity.Reservation;
-import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.ReservationCheckCodeResponse;
 import project_final.model.dto.response.ReservationResponse;
-import project_final.repository.ITableMenuRepository;
 
 import java.sql.Time;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 

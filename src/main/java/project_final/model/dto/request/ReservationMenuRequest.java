@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import project_final.entity.Menu;
 import project_final.entity.Reservation;
-import project_final.entity.User;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TableMenuRequest {
+public class ReservationMenuRequest {
     private Long id;
     private Menu menu;
 

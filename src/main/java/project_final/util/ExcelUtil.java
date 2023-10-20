@@ -7,25 +7,21 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import project_final.entity.Menu;
 import project_final.entity.Reservation;
-import project_final.entity.TableMenu;
+import project_final.entity.ReservationMenu;
 import project_final.entity.Tables;
-import project_final.model.dto.request.TableMenuExportDTO;
-import project_final.repository.ITableMenuRepository;
+import project_final.repository.IReservationMenuRepository;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 @Component
 @AllArgsConstructor
 public class ExcelUtil {
-    private final ITableMenuRepository tableMenuRepository;
+    private final IReservationMenuRepository tableMenuRepository;
     private final String SHEET_NAME = "Reservation";
 
     private CellStyle getGlobalCellStyle(Workbook workbook) {
@@ -84,9 +80,9 @@ public class ExcelUtil {
                 sheet.addMergedRegion(new CellRangeAddress(rowindex2, rowindex2, i * 5 + 12, i * 5 + 15));
             }
 
-            List<TableMenu> tableMenuList = tableMenuRepository.findAllByReservation(reservation.getId());
+            List<ReservationMenu> reservationMenuList = tableMenuRepository.findAllByReservation(reservation.getId());
 
-// Cho TableMenu
+// Cho ReservationMenu
             List<String> tableMenuFields = Arrays.asList("menu", "quantity", "price" );
 
 // Cho Reservation
@@ -100,7 +96,7 @@ public class ExcelUtil {
             int headerRowNum = 3;
             int dataRowNum = headerRowNum + 1;
 
-// Hàng thứ nhất - Header cho cả TableMenu và Reservation
+// Hàng thứ nhất - Header cho cả ReservationMenu và Reservation
             Row headerRow = sheet.createRow(headerRowNum);
             for (int j = 0; j < headerFields.size(); j++) {
                 Cell cell = headerRow.createCell(j);
@@ -111,9 +107,9 @@ public class ExcelUtil {
 
             int tableMenuDataRowNum = dataRowNum;
 
-// Hàng dữ liệu cho Reservation và TableMenu
-            for (int dataIndex = 0; dataIndex < Math.max(tableMenuList.size(), 1); dataIndex++) {
-                // Tạo một hàng mới cho mỗi TableMenu và Reservation
+// Hàng dữ liệu cho Reservation và ReservationMenu
+            for (int dataIndex = 0; dataIndex < Math.max(reservationMenuList.size(), 1); dataIndex++) {
+                // Tạo một hàng mới cho mỗi ReservationMenu và Reservation
                 Row dataRow = sheet.createRow(dataRowNum + dataIndex);
 
                 // Dữ liệu cho Reservation
@@ -148,8 +144,8 @@ public class ExcelUtil {
                     }
                 }
 
-                // Dữ liệu cho TableMenu
-                if (dataIndex < tableMenuList.size()) {
+                // Dữ liệu cho ReservationMenu
+                if (dataIndex < reservationMenuList.size()) {
                     for (int j = 0; j < tableMenuFields.size(); j++) {
                         Cell cell = dataRow.createCell(j + reservationFields.size());
                         cell.setCellStyle(cellStyle);
@@ -159,15 +155,15 @@ public class ExcelUtil {
 
                         if ("menu".equals(fieldName)) {
                             // Nếu là menu, lấy giá trị của trường name từ đối tượng menu
-                            Menu menu = tableMenuList.get(dataIndex).getMenu();
+                            Menu menu = reservationMenuList.get(dataIndex).getMenu();
                             String menuName = (menu != null) ? menu.getName() : "N/A";
                             cell.setCellValue(menuName);
                         } else {
                             // Xử lý như bình thường cho các trường khác
                             try {
-                                Field field = TableMenu.class.getDeclaredField(fieldName);
+                                Field field = ReservationMenu.class.getDeclaredField(fieldName);
                                 field.setAccessible(true);
-                                Object value = field.get(tableMenuList.get(dataIndex));
+                                Object value = field.get(reservationMenuList.get(dataIndex));
 
                                 // Set the cell value to the string representation of the field value
                                 cell.setCellValue(value != null ? value.toString() : "N/A");
@@ -183,7 +179,7 @@ public class ExcelUtil {
             for (int j = 0; j < reservationFields.size(); j++) {
                 CellRangeAddress mergedRegion = new CellRangeAddress(
                         dataRowNum, // Hàng thứ 3
-                        dataRowNum + Math.max(tableMenuList.size(), 1) - 1, // Hàng thứ 2
+                        dataRowNum + Math.max(reservationMenuList.size(), 1) - 1, // Hàng thứ 2
                         j, // Cột bắt đầu
                         j // Cột kết thúc
                 );
@@ -203,7 +199,7 @@ public class ExcelUtil {
 // Set widths for other columns
             for (int j = 0; j < headerFields.size(); j++) {
                 if (j != quantityColumnIndex) {
-                    sheet.setColumnWidth(j, calculateColumnWidth(sheet, dataRowNum, dataRowNum + Math.max(tableMenuList.size(), 1) - 1, j));
+                    sheet.setColumnWidth(j, calculateColumnWidth(sheet, dataRowNum, dataRowNum + Math.max(reservationMenuList.size(), 1) - 1, j));
                 }
             }
 

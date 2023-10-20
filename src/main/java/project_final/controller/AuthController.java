@@ -2,42 +2,19 @@ package project_final.controller;
 
 import lombok.AllArgsConstructor;
 
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import project_final.exception.CustomsException;
-import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
-import project_final.model.dto.request.ForgotPassForm;
-import project_final.model.dto.request.LoginRequestDto;
 import project_final.model.dto.request.UpdateUserRequest;
-import project_final.model.dto.request.UserRequest;
 
 import project_final.model.dto.response.ReservationResponse;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.service.*;
 
-import project_final.security.UserPrinciple;
-import project_final.service.impl.GenerateExcelService;
-
-import javax.security.auth.login.LoginException;
-
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.util.List;
 
 
@@ -50,7 +27,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     private final IReservationService reservationService;
-    private final ITableMenuService tableMenuService;
+    private final IReservationMenuService tableMenuService;
 
 
     @GetMapping("/profile/{id}")

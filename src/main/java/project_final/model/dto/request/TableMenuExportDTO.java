@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import project_final.entity.Reservation;
-import project_final.entity.TableMenu;
+import project_final.entity.ReservationMenu;
 
 import java.util.List;
 
@@ -14,16 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class TableMenuExportDTO {
-//    private Long id;
-//    private String Code;
-//    private String CreatedDate;
-//    private String BookingDate;
-//    private String StartTime;
-//    private String EndTime;
-//    private String Description;
     private List<String> Food;
     private Reservation reservation;
-    private List<TableMenu> tableMenu;
+    private List<ReservationMenu> reservationMenus;
 
 
 }

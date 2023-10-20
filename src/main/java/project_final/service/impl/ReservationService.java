@@ -14,7 +14,7 @@ import project_final.model.dto.response.ReservationCheckCodeResponse;
 import project_final.model.dto.response.ReservationResponse;
 import project_final.repository.IPaymentRepository;
 import project_final.repository.IReservationRepository;
-import project_final.repository.ITableMenuRepository;
+import project_final.repository.IReservationMenuRepository;
 import project_final.service.IReservationService;
 import project_final.service.mapper.IReservationMapper;
 
@@ -32,11 +32,13 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ReservationService implements IReservationService<ReservationRequest, ReservationResponse, Long> {
-    private final IReservationRepository reservationRepository;
-    private final IReservationMapper reservationMapper;
-    private final ITableMenuRepository tableMenuRepository;
-    private final IPaymentRepository paymentRepository;
+ 
+public class ReservationService implements IReservationService<ReservationRequest, ReservationResponse,Long> {
+   private final IReservationRepository reservationRepository;
+   private final IReservationMapper reservationMapper;
+   private final IReservationMenuRepository reservationMenuRepository;
+   private final IPaymentRepository paymentRepository;
+ 
 
     @Override
     public Page<ReservationResponse> findByUserIdAndStatusPending(int page, int size, Long id) {
