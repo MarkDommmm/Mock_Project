@@ -80,20 +80,10 @@ public class ReservationController {
 
 
     @PostMapping("/reservation/add")
-    public String addReservation(@Valid @ModelAttribute("reservation") ReservationRequest reservationRequest,
+    public String addReservation(@Valid @ModelAttribute("reservationRequest") ReservationRequest reservationRequest,
                                  BindingResult bindingResult, HttpSession session,
                                  Model model, HttpServletRequest request) throws TimeIsValidException {
         Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-//        if (bindingResult.hasErrors()) {
-//            Long idTable = (Long) session.getAttribute("idTable");
-//            model.addAttribute("table", tableService.findById(idTable));
-//            model.addAttribute("reservation", new ReservationRequest());
-//            model.addAttribute("cart", tableMenuService.getDetails(reservation.getId()));
-//            model.addAttribute("payment", paymentRepository.findAll());
-//            return "dashboard/checkoutTable";
-//        }
-
-
         List<TableMenuCartResponse> tableMenu = tableMenuService.getDetails(reservation.getId());
         double totalPrice = 0.0;
         for (TableMenuCartResponse item : tableMenu) {
@@ -122,6 +112,10 @@ public class ReservationController {
                 e.printStackTrace();
             }
         }
+        session.removeAttribute("reservationLocal");
+        session.removeAttribute("date");
+        session.removeAttribute("start");
+        session.removeAttribute("end");
 
 
         return "redirect:/home";
