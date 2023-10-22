@@ -1536,7 +1536,7 @@
                                     <p class="mb-4">Get <span class="text-primary">FREE delivery </span>on every
                                         weekend.</p>
                                     <a href="/home">
-                                    <button type="button" class="btn btn-primary rounded-pill">Check Tables</button>
+                                        <button type="button" class="btn btn-primary rounded-pill">Check Tables</button>
                                     </a>
                                 </div>
                             </div>
@@ -1549,7 +1549,7 @@
                     <div class="card-header border-0  ">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3>Menu category</h3>
-                            <a  class="text-dark d-flex chose-menu-cate">View All
+                            <a class="text-dark d-flex chose-menu-cate">View All
                                 <svg width="24" height="24" class="ms-1" viewBox="0 0 24 24" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <rect width="24" height="24" rx="12" fill="#EA6A12"/>
@@ -1621,7 +1621,7 @@
                         <div class="swiper-container d-slider2">
                             <div class="swiper-wrapper" id="render-table">
 
-                                <div class="col swiper-slide hover" th:each="f:${menuAll}" >
+                                <div class="col swiper-slide hover" th:each="f:${menuAll}">
                                     <div class="card card-white dish-card profile-img mb-0 ">
                                         <div class="profile-img21">
                                             <img th:src="${f.image}"
@@ -1672,7 +1672,8 @@
                                                                   th:text="'$'+${f.price}"></span>
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
-                                                <a sec:authorize="isAuthenticated()" class="add-cart" th:data-id="${f.id}">
+                                                <a sec:authorize="isAuthenticated()" class="add-cart"
+                                                   th:data-id="${f.id}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                          fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
@@ -1888,16 +1889,16 @@
                                     <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
                                         <div class="d-flex align-items-center justify-content-between profile-img4">
                                             <div class="profile-img11">
-                                                <img th:src="${c.menu.image}"
+                                                <img th:src="${c.image}"
                                                      class="img-fluid rounded-pill avatar-115 blur-shadow position-end"
                                                      alt="img">
-                                                <img th:src="${c.menu.image}"
+                                                <img th:src="${c.image}"
                                                      class="img-fluid rounded-pill avatar-115" alt="img">
                                             </div>
                                             <div class="d-flex align-items-center profile-content">
                                                 <div>
                                                     <h6 class="mb-1 heading-title fw-bolder"
-                                                        th:text="${c.menu.name}"></h6>
+                                                        th:text="${c.name}"></h6>
                                                     <span class="d-flex align-items-center ">
                                                     <svg width="10" height="10"
                                                          viewBox="0 0 10 10"
@@ -1926,35 +1927,55 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                                <p class="mb-0 text-dark" th:text="${c.price} + '$'"></p>
+                                                <p class="mb-0 text-dark" th:text="'$'+${c.price}"></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-<!--                            <th:block th:if="${!cart.isEmpty()}">-->
-<!--                                <div class="show-more">-->
-<!--                                    <p>Scroll left show more!!</p>-->
-<!--                                    <img class="animation&#45;&#45;Gl63I"-->
-<!--                                         src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"-->
-<!--                                         alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"-->
-<!--                                         style="max-height: 80px;">-->
-<!--                                </div>-->
-<!--                                <div class="text-center" sec:authorize="isAuthenticated()"  >-->
-<!--                                    <a type="button" href="/check-out"-->
-<!--                                       style="margin-bottom: 20px"-->
-<!--                                       class="btn btn-primary rounded-pill checkout">Checkout!!!</a>-->
-<!--                                </div>-->
-<!--                            </th:block>-->
-<!--                            <th:block th:unless="${!cart.isEmpty()}">-->
-<!--                                <div class="show-more">-->
-<!--                                    <img class="animation&#45;&#45;Gl63I"-->
-<!--                                         src="https://eonbazar.com/images/loading_cart_2.gif"-->
-<!--                                         alt="Cart isEmpty"-->
-<!--                                         style="max-height: 80px;">-->
-<!--                                    <p>Cart isEmpty!!!</p>-->
-<!--                                </div>-->
-<!--                            </th:block>-->
+                            <div class="show-more">
+                                <p>Scroll left show more!!</p>
+                                <img class="animation--Gl63I"
+                                     src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"
+                                     alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
+                                     style="max-height: 80px;">
+                            </div>
+                            <div th:unless="${updateOrder}" class="text-center" sec:authorize="isAuthenticated()">
+                                <a type="button" href="/check-out"
+                                   style="margin-bottom: 20px"
+                                   class="btn btn-primary rounded-pill checkout">Checkout!!!
+                                </a>
+                            </div>
+                            <div th:if="${updateOrder}" class="text-center" sec:authorize="isAuthenticated()">
+                                <a type="button" href="/check-out"
+                                   style="margin-bottom: 20px"
+                                   class="btn btn-primary rounded-pill update">Update!!!
+                                </a>
+                            </div>
+
+                            <!--                            <th:block th:if="${!cart.isEmpty()}">-->
+                            <!--                                <div class="show-more">-->
+                            <!--                                    <p>Scroll left show more!!</p>-->
+                            <!--                                    <img class="animation&#45;&#45;Gl63I"-->
+                            <!--                                         src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"-->
+                            <!--                                         alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"-->
+                            <!--                                         style="max-height: 80px;">-->
+                            <!--                                </div>-->
+                            <!--                                <div class="text-center" sec:authorize="isAuthenticated()"  >-->
+                            <!--                                    <a type="button" href="/check-out"-->
+                            <!--                                       style="margin-bottom: 20px"-->
+                            <!--                                       class="btn btn-primary rounded-pill checkout">Checkout!!!</a>-->
+                            <!--                                </div>-->
+                            <!--                            </th:block>-->
+                            <!--                            <th:block th:unless="${!cart.isEmpty()}">-->
+                            <!--                                <div class="show-more">-->
+                            <!--                                    <img class="animation&#45;&#45;Gl63I"-->
+                            <!--                                         src="https://eonbazar.com/images/loading_cart_2.gif"-->
+                            <!--                                         alt="Cart isEmpty"-->
+                            <!--                                         style="max-height: 80px;">-->
+                            <!--                                    <p>Cart isEmpty!!!</p>-->
+                            <!--                                </div>-->
+                            <!--                            </th:block>-->
                         </div>
                     </div>
 
@@ -1979,12 +2000,12 @@
                             </div>
                             <!-- List Categories -->
                             <div class="card-body">
-                                <div class="iq-col-masonry m-0" >
+                                <div class="iq-col-masonry m-0">
 
-                                        <button type="submit" th:each="c:${categories}" th:text="${c.name}"
-                                                class="btn btn-outline-primary rounded iq-col-masonry-block"></button>
+                                    <button type="submit" th:each="c:${categories}" th:text="${c.name}"
+                                            class="btn btn-outline-primary rounded iq-col-masonry-block"></button>
 
-<!--                                    <button type="button" class="btn   btn-primary rounded iq-col-masonry-block">Pizza</button>-->
+                                    <!--                                    <button type="button" class="btn   btn-primary rounded iq-col-masonry-block">Pizza</button>-->
                                 </div>
                             </div>
 
@@ -2088,7 +2109,7 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                            <p class="mb-0 text-dark" >${c.price}</p>
+                                            <p class="mb-0 text-dark" >$${c.price}</p>
                                         </div>
                                     </div>
                                 </div>

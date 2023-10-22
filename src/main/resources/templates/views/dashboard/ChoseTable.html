@@ -43,6 +43,11 @@
             margin-top: 115px;
         }
 
+        .flex-header-modal {
+            display: flex;
+            gap: 20px;
+        }
+
         @media (min-width: 992px) {
             .col-lg-8 {
 
@@ -1561,13 +1566,21 @@
                         "top": "10%"
                     });
                     $(".modal-content").css({
-                        "width":"203%"
+                        "width": "203%"
                     })
                     $("#modal-body").html("");
                     let htmlCode = `
                     <div class="col-lg-12">
                         <div class="table-responsive">
+                        <div class="flex-header-modal">
+
                             <h3>Table Orders</h3>
+
+                               <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Update dishes</h3>
+
+                                  <h3>Cancel Orders</h3>
+                                  </div>
+
                             <table class="table table-striped" role="grid"
                                    data-toggle="data-table" style="text-align: center">
                                 <thead>
@@ -1623,7 +1636,15 @@
                     `;
                     $("#modal-body").append(htmlCode);
                 },
-
+                error: function(data){
+                    Swal.fire({
+                        position: 'center',
+                        icon: "error",
+                        title: "Code not found",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
             });
         });
         $(document).on("click", ".click-detail", function () {
@@ -1643,7 +1664,7 @@
                         "top": "10%"
                     });
                     $(".modal-content").css({
-                        "width":"203%"
+                        "width": "203%"
                     })
                     $("#modal-body").html("");
                     let htmlCode = `
@@ -1697,6 +1718,36 @@
                 }
             });
         });
+
+        $(document).on("click", ".update-dishes", function () {
+            let idR = $(this).data("id-resvertion");
+            let idU = $(this).data("id-user");
+
+            $.ajax({
+                url: "/edit-order",
+                type: "GET",
+                data: {
+                    idUser: idU,
+                    idResvertion: idR
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.icon == "error") {
+                        Swal.fire({
+                            position: 'center',
+                            icon: data.icon,
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }else {
+                        window.location.href ="/home/menu"
+                    }
+
+                },
+
+            });
+        })
     </script>
 </main>
 <!-- Wrapper End-->

@@ -17,19 +17,19 @@ import project_final.exception.RegisterException;
 import project_final.exception.TimeIsValidException;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
-import project_final.repository.IMenuRepository;
-import project_final.repository.IPaymentRepository;
+import project_final.repository.*;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Date;
+import java.util.*;
 
 @Controller
 @AllArgsConstructor
 public class HomeController {
     private final ITableService tableService;
+    private final IReservationMenuRepository reservationMenuRepository;
     private final IReservationMenuService reservationMenuService;
     private final ITableTypeService tableTypeService;
     private final IMenuService menuService;
@@ -38,6 +38,12 @@ public class HomeController {
     private final IMenuRepository menuRepository;
     private final IUserService userService;
     private final IMailService mailService;
+    private final IReservationRepository reservationRepository;
+    private final IUserRepository userRepository;
+    private final ITableRepository tableRepository;
+    private final ITableTypeRepository tableTypeRepository;
+    private final ICategoryRepository categoryRepository;
+    private final IReviewRepository reviewRepository;
 
 
     @RequestMapping("/public/login")
@@ -51,9 +57,9 @@ public class HomeController {
     }
 
     @PostMapping("/public/sign-up")
-    public String register(@ModelAttribute("signup") @Valid UserRequest userRequest, BindingResult bindingResult) throws RegisterException, CustomsException {
+    public String register(@Valid @ModelAttribute("signup") UserRequest userRequest, BindingResult bindingResult) throws RegisterException, CustomsException {
         if (bindingResult.hasErrors()) {
-            return "redirect:/public/sign-up";
+            return "/dashboard/auth/sign-up";
         }
         userService.save(userRequest);
         return "redirect:/public/login";
@@ -86,7 +92,6 @@ public class HomeController {
         userService.passwordRetrieval(forgotPassForm);
         return "redirect:/public/confirm-mail";
     }
-//asddddddddd
 
     @RequestMapping("/public/confirm-mail")
     public String confirmMail() {
@@ -129,11 +134,13 @@ public class HomeController {
             date = new Date();
         }
 
+
         TableDataDTO tableDataDTO = new TableDataDTO();
         tableDataDTO.setTableTypes(tableTypeService.findAll(name, page, size));
         tableDataDTO.setTables(tableService.findAvailableTables(name, date, start, end, page, size).getContent());
         return tableDataDTO;
     }
+
     @GetMapping("/home/chose-idTable")
     public String choseTable(
             @RequestParam(name = "id") Long id,
@@ -162,16 +169,36 @@ public class HomeController {
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         Reservation reservation = new Reservation();
         if (u != null) {
-            model.addAttribute("cart", reservationMenuService.getDetails(null));
+            model.addAttribute("cart", reservationMenuService.getAll(u.getId(), page, size));
         }
         Long idTable = (Long) session.getAttribute("idTable");
-        session.setAttribute("idTable",  idTable);
+        session.setAttribute("idTable", idTable);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
-        model.addAttribute("menuTrending", menuService.findTopSellingMenus());
+//        model.addAttribute("menuTrending", menuService.findTopSellingMenus());
         model.addAttribute("tableMenu", new ReservationMenuRequest());
         return "dashboard/menu";
+    }
+
+    @RequestMapping("/edit-order")
+    @ResponseBody
+    public Map<String, String> editOrder(@RequestParam("idResvertion") Long idR,
+                                         @RequestParam("idUser") Long idU,
+                                         Model model, @RequestParam(defaultValue = "") String name,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "12") int size, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        Map<String, String> map = new HashMap<>();
+        if (userPrinciple == null || !Objects.equals(userPrinciple.getId(), idU)) {
+            map.put("icon", "error");
+            map.put("message", "Please log in to the account with this code to update");
+        } else {
+            model.addAttribute("cart", reservationMenuService.getDetails(idR));
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
+            model.addAttribute("updateOrder", "");
+        }
+        return map;
     }
 
     @RequestMapping("/home/chose-menu-category")
@@ -218,7 +245,6 @@ public class HomeController {
     }
 
 
-
     @GetMapping("/check-out")
     public String checkoutTable(HttpSession session,
                                 Model model,
@@ -238,7 +264,7 @@ public class HomeController {
         reservationRequest.setEndTime(end);
 
         model.addAttribute("table", tableService.findById(idTable));
-        model.addAttribute("reservationRequest",reservationRequest );
+        model.addAttribute("reservationRequest", reservationRequest);
         model.addAttribute("cart", reservationMenuService.getDetails(id));
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
@@ -258,6 +284,23 @@ public class HomeController {
     @RequestMapping("/403")
     public String error403() {
         return "/dashboard/errors/error403";
+    }
+
+    @RequestMapping("/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("table", tableRepository.findAll());
+        model.addAttribute("user", userRepository.findAll());
+        model.addAttribute("payment", paymentRepository.findAll());
+        model.addAttribute("category", categoryRepository.findAll());
+        model.addAttribute("menu", menuRepository.findAll());
+        model.addAttribute("reservation", reservationRepository.findAll());
+        model.addAttribute("tableType", tableTypeRepository.findAll());
+        model.addAttribute("review", reviewRepository.findAll());
+//        model.addAttribute("menuTrending", reservationMenuRepository.findAllByMenuTop());
+//        System.out.println(reservationMenuRepository.findAllByMenuTop());
+        List<Object[]> result = reservationMenuRepository.findAllByMenuTop();
+        model.addAttribute("menuTopList", result);
+        return "/dashboard/dashboard";
     }
 }
 
