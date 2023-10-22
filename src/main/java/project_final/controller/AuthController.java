@@ -3,19 +3,27 @@ package project_final.controller;
 import lombok.AllArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.exception.RegisterException;
+import project_final.model.dto.request.LoginRequestDto;
 import project_final.model.dto.request.UpdateUserRequest;
 
 import project_final.model.dto.response.ReservationResponse;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.service.*;
 
+import javax.security.auth.login.LoginException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -28,6 +36,7 @@ public class AuthController {
 
     private final IReservationService reservationService;
     private final IReservationMenuService tableMenuService;
+
 
 
     @GetMapping("/profile/{id}")

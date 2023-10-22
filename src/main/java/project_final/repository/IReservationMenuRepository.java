@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @Repository
-public interface IReservationMenuRepository extends JpaRepository<ReservationMenu,Long> {
+public interface IReservationMenuRepository extends JpaRepository<ReservationMenu, Long> {
     @Query("SELECT RM FROM ReservationMenu RM JOIN RM.menu M WHERE M.name LIKE %:name%")
     Page<ReservationMenu> findAllByMenuName(@Param("name") String name, Pageable pageable);
 
@@ -21,6 +21,13 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
 
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id")
     List<ReservationMenu> findAllByReservation(@Param("id") Long id);
+
+    @Query("SELECT M.name, SUM(RM.quantity),MONTH(R.createdDate) as month " +
+            "FROM ReservationMenu RM " +
+            "JOIN RM.reservation R " +
+            "JOIN RM.menu M " +
+            "GROUP BY M.name, MONTH(R.createdDate)")
+    List<Object[]> findAllByMenuTop();
 
 
 }
