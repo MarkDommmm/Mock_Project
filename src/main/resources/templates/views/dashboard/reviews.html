@@ -1,7 +1,7 @@
 
 
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" dir="ltr">
   <head>
     <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -496,7 +496,7 @@
     
     <aside class="sidebar sidebar-default sidebar-hover sidebar-mini navs-pill-all ">
         <div class="sidebar-header d-flex align-items-center justify-content-start">
-            <a href="../../menu.html" class="navbar-brand">
+            <a href="menu.html" class="navbar-brand">
                 <!--Logo start-->
                 <div class="logo">
                     <svg width="40" height="43"  class="" viewBox="0 0 60 63" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -972,7 +972,7 @@
                         </a>
                     </li>
                     <li class="nav-item sub-nav">
-                        <a class="nav-link " aria-current="page" href="../../menu.html">
+                        <a class="nav-link " aria-current="page" href="menu.html">
                              <i class="icon">
                                 <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path opacity="0.4" d="M16.0756 2H19.4616C20.8639 2 22.0001 3.14585 22.0001 4.55996V7.97452C22.0001 9.38864 20.8639 10.5345 19.4616 10.5345H16.0756C14.6734 10.5345 13.5371 9.38864 13.5371 7.97452V4.55996C13.5371 3.14585 14.6734 2 16.0756 2Z" fill="currentColor"></path>
@@ -1006,7 +1006,7 @@
                         </a>
                         <ul class="sub-nav collapse" id="sidebar-auth" data-bs-parent="#sidebar">
                             <li class="nav-item">
-                                <a class="nav-link" href="../../auth/sign-in.html">
+                                <a class="nav-link" href="auth/sign-in.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1019,7 +1019,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../auth/sign-up.html">
+                                <a class="nav-link" href="auth/sign-up.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1032,7 +1032,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../auth/confirm-mail.html">
+                                <a class="nav-link" href="auth/confirm-mail.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1045,7 +1045,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../../auth/recoverpw.html">
+                                <a class="nav-link" href="auth/recoverpw.html">
                                    <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1080,7 +1080,7 @@
                         </a>
                         <ul class="sub-nav collapse" id="sidebar-user" data-bs-parent="#sidebar">
                             <li class="nav-item">
-                                <a class="nav-link active" href="user-profile.html">
+                                <a class="nav-link active" href="page/user/user-profile.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1093,7 +1093,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="../../app/user-add.html">
+                                <a class="nav-link " href="app/user-add.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1106,7 +1106,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="../../app/user-list.html">
+                                <a class="nav-link " href="app/user-list.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1137,7 +1137,7 @@
                         </a>
                         <ul class="sub-nav collapse" id="utilities-error" data-bs-parent="#sidebar">
                             <li class="nav-item">
-                                <a class="nav-link " href="../../errors/error404.html">
+                                <a class="nav-link " href="errors/error404.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1150,7 +1150,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="../../errors/error500.html">
+                                <a class="nav-link " href="errors/error500.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1163,7 +1163,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="../../errors/maintenance.html">
+                                <a class="nav-link " href="errors/maintenance.html">
                                     <i class="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -1185,7 +1185,7 @@
                         </a>
                     </li>
                     <li class="nav-item sub-nav">
-                        <a class="nav-link " href="../../icons/dual-tone.html">
+                        <a class="nav-link " href="icons/dual-tone.html">
                             <i class="icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M8 10.5378C8 9.43327 8.89543 8.53784 10 8.53784H11.3333C12.4379 8.53784 13.3333 9.43327 13.3333 10.5378V19.8285C13.3333 20.9331 14.2288 21.8285 15.3333 21.8285H16C16 21.8285 12.7624 23.323 10.6667 22.9361C10.1372 22.8384 9.52234 22.5913 9.01654 22.3553C8.37357 22.0553 8 21.3927 8 20.6832V10.5378Z" fill="currentColor"/>
@@ -1247,7 +1247,7 @@
         <!--Nav Start-->
         <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
           <div class="container-fluid navbar-inner">
-            <a href="../../menu.html" class="navbar-brand">
+            <a href="menu.html" class="navbar-brand">
                 <!--Logo start-->
                 <div class="logo">
                     <svg width="40" height="43"  class="text-primary" viewBox="0 0 60 63" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1882,10 +1882,10 @@
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="user-profile.html">Profile</a></li>
-                    <li><a class="dropdown-item" href="../../app/user-privacy-setting.html">Privacy Setting</a></li>
+                    <li><a class="dropdown-item" href="page/user/user-profile.html">Profile</a></li>
+                    <li><a class="dropdown-item" href="app/user-privacy-setting.html">Privacy Setting</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="../../auth/sign-in.html">Logout</a></li>
+                    <li><a class="dropdown-item" href="auth/sign-in.html">Logout</a></li>
                   </ul>
                 </li>
               </ul>
@@ -2164,8 +2164,19 @@
                                  </div>
                               </li>
                            </ul>
-                           <form class="comment-text d-flex align-items-center mt-3" action="javascript:void(0);">
-                              <input type="text" class="form-control rounded" placeholder="Lovely!">
+                           <form  method="post" th:action="@{|/reviews/add|}" th:object="${review}" class="comment-text d-flex align-items-center mt-3" action="javascript:void(0);">
+                             <label for="comment">
+                               <input type="text" id="comment" class="form-control rounded" th:field="*{comment}" placeholder="Lovely!">
+                             </label></br>
+                             <select th:field="*{rating}">
+                               <option value="1" >1</option>
+                               <option value="2" >2</option>
+                               <option value="3" >3</option>
+                               <option value="4" >4</option>
+                               <option value="5" >5</option>
+                             </select></br>
+                             <input type="submit" th:action="add">
+
                               <div class="comment-attagement d-flex">
                                     <a href="javascript:void(0);" class="me-4 text-body">
                                        <svg width="20" height="20" viewBox="0 0 24 24">
@@ -2376,8 +2387,8 @@
       <footer class="footer">
           <div class="footer-body">
               <ul class="left-panel list-inline mb-0 p-0">
-                  <li class="list-inline-item"><a href="../../extra/privacy-policy.html">Privacy Policy</a></li>
-                  <li class="list-inline-item"><a href="../../extra/terms-of-service.html">Terms of Use</a></li>
+                  <li class="list-inline-item"><a href="extra/privacy-policy.html">Privacy Policy</a></li>
+                  <li class="list-inline-item"><a href="extra/terms-of-service.html">Terms of Use</a></li>
               </ul>
               <div class="right-panel">
                   ©<script>document.write(new Date().getFullYear())</script> Aprycot, Made with

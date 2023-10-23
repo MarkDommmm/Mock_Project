@@ -1576,7 +1576,7 @@
 
                             <h3>Table Orders</h3>
 
-                               <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Update dishes</h3>
+                               <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-reservation="${data.id}">Update dishes</h3>
 
                                   <h3>Cancel Orders</h3>
                                   </div>
@@ -1658,7 +1658,6 @@
                     id: id
                 },
                 success: function (data) {
-                    console.log(data)
                     $("#staticBackdrop").css({
                         "left": "-16%",
                         "top": "10%"
@@ -1720,15 +1719,15 @@
         });
 
         $(document).on("click", ".update-dishes", function () {
-            let idR = $(this).data("id-resvertion");
+            let idR = $(this).data("id-reservation");
             let idU = $(this).data("id-user");
-
+            console.log(idR, idU)
             $.ajax({
                 url: "/edit-order",
                 type: "GET",
                 data: {
                     idUser: idU,
-                    idResvertion: idR
+                    idReservation: idR
                 },
                 success: function (data) {
                     console.log(data)

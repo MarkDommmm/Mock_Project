@@ -15,6 +15,7 @@ public interface IReservationMenuService extends IGenericService<ReservationMenu
     Page<TableMenuCartResponse> getAll(Long id, int page, int size);
 
     Page<TableMenuCartResponse> getTableMenu(Long id, int page, int size);
+    Page<ReservationMenuResponse> getReservationMenu(Long id, int page, int size);
 
     List<TableMenuCartResponse> getDetails(Long id);
 

@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.Reservation;
+import project_final.entity.Review;
 import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
@@ -168,10 +169,7 @@ public class HomeController {
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         Reservation reservation = new Reservation();
         if (u != null) {
-
             model.addAttribute("cart", reservationMenuService.findById(u.getId()));
-
-
         }
         Long idTable = (Long) session.getAttribute("idTable");
         session.setAttribute("idTable", idTable);
@@ -187,7 +185,7 @@ public class HomeController {
 
     @RequestMapping("/edit-order")
     @ResponseBody
-    public Map<String, String> editOrder(@RequestParam("idResvertion") Long idR,
+    public Map<String, String> editOrder(@RequestParam("idReservation") Long idR,
                                          @RequestParam("idUser") Long idU,
                                          Model model, @RequestParam(defaultValue = "") String name,
                                          @RequestParam(defaultValue = "0") int page,
@@ -200,7 +198,8 @@ public class HomeController {
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
-            model.addAttribute("updateOrder", "");
+            model.addAttribute("idR",idR);
+            model.addAttribute("reservationMenu",new ReservationMenuRequest());
         }
         return map;
     }
@@ -272,6 +271,12 @@ public class HomeController {
         model.addAttribute("cart", reservationMenuService.getDetails(id));
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
+    }
+
+    @RequestMapping("home/reviews")
+    public String getHomeReview(Model model){
+        model.addAttribute("review", new Review());
+        return "dashboard/reviews";
     }
 
     @RequestMapping("/user")
