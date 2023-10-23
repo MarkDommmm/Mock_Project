@@ -17,17 +17,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
- 
+
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project_final.config.VNPayConfig;
- 
+
 import project_final.entity.Reservation;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.TableMenuCartResponse;
+import project_final.repository.IReservationRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.IReservationService;
 import project_final.service.IReservationMenuService;
@@ -39,10 +40,7 @@ import project_final.service.impl.VNPayService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @AllArgsConstructor
@@ -52,7 +50,7 @@ public class ReservationController {
 
     private final IReservationMenuService tableMenuService;
     private final GenerateExcelService generateExcelService;
-
+    private final IReservationRepository reservationRepository;
     private final PaypalService paypalService;
     private final VNPayService vnPayService;
     public static final String SUCCESS_URL = "payment-success";
@@ -67,7 +65,7 @@ public class ReservationController {
         if (date == null) {
             date = new Date();
         }
-        model.addAttribute("searchReservations" ,"");
+        model.addAttribute("searchReservations", "");
         model.addAttribute("date", date);
         model.addAttribute("reservations", reservationService.findAll(date, page, size));
         return "dashboard/page/reservation/reservation-list";
@@ -81,22 +79,27 @@ public class ReservationController {
 
 
     @PostMapping("/reservation/add")
-    public String addReservation(@Valid @ModelAttribute("reservationRequest") ReservationRequest reservationRequest,
+    public String addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
                                  BindingResult bindingResult, HttpSession session,
+                                 @AuthenticationPrincipal UserPrinciple userPrinciple,
                                  Model model, HttpServletRequest request) throws TimeIsValidException {
-        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-        List<TableMenuCartResponse> tableMenu = tableMenuService.getDetails(reservation.getId());
+
+        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
+
+        List<TableMenuCartResponse> tableMenu = tableMenuService.getDetails(existingReservation.get().getId());
+
         double totalPrice = 0.0;
         for (TableMenuCartResponse item : tableMenu) {
             double price = item.getPrice();
             totalPrice += price;
         }
         if (reservationRequest.getPayment().getId().equals(1L)) {
-            reservationService.save(reservationRequest, reservation);
+            reservationRequest.setStatus(Status.ORDER);
+            reservationService.save(reservationRequest);
         } else if (reservationRequest.getPayment().getId().equals(2L)) {
             String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-            String vnPayUrl = vnPayService.createOrder(totalPrice, reservation.getCode(), baseUrl);
-            reservationService.save(reservationRequest, reservation);
+            String vnPayUrl = vnPayService.createOrder(totalPrice, existingReservation.get().getCode(), baseUrl);
+            reservationService.save(reservationRequest);
             return "redirect:" + vnPayUrl;
         } else if (reservationRequest.getPayment().getId().equals(3L)) {
             try {
@@ -114,37 +117,32 @@ public class ReservationController {
                 e.printStackTrace();
             }
         }
-        session.removeAttribute("reservationLocal");
-        session.removeAttribute("date");
-        session.removeAttribute("start");
-        session.removeAttribute("end");
-
 
         return "redirect:/home";
     }
 
 
     @GetMapping(value = CANCEL_URL)
-    public String cancelPay(HttpSession session) throws TimeIsValidException {
-        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+    public String cancelPay(HttpSession session, @AuthenticationPrincipal UserPrinciple userPrinciple) throws TimeIsValidException {
+        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
         ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
-        reservation.setStatus(Status.PENDING);
-        reservationService.save(reservationRequest, reservation);
+        existingReservation.get().setStatus(Status.PENDING);
+        reservationService.save(reservationRequest);
         return "/dashboard/errors/CancelPayment";
     }
 
     @GetMapping(value = SUCCESS_URL)
-    public String successPay(HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    public String successPay(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
-            Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
+            Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
             ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
             Payment payment = paypalService.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             session.setAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
             if (payment.getState().equals("approved")) {
 
-                reservation.setStatus(Status.PAID);
-                reservationService.save(reservationRequest, reservation);
+                existingReservation.get().setStatus(Status.PAID);
+                reservationService.save(reservationRequest);
                 return "/dashboard/errors/SuccessPayment";
             }
 
@@ -186,6 +184,13 @@ public class ReservationController {
         reservationService.noShow(id);
         return "redirect:/reservation";
     }
+    @GetMapping("/reservation/change-status/{id}")
+    public String changeStatus(@PathVariable("id") Long id,HttpSession session) {
+        reservationService.changeStatusOrder(id);
+        session.removeAttribute("idReservation");
+        return "redirect:/home";
+    }
+
 
     @GetMapping("/reservation/cancel")
     @ResponseBody
@@ -211,14 +216,13 @@ public class ReservationController {
 
     }
 
- 
 
     @GetMapping("/search")
     public String searchByCode(@RequestParam String code, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
-        reservationService.findByCode( code);
+        reservationService.findByCode(code);
         return "redirect:/reservation";
     }
 
- 
+
 }

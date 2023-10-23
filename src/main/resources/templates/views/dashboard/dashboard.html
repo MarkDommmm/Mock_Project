@@ -1178,103 +1178,101 @@
 
 
         </div>
-        <table>
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Menu Name</th>
                 <th>Quantity Sum</th>
+                <th>MONTH</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="row : ${menuTopList}">
-                <td th:text="${row[0]}"></td>
-                <td th:text="${row[1]}"></td>
+            <tr th:each="m : ${menuTopList}">
+                <td th:text="${m.name}"></td>
+                <td th:text="${m.totalQuantity}"></td>
+                <td th:text="${m.Month}"></td>
             </tr>
             </tbody>
         </table>
 
         <div id="chart" style="margin-top: 12px"></div>
     </div>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        var menuTopList = /*[[${menuTopList}]]*/ null;
+    <script>
+        $(document).ready(function () {
+            // Lấy dữ liệu từ bảng và tạo mảng dữ liệu
+            var data = [];
+            $(".data-table tbody tr").each(function () {
+                var menuName = $(this).find("td:nth-child(1)").text().trim();
+                var quantitySum = parseFloat($(this).find("td:nth-child(2)").text().trim());
+                var month = $(this).find("td:nth-child(3)").text().trim();
 
-        var categories = [];
-        var netProfitData = [];
-        var revenueData = [];
-        var freeCashFlowData = [];
+                data.push({ menuName: menuName, quantitySum: quantitySum, month: month });
+            });
 
-        /* Process the data from menuTopList and populate the arrays */
+// Lấy các tháng duy nhất từ dữ liệu
+            var uniqueMonths = Array.from({ length: 12 }, (_, index) => index + 1);
 
-        if (menuTopList != null) {
-            for (var i = 0; i < menuTopList.length; i++) {
-                categories.push(menuTopList[i][0]); // Assuming the first element is the category name
-                netProfitData.push(menuTopList[i][1]); // Assuming the second element is net profit
-                revenueData.push(menuTopList[i][2]); // Assuming the third element is revenue
-                freeCashFlowData.push(menuTopList[i][3]); // Assuming the fourth element is free cash flow
-            }
-        }
-        var series = [];
-        for (var i = 0; i < categories.length; i++) {
-            var seriesObj = {
-                name: categories[i],
-                data: []
-            };
+// Tạo mảng mới chứa dữ liệu cho từng tháng
+            var filledData = uniqueMonths.map(month => {
+                // Tìm xem có dữ liệu cho tháng này không
+                var monthData = data.find(item => item.MONTH === month);
+                // Nếu có, trả về dữ liệu thực tế, ngược lại trả về giá trị mặc định là 0
+                return monthData ? monthData : { MenuName: '', QuantitySum: 0, MONTH: month };
+            });
 
-            // Lặp qua dữ liệu netProfitData, revenueData, và freeCashFlowData để lấy giá trị tương ứng
-            seriesObj.data.push(netProfitData[i], revenueData[i], freeCashFlowData[i]);
-
-            // Thêm đối tượng series vào mảng series
-            series.push(seriesObj);
-        }
-
-        var options = {
-            series:series,
-            chart: {
-                type: 'bar',
-                height: 300,
-                toolbar:{
-                    show: false,
-                }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '80%',
-                    endingShape: 'rounded'
+// Tạo biểu đồ với dữ liệu đã lấy
+            var options = {
+                series: data.map(item => ({
+                    name: item.menuName,
+                    data: [item.quantitySum]
+                })),
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    toolbar:{
+                        show: false,
+                    }
                 },
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            xaxis: {
-                categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-            },
-            yaxis: {
-                title: {
-                    text: '(Quantity)'
-                }
-            },
-            fill: {
-                opacity: 1
-            },
-            tooltip: {
-                y: {
-                    formatter: function (val) {
-                        return  + val + " Quantity"
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '80%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: filledData.map(item => item.MONTH),
+                },
+                yaxis: {
+                    title: {
+                        text: '$ (thousands)'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "$ " + val + " thousands"
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-        chart.render();
-        /*]]>*/
+
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        });
     </script>
 
 

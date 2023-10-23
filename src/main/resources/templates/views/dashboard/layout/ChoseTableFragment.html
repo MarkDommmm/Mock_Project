@@ -295,21 +295,42 @@
         var startTime = $("#startTime").val();
         var endTime = $("#endTime").val();
 
+        Swal.fire({
+            icon: 'warning',
+            title: 'Do you want to choose the dish?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Yes!!',
+            denyButtonText: `No and book a table!`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                Swal.fire('Hope you have fun choosing dishes', '', 'success').then(( ) => {
+                    $.ajax({
+                        url: "/home/chose-idTable",
+                        type: "GET",
+                        data: {
+                            id: idTable,
+                            date: bookingDate,
+                            start: startTime,
+                            end: endTime
+                        },
+                        success: function (data) {
+                            window.location.href = "/home/menu"
+                        }
+                    });
 
-        $.ajax({
-            url: "/home/chose-idTable",
-            type: "GET",
-            data: {
-                id: idTable,
-                date: bookingDate,
-                start: startTime,
-                end: endTime
-            },
-            success: function (data) {
-                console.log(data)
-                window.location.href = "/home/menu"
+                })
+
+            } else
+            if (result.isDenied) {
+                Swal.fire('Proceed to enter table reservation information', '', 'info').then(()=>{
+                    window.location.href = "/checkout"
+                })
+
             }
-        });
+        })
+
     });
 </script>
 

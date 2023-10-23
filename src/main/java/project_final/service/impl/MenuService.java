@@ -14,6 +14,7 @@ import project_final.service.mapper.CartMapper;
 import project_final.service.mapper.IMenuMapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,12 @@ public class MenuService implements IMenuService<MenuRequest, MenuResponse,Long>
     @Override
     public List<MenuResponse> findTopSellingMenus() {
         return menuRepository.findTopSellingMenus().stream().map(menuMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> findTopMenusByMonth() {
+
+        return menuRepository.findTopMenusByMonth();
     }
 
     @Override

@@ -12,6 +12,7 @@ import project_final.entity.Category;
 import project_final.entity.Menu;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface IMenuRepository extends JpaRepository<Menu,Long> {
@@ -26,6 +27,33 @@ public interface IMenuRepository extends JpaRepository<Menu,Long> {
             "LIMIT 6", nativeQuery = true)
     List<Menu> findTopSellingMenus();
 
+    @Query(nativeQuery = true, value =
+            "WITH MonthlyData AS (" +
+                    "    SELECT " +
+                    "        menu.name as name, " +
+                    "        SUM(rm.quantity) AS totalQuantity, " +
+                    "        MONTH(r.booking_date) AS Month, " +
+                    "        ROW_NUMBER() OVER (PARTITION BY MONTH(r.booking_date) ORDER BY SUM(rm.quantity) DESC) AS RowNum " +
+                    "    FROM " +
+                    "        reservation_menu AS rm " +
+                    "    JOIN " +
+                    "        reservation AS r ON r.id = rm.reservation_id " +
+                    "    JOIN " +
+                    "        menu ON menu.id = rm.menu_id " +
+                    "    GROUP BY " +
+                    "        menu.name, MONTH(r.booking_date) " +
+                    ") " +
+                    "SELECT " +
+                    "    name, " +
+                    "    totalQuantity, " +
+                    "    Month " +
+                    "FROM " +
+                    "    MonthlyData " +
+                    "WHERE " +
+                    "    RowNum <= 5 " +
+                    "ORDER BY " +
+                    "    Month, totalQuantity DESC")
+    List<Map<String, Object>> findTopMenusByMonth();
 
     @Query("SELECT M FROM Menu M JOIN M.category C WHERE C.name =:category")
     Page<Menu> findAllByCategoryName(@Param("category") String category, Pageable pageable);

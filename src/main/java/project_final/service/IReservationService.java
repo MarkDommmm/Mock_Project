@@ -18,8 +18,11 @@ public interface IReservationService<K,V,E> {
     Page<V> findAll(Date date, int page, int size);
     List<V> findAll();
     V findById(E id);
-    void save(K k, Reservation reservation)  throws TimeIsValidException;
+
+    Reservation add(Long user,Date date,String start,String end,Long idTable) throws TimeIsValidException;
+    void save(K k )  throws TimeIsValidException;
     void confirm(E id);
+    void changeStatusOrder(E id);
     String cancel(E id, Long idUser);
     void completed(E id);
     void noShow(E id);

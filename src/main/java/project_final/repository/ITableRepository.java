@@ -65,6 +65,7 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
                                                     Pageable pageable);
 
 
+
     @Query("SELECT COUNT(t) > 0 FROM Reservation r JOIN Tables t ON r.table = t " +
             "WHERE t.id = :tableId " +
             "AND DATE(r.bookingDate) = :bookingDate " +
