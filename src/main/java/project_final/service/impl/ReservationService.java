@@ -72,8 +72,11 @@ public class ReservationService implements IReservationService<ReservationReques
     @Override
 
     public void save(ReservationRequest reservationRequest, Reservation reservation) throws TimeIsValidException {
-        if (isEndTimeAfterStartTime(reservationRequest.getEndTime(), reservationRequest.getStartTime())) {
-            throw new TimeIsValidException("End time must be must be larger start time");
+        if (!isEndTimeAfterStartTime(reservationRequest.getStartTime(), reservationRequest.getEndTime())) {
+            throw new TimeIsValidException("End time must be after start time");
+        }
+        if (!isValidTimeRange(reservationRequest.getStartTime(), reservationRequest.getEndTime())){
+            throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
         }
         Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
 
@@ -102,6 +105,22 @@ public class ReservationService implements IReservationService<ReservationReques
             return end.isAfter(start);
         } catch (DateTimeParseException e) {
             return false;
+        }
+    }
+
+    private static boolean isValidTimeRange(String startTime, String endTime) {
+        try {
+            LocalTime start = LocalTime.parse(startTime);
+            LocalTime end = LocalTime.parse(endTime);
+
+            // Kiểm tra startTime phải sau 9:00 và endTime phải trước 23:00
+            if (start.isAfter(LocalTime.parse("09:00")) && end.isBefore(LocalTime.parse("23:00"))) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (DateTimeParseException e) {
+            return false; // Trả về false nếu có lỗi khi parse thời gian
         }
     }
 

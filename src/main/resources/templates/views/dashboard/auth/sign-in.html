@@ -1194,47 +1194,7 @@
     </section>
 
 </div>
-<script>
-    $(document).on("click", "#login", function (e) {
 
-        var username = $("#username").val();
-        var password = $("#password").val();
-
-        console.log(username + ": " + password)
-    });
-
-
-
-    // $(document).on("click", "#login", function (e) {
-    //     e.preventDefault();
-    //     $.ajax({
-    //         url: `/public/login`,
-    //         type: "GET",
-    //
-    //         success: function (data) {
-    //             Swal.fire({
-    //                 position: 'center',
-    //                 icon: 'success',
-    //                 title: 'Congratulations, you have successfully logged in',
-    //                 showConfirmButton: false,
-    //                 timer: 2000
-    //             }).then(() => {
-    //                 window.location.href = "/home";
-    //             });
-    //         },
-    //         error: function (data) {
-    //             Swal.fire({
-    //                 position: 'center',
-    //                 icon: 'error',
-    //                 title: 'Invalid account or password, please re-enter',
-    //                 showConfirmButton: false,
-    //                 timer: 1500
-    //             })
-    //         }
-    //     });
-    //
-    // });
-</script>
 <!-- Required Library Bundle Script -->
 <script th:src="@{../../assets/js/core/libs.min.js}"></script>
 
