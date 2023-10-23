@@ -20,9 +20,9 @@ public interface IMenuRepository extends JpaRepository<Menu,Long> {
     Page<Menu> findAllByStatusIsTrueAndName(@Param("name") String name, Pageable pageable);
     @Query(value = "SELECT m.* " +
             "FROM menu m " +
-            "JOIN table_menu t ON m.id = t.menu_id " +
+            "JOIN reservation_menu r ON m.id = r.menu_id " +
             "GROUP BY m.id " +
-            "ORDER BY SUM(t.quantity) DESC " +
+            "ORDER BY SUM(r.quantity) DESC " +
             "LIMIT 6", nativeQuery = true)
     List<Menu> findTopSellingMenus();
     @Query("SELECT M FROM Menu M JOIN M.category C WHERE C.name =:category")

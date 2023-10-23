@@ -24,22 +24,23 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
     List<Tables> findAllByTableTypeName(@Param("name")String name);
 
 
-    @Query("SELECT t FROM Tables t " +
+    @Query("SELECT DISTINCT t FROM Tables t " +
             "JOIN t.tableType tt " +
-            "JOIN Reservation r ON t.id = r.table.id " +
+            "LEFT JOIN Reservation r ON t.id = r.table.id " +
             "WHERE tt.name = :name " +
-            "AND DATE(r.bookingDate) = :date " +
-            "AND NOT (" +
-            "   (TIME(r.startTime) < :start AND TIME(r.endTime) > :start AND TIME(r.endTime) < :end) OR " +
-            "   (TIME(r.startTime) > :start AND TIME(r.startTime) < :end AND TIME(r.endTime) > :end) OR " +
-            "   (TIME(r.startTime) < :start AND TIME(r.endTime) > :end)" +
+            "AND (r.id IS NULL OR " +
+            "    NOT (DATE(r.bookingDate) = :date AND (" +
+            "        (r.startTime IS NOT NULL AND r.endTime IS NOT NULL AND " +
+            "           (TIME(r.endTime) >= :start AND TIME(r.startTime) <= :end)) OR " +
+            "        (r.startTime IS NULL AND r.endTime IS NOT NULL AND TIME(r.endTime) > :start) OR " +
+            "        (r.startTime IS NOT NULL AND r.endTime IS NULL AND TIME(r.startTime) < :end)" +
+            "    ))" +
             ")")
     Page<Tables> findAvailableTables(@Param("name") String name,
                                      @Param("date") Date date,
                                      @Param("start") String start,
                                      @Param("end") String end,
                                      Pageable pageable);
-
 
     @Query(value = "SELECT t.name as name, " +
             "CASE " +

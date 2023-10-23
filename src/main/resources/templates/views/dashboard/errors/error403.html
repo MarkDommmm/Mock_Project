@@ -1112,12 +1112,7 @@
                     <div class="">
                         <div class="bottom-text general-zindex">
                             <h1 class="mb-2">
-                              <th:block th:if="${#request.userPrincipal.name}">
-                                <span th:utext="${#request.userPrincipal.name} + ' - you do not have permission to access this page'"></span>
-                              </th:block>
-                              <th:block th:unless="${#request.userPrincipal.name}">
                                 you do not have permission to access this page
-                              </th:block>
                             </h1>
                             <p>Please return to the home page now!!!</p>
                             <div class="w-50 mx-auto mt-2">

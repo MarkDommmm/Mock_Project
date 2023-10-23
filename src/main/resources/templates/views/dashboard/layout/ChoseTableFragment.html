@@ -177,6 +177,7 @@
         var bookingDate = $("#bookingDate").val();
         var startTime = $("#startTime").val();
         var endTime = $("#endTime").val();
+        console.log(tableTypeName, bookingDate, startTime, endTime)
         if (!bookingDate || !startTime || !endTime) {
             // Hiển thị thông báo lỗi nếu có trường input rỗng hoặc null
             Swal.fire({
@@ -189,7 +190,7 @@
             return; // Ngừng chuyển hướng nếu có trường input rỗng hoặc null
         }
         $.ajax({
-            url: "/home/chose-table",
+            url: `/home/chose-table/`,
             type: "GET",
             data: {
                 name: tableTypeName,

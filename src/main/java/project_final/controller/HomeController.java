@@ -128,7 +128,6 @@ public class HomeController {
         if (date == null) {
             date = new Date();
         }
-
         TableDataDTO tableDataDTO = new TableDataDTO();
         tableDataDTO.setTableTypes(tableTypeService.findAll(name, page, size));
         tableDataDTO.setTables(tableService.findAvailableTables(name, date, start, end, page, size).getContent());
@@ -162,15 +161,15 @@ public class HomeController {
         UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
         Reservation reservation = new Reservation();
         if (u != null) {
-            model.addAttribute("cart", reservationMenuService.getDetails(null));
+            model.addAttribute("cart", reservationMenuService.findById(u.getId()));
         }
         Long idTable = (Long) session.getAttribute("idTable");
         session.setAttribute("idTable",  idTable);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
-        model.addAttribute("menuTrending", menuService.findTopSellingMenus());
-        model.addAttribute("tableMenu", new ReservationMenuRequest());
+//        model.addAttribute("menuTrending", menuService.findTopSellingMenus());
+//        model.addAttribute("tableMenu", new ReservationMenuRequest());
         return "dashboard/menu";
     }
 
