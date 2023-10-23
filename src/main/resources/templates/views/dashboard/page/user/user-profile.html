@@ -1211,7 +1211,7 @@
                             <td th:text="${r.payment}"></td>
                             <td>
                                 <button type="button" class="btn btn-primary click-detail" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop" th:data-id-detail="${r.id}">
+                                        data-bs-target="#staticBackdrop" th:data-id-detail="${r.user.id}">
                                     Show Detail!!!
                                 </button>
                             </td>
@@ -1231,9 +1231,9 @@
                                     </span>
                                     </a>
 
-                                    <a class="btn btn-sm btn-icon " data-toggle="tooltip"
+                                    <a class="btn btn-sm btn-icon update-dishes" data-toggle="tooltip"
                                        data-placement="top" title="" data-original-title="Edit"
-                                       th:href="@{|/reservation/edit/${r.id}|}">
+                                    th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}">
                                     <span class="btn-inner">
                                        <img width="30px"
                                             src="https://cdn.icon-icons.com/icons2/2621/PNG/512/gui_edit_icon_157165.png">
@@ -1333,6 +1333,7 @@
                     console.log(data)
                     $(".render-details").html("");
                     $.each(data, function (index, d) {
+                        let formattedDate = moment(d.dateBooking).format('DD/MM/YYYY');
                         let htmlMenu = `
                         <tr >
                             <td>${d.id}</td>
@@ -1342,7 +1343,7 @@
   <td>${d.name}</td>
   <td>$ ${d.price}</td>
   <td>${d.quantity}</td>
-  <td>${d.dateBooking}</td>
+  <td>${formattedDate}</td>
   <td>${d.startTime}</td>
   <td>${d.endTime}</td>
   <td>${d.status}</td>
@@ -1355,6 +1356,35 @@
                 }
             });
         });
+        $(document).on("click", ".update-dishes", function () {
+            let idR = $(this).data("id-resvertion");
+            let idU = $(this).data("id-user");
+
+            $.ajax({
+                url: "/edit-order",
+                type: "GET",
+                data: {
+                    idUser: idU,
+                    idResvertion: idR
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.icon == "error") {
+                        Swal.fire({
+                            position: 'center',
+                            icon: data.icon,
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }else {
+                        window.location.href ="/home/menu"
+                    }
+
+                },
+
+            });
+        })
     </script>
     <!-- Footer Section Start -->
     <footer class="footer">

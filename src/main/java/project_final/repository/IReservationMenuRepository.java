@@ -19,15 +19,10 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.user.id = :id AND RM.reservation.status = 'PENDING'")
     Page<ReservationMenu> findAllByUser(@Param("id") Long id, Pageable pageable);
 
-    @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id")
+    @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.user.id = :id AND RM.reservation.status = 'ORDER'")
     List<ReservationMenu> findAllByReservation(@Param("id") Long id);
 
-    @Query("SELECT M.name, SUM(RM.quantity),MONTH(R.createdDate) as month " +
-            "FROM ReservationMenu RM " +
-            "JOIN RM.reservation R " +
-            "JOIN RM.menu M " +
-            "GROUP BY M.name, MONTH(R.createdDate)")
-    List<Object[]> findAllByMenuTop();
+
 
 
 }

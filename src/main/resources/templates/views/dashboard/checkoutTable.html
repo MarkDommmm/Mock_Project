@@ -1350,10 +1350,18 @@
                                     </div>
                                     <h4 class="card-title">Chose Time</h4>
                                     <form class="row" th:action="@{/reservation/add}" method="post"
-                                          th:object="${reservationRequest}">
+                                          th:object="${reservationR}">
+                                        <input type="hidden" th:field="*{id}">
+                                        <input type="hidden" th:field="*{code}">
+                                        <input type="hidden" th:field="*{table}">
+                                        <input type="hidden" th:field="*{user}">
+                                        <input type="hidden" th:field="*{id}">
+<!--                                        <input type="text" th:field="*{bookingDate}">-->
                                         <div class="form-group col-md-12">
                                             <label class="form-label" for="date">Booking date:</label>
-                                            <input type="date" class="form-control" id="date" th:field="*{bookingDate}"  readonly>
+                                            <input type="text" class="form-control" id="date" th:field="*{bookingDate}" readonly>
+
+
                                             <span style="color: red" th:if="${#fields.hasErrors('bookingDate')}"
                                                   th:errors="*{bookingDate}"></span>
                                         </div>

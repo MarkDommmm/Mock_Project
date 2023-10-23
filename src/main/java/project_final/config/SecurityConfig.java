@@ -18,10 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import project_final.advice.CustomAuthenticationFailureHandler;
-import project_final.security.UserDetailService;
 
-import javax.servlet.http.Cookie;
+import project_final.security.UserDetailService;
 
 
 @Configuration

@@ -26,6 +26,7 @@ public class Reservation {
         @ManyToOne(fetch = FetchType.LAZY)
         private Tables table;
         private Date createdDate;
+        @DateTimeFormat(pattern = "MM/dd/yyyy")
         private Date bookingDate;
         private Time startTime;
         private Time endTime;
