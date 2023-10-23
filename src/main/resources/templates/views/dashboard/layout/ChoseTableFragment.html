@@ -177,7 +177,7 @@
         var bookingDate = $("#bookingDate").val();
         var startTime = $("#startTime").val();
         var endTime = $("#endTime").val();
-        console.log(tableTypeName, bookingDate, startTime, endTime)
+
         if (!bookingDate || !startTime || !endTime) {
             // Hiển thị thông báo lỗi nếu có trường input rỗng hoặc null
             Swal.fire({
@@ -199,7 +199,7 @@
                 end: endTime
             },
             success: function (data) {
-
+                console.log(data)
                 var tables = data.tables;
                 $("#render-table").html("");
                 $.each(tables, function (tableIndex, t) {
@@ -284,7 +284,7 @@
                     $("#render-table").append(htmlContent);
 
                 });
-            },
+            }
         });
     });
 
@@ -306,6 +306,7 @@
                 end: endTime
             },
             success: function (data) {
+                console.log(data)
                 window.location.href = "/home/menu"
             }
         });

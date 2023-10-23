@@ -24,6 +24,7 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
     List<Tables> findAllByTableTypeName(@Param("name")String name);
 
 
+
     @Query("SELECT DISTINCT t FROM Tables t " +
             "JOIN t.tableType tt " +
             "LEFT JOIN Reservation r ON t.id = r.table.id " +
@@ -41,6 +42,8 @@ public interface ITableRepository extends JpaRepository<Tables, Long> {
                                      @Param("start") String start,
                                      @Param("end") String end,
                                      Pageable pageable);
+
+
 
     @Query(value = "SELECT t.name as name, " +
             "CASE " +

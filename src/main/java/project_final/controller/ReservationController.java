@@ -67,6 +67,7 @@ public class ReservationController {
         if (date == null) {
             date = new Date();
         }
+        model.addAttribute("searchReservations" ,"");
         model.addAttribute("date", date);
         model.addAttribute("reservations", reservationService.findAll(date, page, size));
         return "dashboard/page/reservation/reservation-list";
@@ -211,11 +212,13 @@ public class ReservationController {
     }
 
  
+
     @GetMapping("/search")
     public String searchByCode(@RequestParam String code, HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
         reservationService.findByCode( code);
         return "redirect:/reservation";
     }
+
  
 }

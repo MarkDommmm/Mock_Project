@@ -25,6 +25,8 @@ public interface IMenuRepository extends JpaRepository<Menu,Long> {
             "ORDER BY SUM(r.quantity) DESC " +
             "LIMIT 6", nativeQuery = true)
     List<Menu> findTopSellingMenus();
+
+
     @Query("SELECT M FROM Menu M JOIN M.category C WHERE C.name =:category")
     Page<Menu> findAllByCategoryName(@Param("category") String category, Pageable pageable);
 

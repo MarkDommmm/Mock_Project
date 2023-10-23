@@ -1260,7 +1260,12 @@
                 </svg>
             </i>
         </div>
-       <form action="">
+        <form action="/reservation" method="get" th:if="${searchReservations}">
+            <input type="date" name="date" class="form-control" placeholder="Search..."
+                   th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
+            <button type="submit">Search</button>
+        </form>
+       <form action=""  th:unless="${searchReservations}">
            <div class="input-group search-input">
                         <span class="input-group-text" id="search-input">
                             <svg width="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1273,6 +1278,7 @@
                <input type="search" name="name" class="form-control" placeholder="Search..." th:value="${name}">
            </div>
        </form>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">

@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public interface IReservationMenuService extends IGenericService<ReservationMenuRequest, TableMenuCartResponse, Long> {
-    Page<ReservationMenuResponse> getAll(Long id, int page, int size);
+    Page<TableMenuCartResponse> getAll(Long id, int page, int size);
 
     Page<TableMenuCartResponse> getTableMenu(Long id, int page, int size);
 
