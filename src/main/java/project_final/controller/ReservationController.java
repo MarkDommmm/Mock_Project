@@ -49,9 +49,9 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IReservationMenuService reservationMenuService;
     private final GenerateExcelService generateExcelService;
-
+ 
     private final IReservationRepository reservationRepository;
-
+ 
     private final PaypalService paypalService;
     private final VNPayService vnPayService;
     public static final String SUCCESS_URL = "payment-success";
@@ -90,11 +90,13 @@ public class ReservationController {
                                  BindingResult bindingResult, HttpSession session,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple,
                                  Model model, HttpServletRequest request) throws TimeIsValidException {
-
+ 
 
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
 
         List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
+ 
+ 
 
         double totalPrice = 0.0;
         for (TableMenuCartResponse item : tableMenu) {

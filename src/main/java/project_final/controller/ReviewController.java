@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project_final.entity.Review;
 import project_final.entity.User;
+import project_final.model.dto.request.ReviewRequest;
 import project_final.service.IReviewService;
 
 import javax.servlet.http.HttpSession;
@@ -27,12 +28,7 @@ public class ReviewController {
         model.addAttribute("review",new Review());
         return "/dashboard/page/add";
     }
-    @PostMapping("/add")
-    public String addReview(@ModelAttribute Review review, HttpSession session){
-        User user = (User) session.getAttribute("currentUser");
-        reviewService.save(review,user);
-        return "redirect:/home/reviews";
-    }
+
 
     @GetMapping("/hidden/{id}")
     public String hidden(@PathVariable Long id){
