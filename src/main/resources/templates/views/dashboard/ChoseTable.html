@@ -1668,7 +1668,7 @@
                     id: id
                 },
                 success: function (data) {
-                    console.log(idUser, idResvertion);
+
 
                     $("#staticBackdrop").css({
                         "left": "-16%",
@@ -1716,7 +1716,6 @@
                     $(".render-details").html("");
                     $.each(data, function (index, d) {
                         let formattedDate = moment(d.dateBooking).format('DD/MM/YYYY');
-
                         let htmlMenu = `
                         <tr >
                             <td>${d.id}</td>

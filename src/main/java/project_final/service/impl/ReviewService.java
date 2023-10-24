@@ -40,7 +40,7 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     @Override
     public Page<ReviewResponse> findAllByUser(Long id, int page, int size) {
         User user = userRepository.findById(id).get();
-        Page<Review> reviews = reviewRepository.findAllByUser(user,PageRequest.of(page,size));
+        Page<Review> reviews = reviewRepository.findAllByUser(user, PageRequest.of(page, size));
         return reviews.map(reviewMapper::toResponse);
     }
 
@@ -54,27 +54,30 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     }
 
     @Override
-    public void save(ReviewRequest reviewRequest, User user) {
-        Reservation reservation = reservationRepository.findByUser(user);
-        if (reservation != null && reservation.getStatus().equals("COMPLETED")) {
-                reviewRepository.save(reviewMapper.toEntity(reviewRequest));
-        }
+    public void save(ReviewRequest reviewRequest, Long id) {
+        Optional<User> user = userRepository.findById(id);
+        reviewRequest.setUser(user.get());
+//        Optional<Reservation> reservation = reservationRepository.findById(id);
+
+//        if (reservation != null && reservation.getStatus().equals("COMPLETED")) {
+        reviewRepository.save(reviewMapper.toEntity(reviewRequest));
+//        }
     }
 
     @Override
     public void delete(Long id, User user) {
-       Optional<Review> review = reviewRepository.findById(id);
-       if (review.isPresent()){
-           if (user.equals(review.get().getUser())) {
-               reviewRepository.deleteById(id);
-           }
-       }
+        Optional<Review> review = reviewRepository.findById(id);
+        if (review.isPresent()) {
+            if (user.equals(review.get().getUser())) {
+                reviewRepository.deleteById(id);
+            }
+        }
     }
 
     @Override
     public void changeStatus(Long id) {
         Review review = reviewRepository.findById(id).get();
-        if (review!=null) {
+        if (review != null) {
             review.setStatus(!review.isStatus());
             reviewRepository.save(review);
         }

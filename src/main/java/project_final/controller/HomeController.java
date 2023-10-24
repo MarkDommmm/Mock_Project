@@ -156,7 +156,7 @@ public class HomeController {
         Optional<Reservation> existingReservation = reservationRepository.findOrderReservationByUserId(userPrinciple.getId());
         if (existingReservation.isPresent()) {
             map.put("icon", "error");
-            map.put("message","You have an order in progress, please wait for Admin to confirm!");
+            map.put("message", "You have an order in progress, please wait for Admin to confirm!");
         } else {
             Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
             session.setAttribute("reservationLocal", reservation);
@@ -204,12 +204,12 @@ public class HomeController {
             map.put("icon", "error");
             map.put("message", "Please log in to the account with this code to update");
         } else {
- 
+
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
-            model.addAttribute("idR",idR);
-            model.addAttribute("reservationMenu",new ReservationMenuRequest());
+            model.addAttribute("idR", idR);
+            model.addAttribute("reservationMenu", new ReservationMenuRequest());
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             reservation.get().setStatus(Status.PENDING);
@@ -253,15 +253,16 @@ public class HomeController {
 
     @RequestMapping("/remove-cart-item")
     @ResponseBody
-    public Page<TableMenuCartResponse> removeCartItem(
+    public List<TableMenuCartResponse> removeCartItem(
             @RequestParam(defaultValue = "") Long id,
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
-            HttpSession session) {
+            Model model, @AuthenticationPrincipal UserPrinciple userPrinciple) {
 
         reservationMenuService.removeCartItem(id);
-        return reservationMenuService.findAll(name, page, sizeCart);
+        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
+        return reservationMenuService.getDetails(existingReservation.get().getId());
     }
 
 
@@ -274,27 +275,41 @@ public class HomeController {
                                 @RequestParam(defaultValue = "12") int size) {
 
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
+        List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
+        double totalPrice = tableMenuCartResponse.stream()
+                .mapToDouble(TableMenuCartResponse::getPrice)
+                .sum();
 
         model.addAttribute("table", tableService.findById(existingReservation.get().getTable().getId()));
         model.addAttribute("reservationR", existingReservation.get());
-        model.addAttribute("cart", reservationMenuService.getDetails(existingReservation.get().getId()));
+        model.addAttribute("cart", tableMenuCartResponse);
+        model.addAttribute("totalPrice", totalPrice);
+
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
     }
 
 
-    @RequestMapping("home/reviews")
- 
-    public String getHomeReview(Model model){
-        model.addAttribute("reviewRequest", new ReviewRequest());
- 
+    @RequestMapping("/home/reviews/{id}")
+    public String getHomeReview(Model model, @PathVariable Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (reservation.isPresent()) {
+            model.addAttribute("review", "");
+            model.addAttribute("reviewRequest", new ReviewRequest());
+            return "dashboard/reviews";
+        }
+        return "redirect:/auth/profile" + userPrinciple.getId();
+    }
+
+    @RequestMapping("/home/reviews")
+    public String getHomeReviews(Model model) {
+        model.addAttribute("reviews", reviewRepository.findAll());
         return "dashboard/reviews";
     }
 
     @PostMapping("/home/create/review")
-    public String addReview(@ModelAttribute ReviewRequest reviewRequest, HttpSession session){
-        User user = (User) session.getAttribute("currentUser");
-        reviewService.save(reviewRequest,user);
+    public String addReview(@ModelAttribute ReviewRequest reviewRequest, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        reviewService.save(reviewRequest, userPrinciple.getId());
         return "redirect:/home/reviews";
     }
 

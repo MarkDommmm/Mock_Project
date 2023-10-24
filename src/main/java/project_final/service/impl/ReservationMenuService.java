@@ -57,7 +57,7 @@ public class ReservationMenuService implements IReservationMenuService {
 
     @Override
     public List<TableMenuCartResponse> getDetails(Long id) {
-        List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllByReservation(id);
+        List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllByReservationId(id);
         return reservationMenus.stream().map(reservationMenuMapper::toResponse).collect(Collectors.toList());
     }
 

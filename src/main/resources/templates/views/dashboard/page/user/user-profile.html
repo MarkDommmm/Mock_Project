@@ -22,7 +22,8 @@
             display: flex;
             gap: 50px;
         }
-        .title-nav h3{
+
+        .title-nav h3 {
             font-style: italic;
             text-decoration: underline;
             cursor: pointer;
@@ -1211,44 +1212,50 @@
                             <td th:text="${r.payment}"></td>
                             <td>
                                 <button type="button" class="btn btn-primary click-detail" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop" th:data-id-detail="${r.user.id}">
+                                        data-bs-target="#staticBackdrop" th:data-id-detail="${r.id}">
                                     Show Detail!!!
                                 </button>
                             </td>
                             <td>
-                                <!--                                <span th:if="${r.status}" class="badge bg-success">Activce</span>-->
-                                <!--                                <span th:unless="${r.status}" class="badge bg-danger">Inactive</span>-->
+
                                 <span th:text="${r.status}"></span>
                             </td>
                             <td>
-                                <div class="flex align-items-center list-user-action">
-                                    <a class="btn btn-sm btn-icon " data-toggle="tooltip"
-                                       data-placement="top" title="" data-original-title="Excel"
-                                       th:href="@{|/reservation/download/${r.id}|}">
+                                <th:block th:if="${r.status == T(project_final.model.domain.Status).COMPLETED}">
+                                    <a th:href="@{|/home/reviews/${r.id}|}">Reviews</a>
+                                </th:block>
+                                <th:block th:if="${r.status == T(project_final.model.domain.Status).PENDING
+                                || r.status == T(project_final.model.domain.Status).PAID
+                                || r.status == T(project_final.model.domain.Status).ORDER
+                                || r.status == T(project_final.model.domain.Status).CONFIRM}">
+                                    <div class="flex align-items-center list-user-action">
+                                        <a class="btn btn-sm btn-icon " data-toggle="tooltip"
+                                           data-placement="top" title="" data-original-title="Excel"
+                                           th:href="@{|/reservation/download/${r.id}|}">
                                     <span class="btn-inner">
                                       <img width="30px"
                                            src="https://cdn.icon-icons.com/icons2/2107/PNG/512/file_type_excel_icon_130611.png">
                                     </span>
-                                    </a>
-
-                                    <a class="btn btn-sm btn-icon update-dishes" data-toggle="tooltip"
-                                       data-placement="top" title="" data-original-title="Edit"
-                                    th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}">
+                                        </a>
+                                        <a th:if="${r.status != T(project_final.model.domain.Status).CONFIRM}" class="btn btn-sm btn-icon update-dishes" data-toggle="tooltip"
+                                           data-placement="top" title="" data-original-title="Edit"
+                                           th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}">
                                     <span class="btn-inner">
                                        <img width="30px"
                                             src="https://cdn.icon-icons.com/icons2/2621/PNG/512/gui_edit_icon_157165.png">
                                     </span>
-                                    </a>
-                                    <a id="cancel" class="btn btn-sm btn-icon " data-toggle="tooltip"
-                                       data-placement="top" title="" data-original-title="Delete"
-                                     th:data-id-resvertion="${r.id}" >
+                                        </a>
+                                        <a id="cancel" class="btn btn-sm btn-icon " data-toggle="tooltip"
+                                           data-placement="top" title="" data-original-title="Delete"
+                                           th:data-id-resvertion="${r.id}">
                                     <span class="btn-inner">
 
                                           <img width="30px"
                                                src=" https://cdn-icons-png.flaticon.com/512/391/391247.png">
                                      </span>
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
+                                </th:block>
                             </td>
                         </tr>
 
@@ -1261,7 +1268,7 @@
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
          tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="left: -16%;top: 10%">
         <div class="modal-dialog">
-            <div class="modal-content"  style="width: 203%;">
+            <div class="modal-content" style="width: 203%;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1299,13 +1306,13 @@
     </div>
 
     <script>
-        $(document).on("click","#cancel",function () {
+        $(document).on("click", "#cancel", function () {
             var id = $(this).data("id-resvertion");
             $.ajax({
                 url: `/reservation/cancel`,
                 type: "GET",
-                data:{
-                    id:id
+                data: {
+                    id: id
                 },
                 success: function (data) {
                     Swal.fire({
@@ -1323,6 +1330,7 @@
         $(document).on("click", ".click-detail", function () {
 
             var id = $(this).data("id-detail");
+            console.log(id)
             $.ajax({
                 url: "/auth/reservation-detail",
                 type: "GET",
@@ -1330,6 +1338,7 @@
                     id: id
                 },
                 success: function (data) {
+
                     console.log(data)
                     $(".render-details").html("");
                     $.each(data, function (index, d) {
@@ -1377,8 +1386,8 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
-                    }else {
-                        window.location.href ="/home/menu"
+                    } else {
+                        window.location.href = "/home/menu"
                     }
 
                 },
