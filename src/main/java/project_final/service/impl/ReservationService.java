@@ -68,6 +68,13 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public List<ReservationResponse> findAllByStatusORDER() {
+        return reservationRepository.findAllByStatusORDER().stream()
+                .map(reservationMapper::toResponse).collect(Collectors.toList());
+    }
+
+
+    @Override
     public Reservation add(Long user, Date date, String start, String end, Long idTable) throws TimeIsValidException {
         if (!isEndTimeAfterStartTime(start, end)) {
             throw new TimeIsValidException("End time must be after start time");

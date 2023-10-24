@@ -116,7 +116,7 @@ public class HomeController {
 
         session.setAttribute("currentUser", userPrinciple);
 //        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
-
+        model.addAttribute("notifications", reservationRepository.findAllByStatusORDER());
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
@@ -266,38 +266,8 @@ public class HomeController {
         return "dashboard/checkoutTable";
     }
 
-    @RequestMapping("/user")
-    public String User(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
-        session.setAttribute("currentUser", userPrinciple);
-        return "dashboard/ChoseTable";
-    }
 
-    @RequestMapping("/admin")
-    public String admin() {
-        return "dashboard/page/user/user-list";
-    }
 
-    @RequestMapping("/403")
-    public String error403() {
-        return "/dashboard/errors/error403";
-    }
-
-    @RequestMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("table", tableRepository.findAll());
-        model.addAttribute("user", userRepository.findAll());
-        model.addAttribute("payment", paymentRepository.findAll());
-        model.addAttribute("category", categoryRepository.findAll());
-        model.addAttribute("menu", menuRepository.findAll());
-        model.addAttribute("reservation", reservationRepository.findAll());
-        model.addAttribute("tableType", tableTypeRepository.findAll());
-        model.addAttribute("review", reviewRepository.findAll());
-//        model.addAttribute("menuTrending", reservationMenuRepository.findAllByMenuTop());
-//        System.out.println(reservationMenuRepository.findAllByMenuTop());
-        model.addAttribute("menuTopList", menuService.findTopMenusByMonth());
-
-        return "/dashboard/dashboard";
-    }
 }
 
  
