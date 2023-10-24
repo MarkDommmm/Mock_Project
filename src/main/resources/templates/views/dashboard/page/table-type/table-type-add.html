@@ -1122,7 +1122,7 @@
                         <div class="card-body">
                             <div class="new-user-info">
                                 <!--                                FORM New User Information-->
-                                <form method="post" action="/table-type/add" enctype="multipart/form-data" th:object="${tableType}">
+                                <form method="post" th:action="@{/table-type/add}" enctype="multipart/form-data" th:object="${tableType}">
                                     <div class="row">
                                         <div class="form-group">
                                             <div class="profile-img-edit position-relative">

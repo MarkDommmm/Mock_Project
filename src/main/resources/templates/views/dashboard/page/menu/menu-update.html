@@ -1122,7 +1122,7 @@
                         <div class="card-body">
                             <div class="new-user-info">
                                 <!--                                FORM New User Information-->
-                                <form method="post" action="/menu/update" enctype="multipart/form-data" th:object="${menu}">
+                                <form method="post" th:action="@{/menu/update}" enctype="multipart/form-data" th:object="${menu}">
                                     <input type="hidden"  th:field="${menu.id}">
                                     <div class="row">
                                         <div class="form-group">

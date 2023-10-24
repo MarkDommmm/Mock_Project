@@ -1128,7 +1128,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="/category/add" th:object="${category}" enctype="multipart/form-data" >
+                            <form method="post" th:action="@{/category/add}" th:object="${category}" enctype="multipart/form-data" >
                                 <div class="form-group">
                                     <div class="profile-img-edit position-relative">
                                         <img class="profile-pic rounded avatar-100"

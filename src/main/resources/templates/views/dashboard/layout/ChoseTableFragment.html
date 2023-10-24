@@ -48,24 +48,30 @@
     <div class="swiper-container d-slider2">
         <div class="swiper-wrapper">
             <div class="swiper-slide cardH " th:each="t,loop:${tableTypes}"
-                 th:data-table-name="${t.name}">
+                 >
                 <span></span>
                 <div class="card  category-menu boxs">
                     <div class="card-body">
                         <div class="text-center">
                             <!-- Delete Icon -->
                             <div class="delete-admin">
-                                <a href="" style="color:white;">
+                                <a th:href="@{|/table-type/delete-home/${t.id}|}" style="color:white;">
                                     <i class="fa-solid fa-circle-xmark"></i>
                                 </a>
                             </div>
+                            <div class="edit-admin">
+                                <a th:href="@{|/table-type/edit/${t.id}|}" style="color:white;">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            </div>
+
                             <!-- Image -->
                             <img th:src="${t.image}" class="img-fluid rounded-pill mb-3"
                                  alt="Dinner table free icon" title="Dinner table free icon">
                             <!-- Heading -->
                             <h6 class="heading-title fw-bolder pb-4" th:text="${t.name}"></h6>
                             <!-- Category Icon -->
-                            <div class="category-icon pt-4">
+                            <div class="category-icon pt-4" th:data-table-name="${t.name}">
                                 Check Time
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -86,13 +92,19 @@
     <!-- List Table  -->
     <div class="col-xl-12 col-lg-12 dish-card-horizontal mt-2">
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4" id="render-table">
-            <div class="col active" th:each="t,loop:${tables}">
+            <div class="col  " th:each="t,loop:${tables}">
                 <div class="card card-white dish-card profile-img mb-0 index">
+
                     <div class="delete-admin">
-                        <i class="fa-solid fa-circle-xmark"></i>
+                        <a th:href="@{|/table/delete/${t.id}|}" style="color:white;">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </a>
                     </div>
                     <div class="edit-admin">
-                        <i class="fa-solid fa-pen-to-square"></i>
+                        <a th:href="@{|/table/edit/${t.id}|}" style="color:white;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
                     </div>
                     <div class="profile-img21">
                         <img th:src="${t.tableImage}"
@@ -168,10 +180,13 @@
     </form>
 </div>
 <script>
-    $(".swiper-slide").click(function () {
-        $(".swiper-slide .category-menu").removeClass("active");
+    $(".category-icon").click(function () {
 
-        $(this).find(".category-menu").addClass("active");
+        $(".category-menu").removeClass("active");
+
+
+        $(this).closest(".category-menu").addClass("active");
+
 
         var tableTypeName = $(this).data("table-name");
         var bookingDate = $("#bookingDate").val();
@@ -206,11 +221,16 @@
                     let htmlContent = `
                        <div class="col">
                      <div class="card card-white dish-card profile-img mb-0 index">
-                    <div class="delete-admin">
-                        <i class="fa-solid fa-circle-xmark"></i>
+                    <div class="delete-admin" style="z-index: 999">
+                        <a href="/table/delete-home/${t.id}" style="color:white;">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </a>
                     </div>
-                    <div class="edit-admin">
-                        <i class="fa-solid fa-pen-to-square"></i>
+                    <div class="edit-admin" style="z-index: 999">
+                        <a href="/table/edit/${t.id}" style="color:white;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
                     </div>
                     <div class="profile-img21">
                            <img src="${t.tableImage}"
@@ -219,7 +239,7 @@
                         <img src="${t.tableImage}"
                              class="img-fluid rounded-pill avatar-170 " alt="profile-image">
                     </div>
-                    <a href="">
+
                         <div class="card-body menu-image">
                             <h6 class="heading-title fw-bolder mt-4 mb-0">${t.name}</h6>
                             <div class="card-rating stars-ratings">
@@ -277,7 +297,7 @@
                                 </div>
                             </div>
                         </div>
-                    </a>
+
                 </div>
                  </div>
                     `;
@@ -305,7 +325,7 @@
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                Swal.fire('Hope you have fun choosing dishes', '', 'success').then(( ) => {
+                Swal.fire('Hope you have fun choosing dishes', '', 'success').then(() => {
                     $.ajax({
                         url: "/home/chose-idTable",
                         type: "GET",
@@ -316,15 +336,27 @@
                             end: endTime
                         },
                         success: function (data) {
-                            window.location.href = "/home/menu"
+                            if (data.icon === 'error'){
+                                Swal.fire({
+                                    position: 'center',
+                                    icon: data.icon,
+                                    title: data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.href="/home"
+                                })
+                            }else {
+                                window.location.href="/home/menu"
+                            }
+
                         }
                     });
 
                 })
 
-            } else
-            if (result.isDenied) {
-                Swal.fire('Proceed to enter table reservation information', '', 'info').then(()=>{
+            } else if (result.isDenied) {
+                Swal.fire('Proceed to enter table reservation information', '', 'info').then(() => {
                     window.location.href = "/checkout"
                 })
 

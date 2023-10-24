@@ -10,6 +10,7 @@ import project_final.entity.Reservation;
 import project_final.entity.User;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,7 +18,11 @@ import java.util.Optional;
 public interface IReservationRepository extends JpaRepository<Reservation,Long> {
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='PENDING' ")
     Page<Reservation> findAllByUserAndStatusPending(Pageable pageable, @Param("userId") Long userId);
+    @Query("SELECT R FROM Reservation R WHERE   R.status ='ORDER' ")
+            List<Reservation> findAllByStatusORDER();
 
+    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.status = 'ORDER'")
+    Optional<Reservation> findOrderReservationByUserId(@Param("userId") Long userId);
 
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId")
     Page<Reservation> findAllByUser(Pageable pageable, @Param("userId") Long userId);

@@ -97,6 +97,11 @@ public class TableController {
         tableService.delete(id);
         return "redirect:/table";
     }
+    @GetMapping("/delete-home/{id}")
+    public String deleteTableh(@PathVariable Long id) {
+        tableService.delete(id);
+        return "redirect:/home";
+    }
 
     @GetMapping("status/{id}")
     public String changeStatus(@PathVariable Long id) {

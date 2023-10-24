@@ -110,15 +110,11 @@ public class HomeController {
                                @RequestParam(defaultValue = "") String nameTableType,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size,
-                               @RequestParam(name = "date", required = false)
-                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                               @RequestParam(name = "start", required = false, defaultValue = "") String start,
-                               @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+                               @RequestParam(defaultValue = "20") int size) {
 
         session.setAttribute("currentUser", userPrinciple);
 //        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
-
+        model.addAttribute("notifications", reservationRepository.findAllByStatusORDER());
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
@@ -145,20 +141,29 @@ public class HomeController {
     }
 
     @GetMapping("/home/chose-idTable")
-    public String choseTable(@AuthenticationPrincipal UserPrinciple userPrinciple,
-                             @RequestParam(name = "id") Long id,
-                             @RequestParam(name = "date", required = false)
-                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                             @RequestParam(name = "start", required = false, defaultValue = "") String start,
-                             @RequestParam(name = "end", required = false, defaultValue = "") String end,
-                             HttpSession session) throws TimeIsValidException {
+    @ResponseBody
+    public Map<String, String> choseTable(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                                          @RequestParam(name = "id") Long id,
+                                          @RequestParam(name = "date", required = false)
+                                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                          @RequestParam(name = "start", required = false, defaultValue = "") String start,
+                                          @RequestParam(name = "end", required = false, defaultValue = "") String end,
+                                          HttpSession session) throws TimeIsValidException {
+        Map<String, String> map = new HashMap<>();
         if (tableService.isTableAvailable(id, date, start, end)) {
             throw new TimeIsValidException("bàn đã được sử dụng");
         }
-        Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
-        session.setAttribute("reservationLocal", reservation);
+        Optional<Reservation> existingReservation = reservationRepository.findOrderReservationByUserId(userPrinciple.getId());
+        if (existingReservation.isPresent()) {
+            map.put("icon", "error");
+            map.put("message","You have an order in progress, please wait for Admin to confirm!");
+        } else {
+            Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
+            session.setAttribute("reservationLocal", reservation);
+            map.put("icon", "success");
+        }
 
-        return "redirect:/home/menu";
+        return map;
     }
 
     @RequestMapping("/home/menu")
@@ -187,7 +192,7 @@ public class HomeController {
 
     @RequestMapping("/edit-order")
     @ResponseBody
-    public Map<String, String> editOrder(@RequestParam("idReservation") Long idR,
+    public Map<String, String> editOrder(@RequestParam("idResvertion") Long idR,
                                          @RequestParam("idUser") Long idU,
                                          Model model, @RequestParam(defaultValue = "") String name,
                                          @RequestParam(defaultValue = "0") int page,
@@ -199,13 +204,12 @@ public class HomeController {
             map.put("icon", "error");
             map.put("message", "Please log in to the account with this code to update");
         } else {
-
+ 
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
             model.addAttribute("idR",idR);
             model.addAttribute("reservationMenu",new ReservationMenuRequest());
-
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             reservation.get().setStatus(Status.PENDING);
@@ -236,10 +240,13 @@ public class HomeController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
-            HttpSession session) throws CustomsException {
+            HttpSession session) {
+        try {
+            reservationMenuService.addCart(id, userPrinciple.getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-
-        reservationMenuService.addCart(id, userPrinciple.getId());
         return reservationMenuService.getTableMenu(userPrinciple.getId(), page, sizeCart);
     }
 
@@ -275,9 +282,12 @@ public class HomeController {
         return "dashboard/checkoutTable";
     }
 
+
     @RequestMapping("home/reviews")
+ 
     public String getHomeReview(Model model){
         model.addAttribute("reviewRequest", new ReviewRequest());
+ 
         return "dashboard/reviews";
     }
 
@@ -294,32 +304,7 @@ public class HomeController {
         return "dashboard/ChoseTable";
     }
 
-    @RequestMapping("/admin")
-    public String admin() {
-        return "dashboard/page/user/user-list";
-    }
 
-    @RequestMapping("/403")
-    public String error403() {
-        return "/dashboard/errors/error403";
-    }
-
-    @RequestMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("table", tableRepository.findAll());
-        model.addAttribute("user", userRepository.findAll());
-        model.addAttribute("payment", paymentRepository.findAll());
-        model.addAttribute("category", categoryRepository.findAll());
-        model.addAttribute("menu", menuRepository.findAll());
-        model.addAttribute("reservation", reservationRepository.findAll());
-        model.addAttribute("tableType", tableTypeRepository.findAll());
-        model.addAttribute("review", reviewRepository.findAll());
-//        model.addAttribute("menuTrending", reservationMenuRepository.findAllByMenuTop());
-//        System.out.println(reservationMenuRepository.findAllByMenuTop());
-        model.addAttribute("menuTopList", menuService.findTopMenusByMonth());
-
-        return "/dashboard/dashboard";
-    }
 }
 
  
