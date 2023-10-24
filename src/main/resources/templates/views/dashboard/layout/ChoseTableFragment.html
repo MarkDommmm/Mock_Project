@@ -55,9 +55,15 @@
                         <div class="text-center">
                             <!-- Delete Icon -->
                             <div class="delete-admin">
-                                <a href="" style="color:white;">
+                                <a th:href="@{|/table-type/delete/${t.id}|}" style="color:white;">
                                     <i class="fa-solid fa-circle-xmark"></i>
                                 </a>
+                            </div>
+                            <div class="edit-admin">
+                                <a th:href="@{|/table-type/edit/${t.id}|}" style="color:white;">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+
                             </div>
                             <!-- Image -->
                             <img th:src="${t.image}" class="img-fluid rounded-pill mb-3"
@@ -89,10 +95,15 @@
             <div class="col active" th:each="t,loop:${tables}">
                 <div class="card card-white dish-card profile-img mb-0 index">
                     <div class="delete-admin">
-                        <i class="fa-solid fa-circle-xmark"></i>
+                        <a th:href="@{|/table/delete/${t.id}|}" style="color:white;">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </a>
                     </div>
                     <div class="edit-admin">
-                        <i class="fa-solid fa-pen-to-square"></i>
+                        <a th:href="@{|/table/edit/${t.id}|}" style="color:white;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
                     </div>
                     <div class="profile-img21">
                         <img th:src="${t.tableImage}"
@@ -305,7 +316,7 @@
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                Swal.fire('Hope you have fun choosing dishes', '', 'success').then(( ) => {
+                Swal.fire('Hope you have fun choosing dishes', '', 'success').then(() => {
                     $.ajax({
                         url: "/home/chose-idTable",
                         type: "GET",
@@ -322,9 +333,8 @@
 
                 })
 
-            } else
-            if (result.isDenied) {
-                Swal.fire('Proceed to enter table reservation information', '', 'info').then(()=>{
+            } else if (result.isDenied) {
+                Swal.fire('Proceed to enter table reservation information', '', 'info').then(() => {
                     window.location.href = "/checkout"
                 })
 

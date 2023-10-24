@@ -117,7 +117,7 @@ public class HomeController {
 
         session.setAttribute("currentUser", userPrinciple);
 //        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
-
+        model.addAttribute("notifications", reservationRepository.findAllByStatusORDER());
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         return "dashboard/ChoseTable";
@@ -161,17 +161,6 @@ public class HomeController {
     }
 
     @RequestMapping("/home/menu")
-<<<<<<< HEAD
-    public String getMenu(@RequestParam(defaultValue = "") String name,
-                          @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "12") int size,
-                          @RequestParam(defaultValue = "10") int sizeCart,
-                          Model model, HttpSession session) {
-        UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
-        Reservation reservation = new Reservation();
-        if (u != null) {
-            model.addAttribute("cart", reservationMenuService.findById(u.getId()));
-=======
     public String getMenu(
             @AuthenticationPrincipal UserPrinciple userPrinciple,
             @RequestParam(defaultValue = "") String name,
@@ -182,7 +171,6 @@ public class HomeController {
 
         if (userPrinciple != null) {
             model.addAttribute("cart", reservationMenuService.getAll(userPrinciple.getId(), page, size));
->>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
         }
 
 
@@ -198,7 +186,7 @@ public class HomeController {
 
     @RequestMapping("/edit-order")
     @ResponseBody
-    public Map<String, String> editOrder(@RequestParam("idReservation") Long idR,
+    public Map<String, String> editOrder(@RequestParam("idResvertion") Long idR,
                                          @RequestParam("idUser") Long idU,
                                          Model model, @RequestParam(defaultValue = "") String name,
                                          @RequestParam(defaultValue = "0") int page,
@@ -210,18 +198,10 @@ public class HomeController {
             map.put("icon", "error");
             map.put("message", "Please log in to the account with this code to update");
         } else {
-<<<<<<< HEAD
-            model.addAttribute("cart", reservationMenuService.getDetails(idR));
-            model.addAttribute("categories", categoryService.findAll());
-            model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
-            model.addAttribute("idR",idR);
-            model.addAttribute("reservationMenu",new ReservationMenuRequest());
-=======
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             reservation.get().setStatus(Status.PENDING);
             reservationRepository.save(reservation.get());
->>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
         }
         return map;
     }
@@ -287,6 +267,7 @@ public class HomeController {
         return "dashboard/checkoutTable";
     }
 
+ 
     @RequestMapping("home/reviews")
     public String getHomeReview(Model model){
         model.addAttribute("review", new Review());
@@ -298,33 +279,9 @@ public class HomeController {
         session.setAttribute("currentUser", userPrinciple);
         return "dashboard/ChoseTable";
     }
+ 
 
-    @RequestMapping("/admin")
-    public String admin() {
-        return "dashboard/page/user/user-list";
-    }
 
-    @RequestMapping("/403")
-    public String error403() {
-        return "/dashboard/errors/error403";
-    }
-
-    @RequestMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("table", tableRepository.findAll());
-        model.addAttribute("user", userRepository.findAll());
-        model.addAttribute("payment", paymentRepository.findAll());
-        model.addAttribute("category", categoryRepository.findAll());
-        model.addAttribute("menu", menuRepository.findAll());
-        model.addAttribute("reservation", reservationRepository.findAll());
-        model.addAttribute("tableType", tableTypeRepository.findAll());
-        model.addAttribute("review", reviewRepository.findAll());
-//        model.addAttribute("menuTrending", reservationMenuRepository.findAllByMenuTop());
-//        System.out.println(reservationMenuRepository.findAllByMenuTop());
-        model.addAttribute("menuTopList", menuService.findTopMenusByMonth());
-
-        return "/dashboard/dashboard";
-    }
 }
 
  
