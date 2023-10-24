@@ -6,6 +6,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
+import project_final.model.dto.response.ReservationMenuResponse;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IReservationRepository;
 import project_final.security.UserPrinciple;
@@ -49,9 +51,9 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IReservationMenuService reservationMenuService;
     private final GenerateExcelService generateExcelService;
- 
+
     private final IReservationRepository reservationRepository;
- 
+
     private final PaypalService paypalService;
     private final VNPayService vnPayService;
     public static final String SUCCESS_URL = "payment-success";
@@ -68,7 +70,7 @@ public class ReservationController {
         }
         model.addAttribute("searchReservations", "");
         model.addAttribute("date", date);
-            model.addAttribute("reservations", reservationService.findAll(date, page, size));
+        model.addAttribute("reservations", reservationService.findAll(date, page, size));
         return "dashboard/page/reservation/reservation-list";
     }
 
@@ -79,8 +81,9 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/reservationMenu/{id}")
-    public String getReservationMenu(@PathVariable Long id,Model model,@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "10")  int size) {
-        model.addAttribute("reservationMenu",reservationMenuService.getReservationMenu(id,page,size));
+    public String getReservationMenu(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("reservationMenu", reservationMenuService.getReservationMenu(id, page, size));
+        model.addAttribute("total",reservationService.getTotalPrice(id));
         return "dashboard/page/reservation/reservation-menu";
     }
 
@@ -90,13 +93,11 @@ public class ReservationController {
                                  BindingResult bindingResult, HttpSession session,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple,
                                  Model model, HttpServletRequest request) throws TimeIsValidException {
- 
+
 
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
 
         List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
- 
- 
 
         double totalPrice = 0.0;
         for (TableMenuCartResponse item : tableMenu) {
@@ -176,6 +177,12 @@ public class ReservationController {
         reservationRequest.setUser(user);
         return "redirect:/reservation";
     }
+    @GetMapping("/reservation/served/{id}")
+    public String served(@PathVariable Long id, @RequestParam("idRese") Long idRese) {
+        reservationMenuService.served(id);
+        return "redirect:/reservation/reservationMenu/" + idRese;
+    }
+
 
     @GetMapping("/reservation/confirm/{id}")
     public String confirm(@PathVariable Long id) {
@@ -194,8 +201,9 @@ public class ReservationController {
         reservationService.noShow(id);
         return "redirect:/reservation";
     }
+
     @GetMapping("/reservation/change-status/{id}")
-    public String changeStatus(@PathVariable("id") Long id,HttpSession session) {
+    public String changeStatus(@PathVariable("id") Long id, HttpSession session) {
         reservationService.changeStatusOrder(id);
         session.removeAttribute("idReservation");
         return "redirect:/home";

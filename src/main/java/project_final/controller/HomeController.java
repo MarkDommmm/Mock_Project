@@ -184,9 +184,7 @@ public class HomeController {
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
         model.addAttribute("menuTrending", menuService.findTopSellingMenus());
-
         model.addAttribute("tableMenu", new ReservationMenuRequest());
-
         return "dashboard/menu";
     }
 
@@ -204,7 +202,7 @@ public class HomeController {
             map.put("icon", "error");
             map.put("message", "Please log in to the account with this code to update");
         } else {
- 
+
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));

@@ -53,6 +53,13 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
             " FROM reservation r GROUP BY r.booking_date",
             nativeQuery = true)
     Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
+
+    @Query("SELECT SUM(RM.quantity * RM.price) FROM Reservation R " +
+            "JOIN ReservationMenu RM ON R.id = RM.reservation.id " + 
+            "WHERE R.id = :id")
+    double getTotalPrice(@Param("id") Long id);
+
+
 }
 
 

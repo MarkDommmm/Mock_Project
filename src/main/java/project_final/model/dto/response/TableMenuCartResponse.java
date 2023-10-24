@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project_final.model.domain.Status;
 
 import java.sql.Time;
 import java.util.Date;
@@ -21,5 +22,6 @@ public class TableMenuCartResponse {
     private Time endTime;
     private int quantity;
     private double price;
-    private boolean status;
+    private Status status;
+    private Status pay;
 }

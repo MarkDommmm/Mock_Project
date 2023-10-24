@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import project_final.entity.Menu;
 import project_final.entity.Reservation;
+import project_final.model.domain.Status;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,6 @@ public class ReservationMenuRequest {
     private Reservation reservation;
     private int quantity = 1;
     private double price;
-    private boolean status;
-
+    private Status status;
+    private Status pay;
 }

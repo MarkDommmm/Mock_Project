@@ -208,6 +208,11 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public double getTotalPrice(Long id) {
+        return reservationRepository.getTotalPrice(id);
+    }
+
+    @Override
     public double revenuesOnDay(Date date) {
         return 0;
     }
