@@ -1673,7 +1673,7 @@
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
                                                 <a sec:authorize="isAuthenticated()" class="add-cart"
-                                                   th:data-id="${f.id}">
+                                                   th:data-id="${f.id}" th:data-menu-price="${f.price}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                          fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
@@ -1886,7 +1886,8 @@
                             <div class="card-body">
 
                                 <div class="horizontal-scroll" id="render-cart">
-                                    <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
+                                    <div class="rounded-pill bg-soft-primary iq-my-cart" th:data-price="${c.price}"
+                                         th:each="c:${cart}">
                                         <div class="d-flex align-items-center justify-content-between profile-img4">
                                             <div class="profile-img11">
                                                 <img th:src="${c.image}"
@@ -1916,7 +1917,8 @@
                                                 </div>
                                             </div>
                                             <div class="me-4 text-end">
-                                                <span class="mb-1 remove-cart" th:data-menu-id="${c.id}">
+                                                <span class="mb-1 remove-cart" th:data-price="${c.price}"
+                                                      th:data-qty="${c.quantity}" th:data-menu-id="${c.id}">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
                                                         <path opacity="0.4"
@@ -1933,6 +1935,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row text-center" style="margin-top: 20px">
+                                <p class="col-lg-6 text-black">Total Price:</p>
+                                <p class="col-lg-6 text-black render-total-price"></p>
+                            </div>
                             <div class="show-more">
                                 <p>Scroll left show more!!</p>
                                 <img class="animation--Gl63I"
@@ -1940,7 +1946,8 @@
                                      alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
                                      style="max-height: 80px;">
                             </div>
-                            <div th:unless="${session.idReservation}" class="text-center" sec:authorize="isAuthenticated()">
+                            <div th:unless="${session.idReservation}" class="text-center"
+                                 sec:authorize="isAuthenticated()">
                                 <a type="button" href="/check-out"
                                    style="margin-bottom: 20px"
                                    class="btn btn-primary rounded-pill checkout">Checkout!!!
@@ -2043,9 +2050,31 @@
     </footer>
     <!-- Footer Section End -->
     <script>
+        var totalPrice = 0.0;
+        $(document).ready(function () {
+
+            // Lặp qua mỗi phần tử có class là "iq-my-cart"
+            $(".iq-my-cart").each(function () {
+                // Lấy giá trị từ thuộc tính data-price
+                var price = parseFloat($(this).data("price"));
+
+                // Cộng dồn vào tổng
+                totalPrice += price;
+            });
+
+            $(".render-total-price").html("$" + totalPrice);
+
+
+            // Hiển thị tổng
+            console.log("Tổng giá trị là: $" + totalPrice);
+        });
         // Add Cart
         $(document).on("click", ".add-cart", function () {
             const id = $(this).data("id");
+            var price = parseFloat($(this).data("menu-price"));
+            console.log(price)
+            totalPrice += price;
+
             $(".col .dish-card").removeClass("active");
 
             $(this).closest(".dish-card").addClass("active");
@@ -2120,6 +2149,7 @@
                     `;
                         $("#render-cart").append(htmlCart);
                     })
+                    $(".render-total-price").html("$" + totalPrice);
                 },
                 // error: function () {
                 //     Swal.fire({
@@ -2133,10 +2163,14 @@
             });
         });
 
-
         // Remove Cart
         $(document).on("click", ".remove-cart", function () {
             const id = $(this).data("menu-id");
+            const price = $(this).data("price");
+            const qty = $(this).data("qty");
+            const priceMenu = price / qty;
+            totalPrice -= priceMenu
+
             $.ajax({
                 url: "/remove-cart-item",
                 type: "GET",
@@ -2153,9 +2187,9 @@
                         timer: 1500
                     })
                     $("#render-cart").html("");
-                    $.each(data.content, function (i, c) {
+                    $.each(data, function (i, c) {
                         let htmlCart = `
-                     <div class="rounded-pill bg-soft-primary iq-my-cart"">
+                     <div class="rounded-pill bg-soft-primary iq-my-cart" data-price="${c.price}">
                                     <div class="d-flex align-items-center justify-content-between profile-img4">
                                         <div class="profile-img11">
                                             <img src="${c.image}"
@@ -2202,6 +2236,11 @@
                     `;
                         $("#render-cart").append(htmlCart);
                     })
+                    if (totalPrice <= 0) {
+                        $(".render-total-price").html("$" + "0");
+                    } else {
+                        $(".render-total-price").html("$" + totalPrice);
+                    }
                 }
             });
         });

@@ -177,7 +177,7 @@ public class ReservationService implements IReservationService<ReservationReques
                     return "You don't have permission to cancel this reservation";
                 }
             } else {
-                return "You cannot cancel reservation within 4 hours of booking";
+                return "You cannot cancel reservation within 4 hours of booking. If you want to cancel, please contact Hotline 777 Thank you!";
             }
         }
         return "Reservation not found";

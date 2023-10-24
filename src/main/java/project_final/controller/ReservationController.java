@@ -99,11 +99,11 @@ public class ReservationController {
 
         List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
 
-        double totalPrice = 0.0;
-        for (TableMenuCartResponse item : tableMenu) {
-            double price = item.getPrice();
-            totalPrice += price;
-        }
+
+        double totalPrice = tableMenu.stream()
+                .mapToDouble(TableMenuCartResponse::getPrice)
+                .sum();
+
         if (reservationRequest.getPayment().getId().equals(1L)) {
             reservationRequest.setStatus(Status.ORDER);
             reservationService.save(reservationRequest);
@@ -135,9 +135,8 @@ public class ReservationController {
 
     @GetMapping(value = CANCEL_URL)
     public String cancelPay(HttpSession session, @AuthenticationPrincipal UserPrinciple userPrinciple) throws TimeIsValidException {
-        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
         ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
-        existingReservation.get().setStatus(Status.PENDING);
+        reservationRequest.setStatus(Status.ORDER);
         reservationService.save(reservationRequest);
         return "/dashboard/errors/CancelPayment";
     }
@@ -145,14 +144,12 @@ public class ReservationController {
     @GetMapping(value = SUCCESS_URL)
     public String successPay(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
-            Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
             ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
             Payment payment = paypalService.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             session.setAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
             if (payment.getState().equals("approved")) {
-
-                existingReservation.get().setStatus(Status.PAID);
+                reservationRequest.setStatus(Status.PAID);
                 reservationService.save(reservationRequest);
                 return "/dashboard/errors/SuccessPayment";
             }
