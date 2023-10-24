@@ -68,7 +68,7 @@ public class ReservationController {
         }
         model.addAttribute("searchReservations", "");
         model.addAttribute("date", date);
-        model.addAttribute("reservations", reservationService.findAll(date, page, size));
+            model.addAttribute("reservations", reservationService.findAll(date, page, size));
         return "dashboard/page/reservation/reservation-list";
     }
 

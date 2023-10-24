@@ -52,6 +52,12 @@ public class TableTypeController {
         return "redirect:/table-type";
     }
 
+    @GetMapping("delete-home/{id}")
+    public String deleteHome(@PathVariable Long id){
+        tableTypeService.delete(id);
+        return "redirect:/home";
+    }
+
     @GetMapping("status/{id}")
     public String changeStatus(@PathVariable Long id){
         tableTypeService.changeStatus(id);
