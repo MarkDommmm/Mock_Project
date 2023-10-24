@@ -2,20 +2,29 @@ package project_final.service.mapper;
 
 import org.springframework.stereotype.Component;
 import project_final.entity.ReservationMenu;
+import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationMenuRequest;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.model.dto.response.ReservationMenuResponse;;
+
 @Component
 public class ReservationMenuMapper implements IReservationMenuMapper {
     @Override
     public ReservationMenu toEntity(ReservationMenuRequest tableMenuRequest) {
+        Status pay;
+        if (tableMenuRequest.getPay() == null) {
+            pay = Status.UN_PAID;
+        } else {
+            pay = tableMenuRequest.getPay();
+        }
         return ReservationMenu.builder()
                 .id(tableMenuRequest.getId())
                 .menu(tableMenuRequest.getMenu())
                 .reservation(tableMenuRequest.getReservation())
                 .quantity(tableMenuRequest.getQuantity())
                 .price(tableMenuRequest.getMenu().getPrice())
-                .status(true).build();
+                .status(Status.NOT_SERVED_YET)
+                .pay(pay).build();
     }
 
     @Override
@@ -29,7 +38,8 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .dateBooking(reservationMenu.getReservation().getBookingDate())
                 .startTime(reservationMenu.getReservation().getStartTime())
                 .endTime(reservationMenu.getReservation().getEndTime())
-                .status(reservationMenu.isStatus()).build();
+                .status(reservationMenu.getStatus())
+                .pay(reservationMenu.getPay()).build();
     }
 
     @Override
@@ -40,6 +50,7 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .reservation(reservationMenu.getReservation())
                 .quantity(reservationMenu.getQuantity())
                 .price(reservationMenu.getPrice())
-                .status(reservationMenu.isStatus()).build();
+                .status(reservationMenu.getStatus())
+                .pay(reservationMenu.getPay()).build();
     }
 }

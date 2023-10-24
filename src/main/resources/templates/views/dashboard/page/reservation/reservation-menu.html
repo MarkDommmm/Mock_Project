@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+
 
 </head>
 <body class="  "
@@ -1114,52 +1116,96 @@
         <!-- Nav Header Component End -->
         <!--Nav End-->
     </div>
-<!--    <div class="content-inner mt-5 py-0">-->
-<!--        <div>-->
-<!--            <div class="row">-->
-<!--                <div class="col-sm-12">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-header d-flex justify-content-between">-->
-<!--                            <div class="header-title">-->
-<!--                                <h4 class="card-title">Reservation Lists</h4>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="card-body px-0">-->
-<!--                            <div class="table-responsive">-->
-<!--                                <table id="user-list-table" class="table table-striped" role="grid"-->
-<!--                                       data-toggle="data-table" style="text-align: center">-->
-<!--                                    <thead>-->
-<!--                                    <tr class="ligth">-->
-<!--                                        <th>STT</th>-->
-<!--                                        <th>Name</th>-->
-<!--                                        <th>Image</th>-->
-<!--                                        <th>Description</th>-->
-<!--                                        <th>Status</th>-->
-<!--                                        <th style="min-width: 100px">Action</th>-->
-<!--                                    </tr>-->
-<!--                                    </thead>-->
-<!--                                    <tbody>-->
-<!--                                    </tbody>-->
-<!--                                </table>-->
-<!--                                <nav aria-label="..." th:if="${reservationMenu.getTotalPages() != 0}">-->
-<!--                                    <ul class="pagination pagination-sm">-->
-<!--                                        <li th:each="pageNumber : ${#numbers.sequence(0, reservationMenu.getTotalPages() - 1)}"-->
-<!--                                            th:class="${pageNumber == reservationMenu.getNumber() ? 'page-item active' : 'page-item'}">-->
-<!--                                            <a th:href="@{|/reservationMenu?page=${pageNumber}&size=${reservationMenu.size}|}"-->
-<!--                                               class="page-link">-->
-<!--                                                <span th:text="${pageNumber + 1}"></span>-->
-<!--                                            </a>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </nav>-->
-<!--                                <nav th:unless="${reservationMenu.getTotalPages() != 0}"></nav>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div class="content-inner mt-5 py-0">
+        <div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Reservation Menu List</h4>
+                            </div>
+                            <div>
+                                <a class="btn btn-sm btn-icon btn-success" data-toggle="tooltip"
+                                   data-placement="top" title="" data-original-title="Add" th:href="|@{/menu/add/${reservationMenu}}|">
+                                    <span class="btn-inner">
+                                       <svg width="32" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z"
+                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                          <path d="M19.2036 8.66919V12.6792" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                          <path d="M21.2497 10.6741H17.1597" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                       </svg>
+                                        Add Menu
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body px-0">
+                            <div class="table-responsive">
+                                <table id="user-list-table" class="table table-striped" role="grid"
+                                       data-toggle="data-table" style="text-align: center">
+                                    <thead>
+                                    <tr class="ligth">
+                                        <th>STT</th>
+                                        <th>Name</th>
+                                        <th>Image</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Pay</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="r,loop :${reservationMenu}">
+                                        <td th:text="${loop.count}"></td>
+                                        <td th:text="${r.menu.name}"></td>
+                                        <td class="text-center">
+                                            <img class="bg-soft-primary rounded img-fluid avatar-40 me-3"
+                                                 th:src="${r.menu.image}" alt="profile">
+                                        </td>
+                                        <td th:text="${r.quantity}"></td>
+                                        <td th:text="${r.price}"></td>
+                                        <th th:text="${r.pay}"></th>
+                                        <td>
+                                            <a class="change-status-link"
+                                               th:href="@{|/reservation/served/${r.id}?idRese=${r.reservation.id}|}"
+                                               th:text="${r.status}">Status</a>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <div style="display: flex;justify-content: end">
+                                    <h6>Total: <span th:text="${total}"></span> </h6>
+                                </div>
+                                <nav aria-label="..." th:if="${reservationMenu.getTotalPages() != 0}">
+                                    <ul class="pagination pagination-sm">
+                                        <li th:each="pageNumber : ${#numbers.sequence(0, reservationMenu.getTotalPages() - 1)}"
+                                            th:class="${pageNumber == reservationMenu.getNumber() ? 'page-item active' : 'page-item'}">
+                                            <a th:href="@{|/reservationMenu?page=${pageNumber}&size=${reservationMenu.size}|}"
+                                               class="page-link">
+                                                <span th:text="${pageNumber + 1}"></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <nav th:unless="${reservationMenu.getTotalPages() != 0}"></nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
@@ -1182,6 +1228,26 @@
         </div>
     </footer>
     <!-- Footer Section End -->    </main>
+
+<!--<script>-->
+<!--    $(document).on("click", ".change-status-link", function () {-->
+<!--        const menuId = $(this).data("menu-id");-->
+<!--        const tableId = $(this).data("table-id");-->
+<!--        const reseId = $(this).data("rese-id");-->
+<!--        console.log(menuId, tableId,reseId);-->
+<!--        $.ajax({-->
+<!--            url: `/reservation/served`,-->
+<!--            type: "GET",-->
+<!--            data:{-->
+<!--                idMenu: menuId,-->
+<!--                idTable: tableId,-->
+<!--                idRese:reseId-->
+<!--            },-->
+<!--        });-->
+<!--    });-->
+
+<!--</script>-->
+
 <!-- Wrapper End-->
 <!-- offcanvas start -->
 

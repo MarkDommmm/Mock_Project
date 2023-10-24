@@ -7,5 +7,8 @@ public enum Status {
     COMPLETED,
     CANCEL,
     NO_SHOW,
-    PAID
+    PAID,
+    SERVED,
+    NOT_SERVED_YET,
+    UN_PAID,
 }

@@ -28,6 +28,8 @@ public interface IReservationService<K,V,E> {
     void completed(E id);
     void noShow(E id);
     ReservationCheckCodeResponse findByCode(String code);
+    double getTotalPrice( Long id);
+
     double revenuesOnDay( Date date);
     int countCompletedReservationsOnDay(Date date);
     Page<Map<String,Object>>  findReservationStatistics(int page, int size);

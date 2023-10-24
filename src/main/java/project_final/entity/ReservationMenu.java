@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import project_final.model.domain.Status;
 
 import javax.persistence.*;
 
@@ -27,5 +28,8 @@ public class ReservationMenu {
 
     private int quantity;
     private double price;
-    private boolean status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @Enumerated(EnumType.STRING)
+    private Status pay;
 }

@@ -61,6 +61,16 @@ public class ReservationMenuService implements IReservationMenuService {
         return reservationMenus.stream().map(reservationMenuMapper::toResponse).collect(Collectors.toList());
     }
 
+    @Override
+    public ReservationMenu served(Long id) {
+        Optional<ReservationMenu> reservationMenus = reservationMenuRepository.findById(id);
+        if (reservationMenus.isPresent()) {
+            reservationMenus.get().setStatus(Status.SERVED);
+           return reservationMenuRepository.save(reservationMenus.get());
+        }
+        return null;
+    }
+
 
     @Override
     public void addCart(Long id, Long idUser) {
@@ -137,11 +147,11 @@ public class ReservationMenuService implements IReservationMenuService {
 
     @Override
     public void changeStatus(Long id) {
-        Optional<ReservationMenu> tableMenu = reservationMenuRepository.findById(id);
-        if (tableMenu.isPresent()) {
-            tableMenu.get().setStatus(!tableMenu.get().isStatus());
-            reservationMenuRepository.save(tableMenu.get());
-        }
+//        Optional<ReservationMenu> tableMenu = reservationMenuRepository.findById(id);
+//        if (tableMenu.isPresent()) {
+//            tableMenu.get().setStatus();
+//            reservationMenuRepository.save(tableMenu.get());
+//        }
     }
 
 }
