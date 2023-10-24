@@ -7,52 +7,58 @@ import org.springframework.stereotype.Service;
 import project_final.entity.Reservation;
 import project_final.entity.Review;
 import project_final.entity.User;
+import project_final.model.dto.request.ReviewRequest;
+import project_final.model.dto.response.ReviewResponse;
 import project_final.repository.IReservationRepository;
 import project_final.repository.IReviewRepository;
 import project_final.service.IReviewService;
+import project_final.service.mapper.IReviewMapper;
 
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ReviewService implements IReviewService<Review, Long> {
+public class ReviewService implements IReviewService<ReviewRequest, ReviewResponse, Long> {
     private final IReviewRepository reviewRepository;
     private final IReservationRepository reservationRepository;
+    private final IReviewMapper reviewMapper;
 
     @Override
-    public Page<Review> findAll(int page, int size) {
-        return reviewRepository.findAll(PageRequest.of(page, size));
+    public Page<ReviewResponse> findAll(int page, int size) {
+        Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page, size));
+        return reviews.map(reviewMapper::toResponse);
     }
 
     @Override
-    public Review findById(Long id) {
+    public ReviewResponse findById(Long id) {
         Optional<Review> review = reviewRepository.findById(id);
         if (review.isPresent()) {
-            return review.get();
+            return reviewMapper.toResponse(review.get());
         }
         return null;
     }
 
     @Override
-    public void save(Review review, User user) {
+    public void save(ReviewRequest reviewRequest, User user) {
         Reservation reservation = reservationRepository.findByUser(user);
         if (reservation != null && reservation.getStatus().equals("COMPLETED")) {
-                review.setStatus(true);
-                reviewRepository.save(review);
+                reviewRepository.save(reviewMapper.toEntity(reviewRequest));
         }
     }
 
     @Override
     public void delete(Long id, User user) {
-       Review review = findById(id);
-       if (user.equals(review.getUser())) {
-           reviewRepository.deleteById(id);
+       Optional<Review> review = reviewRepository.findById(id);
+       if (review.isPresent()){
+           if (user.equals(review.get().getUser())) {
+               reviewRepository.deleteById(id);
+           }
        }
     }
 
     @Override
     public void changeStatus(Long id) {
-        Review review = findById(id);
+        Review review = reviewRepository.findById(id).get();
         if (review!=null) {
             review.setStatus(!review.isStatus());
             reviewRepository.save(review);

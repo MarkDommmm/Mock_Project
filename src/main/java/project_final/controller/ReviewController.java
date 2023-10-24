@@ -19,7 +19,7 @@ public class ReviewController {
     public String getReview(Model model, @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "5") int size) {
         model.addAttribute("reviews",reviewService.findAll(page, size));
-        return "/dashboard/page/reviews";
+        return "/dashboard/page/reviews/reviews-list";
     }
 
     @GetMapping("/add")
@@ -31,7 +31,7 @@ public class ReviewController {
     public String addReview(@ModelAttribute Review review, HttpSession session){
         User user = (User) session.getAttribute("currentUser");
         reviewService.save(review,user);
-        return "redirect:/reviews";
+        return "redirect:/home/reviews";
     }
 
     @GetMapping("/hidden/{id}")

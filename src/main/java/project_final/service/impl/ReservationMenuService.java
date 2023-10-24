@@ -49,6 +49,13 @@ public class ReservationMenuService implements IReservationMenuService {
     }
 
     @Override
+    public Page<ReservationMenuResponse> getReservationMenu(Long id, int page, int size) {
+        Reservation reservation = reservationRepository.findById(id).get();
+        Page<ReservationMenu> reservationMenus = reservationMenuRepository.findByReservation(reservation, PageRequest.of(page, size));
+        return reservationMenus.map(reservationMenuMapper::toReponse);
+    }
+
+    @Override
     public List<TableMenuCartResponse> getDetails(Long id) {
         List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllByReservation(id);
         return reservationMenus.stream().map(reservationMenuMapper::toResponse).collect(Collectors.toList());

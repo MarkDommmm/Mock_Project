@@ -12,7 +12,6 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
         return ReservationMenu.builder()
                 .id(tableMenuRequest.getId())
                 .menu(tableMenuRequest.getMenu())
-
                 .reservation(tableMenuRequest.getReservation())
                 .quantity(tableMenuRequest.getQuantity())
                 .price(tableMenuRequest.getMenu().getPrice())
