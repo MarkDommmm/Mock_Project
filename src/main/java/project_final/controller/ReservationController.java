@@ -48,10 +48,7 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IReservationMenuService reservationMenuService;
     private final GenerateExcelService generateExcelService;
-<<<<<<< HEAD
-=======
     private final IReservationRepository reservationRepository;
->>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
     private final PaypalService paypalService;
     private final VNPayService vnPayService;
     public static final String SUCCESS_URL = "payment-success";
@@ -90,16 +87,15 @@ public class ReservationController {
                                  BindingResult bindingResult, HttpSession session,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple,
                                  Model model, HttpServletRequest request) throws TimeIsValidException {
-<<<<<<< HEAD
-        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-        List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(reservation.getId());
-=======
+
+
+
 
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
 
-        List<TableMenuCartResponse> tableMenu = tableMenuService.getDetails(existingReservation.get().getId());
+        List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
 
->>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
+
         double totalPrice = 0.0;
         for (TableMenuCartResponse item : tableMenu) {
             double price = item.getPrice();

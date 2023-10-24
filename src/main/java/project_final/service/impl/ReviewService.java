@@ -11,6 +11,7 @@ import project_final.model.dto.request.ReviewRequest;
 import project_final.model.dto.response.ReviewResponse;
 import project_final.repository.IReservationRepository;
 import project_final.repository.IReviewRepository;
+import project_final.repository.IUserRepository;
 import project_final.service.IReviewService;
 import project_final.service.mapper.IReviewMapper;
 
@@ -22,10 +23,24 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     private final IReviewRepository reviewRepository;
     private final IReservationRepository reservationRepository;
     private final IReviewMapper reviewMapper;
+    private final IUserRepository userRepository;
 
     @Override
     public Page<ReviewResponse> findAll(int page, int size) {
         Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page, size));
+        return reviews.map(reviewMapper::toResponse);
+    }
+
+    @Override
+    public Page<ReviewResponse> findAllByStatus(int page, int size) {
+        Page<Review> reviews = reviewRepository.findAllByStatus(PageRequest.of(page, size));
+        return reviews.map(reviewMapper::toResponse);
+    }
+
+    @Override
+    public Page<ReviewResponse> findAllByUser(Long id, int page, int size) {
+        User user = userRepository.findById(id).get();
+        Page<Review> reviews = reviewRepository.findAllByUser(user,PageRequest.of(page,size));
         return reviews.map(reviewMapper::toResponse);
     }
 

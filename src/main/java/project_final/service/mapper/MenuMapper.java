@@ -1,16 +1,13 @@
 package project_final.service.mapper;
 
-;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-import project_final.entity.Tables;
 import project_final.model.dto.request.MenuRequest;
 import project_final.model.dto.response.MenuResponse;
 import project_final.entity.Menu;
 import project_final.repository.IMenuRepository;
 import project_final.service.IUploadService;
-import project_final.service.mapper.IMenuMapper;
 
 import java.util.Date;
 import java.util.Optional;
@@ -36,30 +33,31 @@ public class MenuMapper implements IMenuMapper {
 
     @Override
     public Menu toEntity(MenuRequest menuRequest) {
-        MultipartFile oldImage = menuRequest.getImage();
-        if (oldImage.isEmpty()) {
-            Optional<Menu> menu = menuRepository.findById(menuRequest.getId());
-            return Menu.builder()
-                    .id(menuRequest.getId())
-                    .name(menuRequest.getName())
-                    .image(menu.get().getImage())
-                    .description(menuRequest.getDescription())
-                    .price(menuRequest.getPrice())
-                    .createDate(new Date())
-                    .status(true)
-                    .category(menuRequest.getCategory()).build();
+        // check Menu
+        Optional<Menu> existingMenu= menuRequest.getId() != null ?
+                menuRepository.findById(menuRequest.getId()) :
+                Optional.empty();
+
+        String image;
+        if (menuRequest.getImage() != null && !menuRequest.getImage().isEmpty()) {
+            // nếu có ảnh mới
+            image = uploadService.uploadFile(menuRequest.getImage());
+        } else if (existingMenu.isPresent()) {
+            // nếu menu  tồn tại
+            image = existingMenu.get().getImage();
+
         } else {
-            String url = uploadService.uploadFile(menuRequest.getImage());
+            // Không có ảnh và không tồn tại category
+            image = "../../assets/images/avatars/01.png";
+        }
             return Menu.builder()
                     .id(menuRequest.getId())
                     .name(menuRequest.getName())
-                    .image(url)
+                    .image(image)
                     .description(menuRequest.getDescription())
                     .price(menuRequest.getPrice())
                     .createDate(new Date())
                     .status(true)
                     .category(menuRequest.getCategory()).build();
         }
-
-    }
 }

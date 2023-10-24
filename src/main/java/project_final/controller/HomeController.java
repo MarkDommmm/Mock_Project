@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.Reservation;
-import project_final.entity.Review;
+import project_final.entity.User;
 import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
@@ -47,6 +47,7 @@ public class HomeController {
     private final ITableTypeRepository tableTypeRepository;
     private final ICategoryRepository categoryRepository;
     private final IReviewRepository reviewRepository;
+    private final IReviewService reviewService;
 
 
     @RequestMapping("/public/login")
@@ -161,17 +162,6 @@ public class HomeController {
     }
 
     @RequestMapping("/home/menu")
-<<<<<<< HEAD
-    public String getMenu(@RequestParam(defaultValue = "") String name,
-                          @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "12") int size,
-                          @RequestParam(defaultValue = "10") int sizeCart,
-                          Model model, HttpSession session) {
-        UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
-        Reservation reservation = new Reservation();
-        if (u != null) {
-            model.addAttribute("cart", reservationMenuService.findById(u.getId()));
-=======
     public String getMenu(
             @AuthenticationPrincipal UserPrinciple userPrinciple,
             @RequestParam(defaultValue = "") String name,
@@ -182,7 +172,6 @@ public class HomeController {
 
         if (userPrinciple != null) {
             model.addAttribute("cart", reservationMenuService.getAll(userPrinciple.getId(), page, size));
->>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
         }
 
 
@@ -210,18 +199,17 @@ public class HomeController {
             map.put("icon", "error");
             map.put("message", "Please log in to the account with this code to update");
         } else {
-<<<<<<< HEAD
+
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
             model.addAttribute("idR",idR);
             model.addAttribute("reservationMenu",new ReservationMenuRequest());
-=======
+
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             reservation.get().setStatus(Status.PENDING);
             reservationRepository.save(reservation.get());
->>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
         }
         return map;
     }
@@ -289,8 +277,15 @@ public class HomeController {
 
     @RequestMapping("home/reviews")
     public String getHomeReview(Model model){
-        model.addAttribute("review", new Review());
+        model.addAttribute("reviewRequest", new ReviewRequest());
         return "dashboard/reviews";
+    }
+
+    @PostMapping("/home/create/review")
+    public String addReview(@ModelAttribute ReviewRequest reviewRequest, HttpSession session){
+        User user = (User) session.getAttribute("currentUser");
+        reviewService.save(reviewRequest,user);
+        return "redirect:/home/reviews";
     }
 
     @RequestMapping("/user")
