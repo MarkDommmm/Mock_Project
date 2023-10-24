@@ -20,8 +20,9 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.user.id = :id AND RM.reservation.status = 'PENDING'")
     Page<ReservationMenu> findAllByUser(@Param("id") Long id, Pageable pageable);
 
-    @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id")
+    @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.user.id = :id AND RM.reservation.status = 'ORDER'")
     List<ReservationMenu> findAllByReservation(@Param("id") Long id);
+
 
     Page<ReservationMenu> findByReservation(Reservation reservation, Pageable pageable);
 
@@ -31,6 +32,7 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
             "JOIN RM.menu M " +
             "GROUP BY M.name, MONTH(R.createdDate)")
     List<Object[]> findAllByMenuTop();
+
 
 
 }

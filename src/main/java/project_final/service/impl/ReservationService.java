@@ -6,15 +6,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import project_final.entity.Payment;
 import project_final.entity.Reservation;
+import project_final.entity.Tables;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.ReservationCheckCodeResponse;
 import project_final.model.dto.response.ReservationResponse;
-import project_final.repository.IPaymentRepository;
-import project_final.repository.IReservationRepository;
-import project_final.repository.IReservationMenuRepository;
+import project_final.repository.*;
 import project_final.service.IReservationService;
 import project_final.service.mapper.IReservationMapper;
 
@@ -24,21 +23,20 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
- 
-public class ReservationService implements IReservationService<ReservationRequest, ReservationResponse,Long> {
-   private final IReservationRepository reservationRepository;
-   private final IReservationMapper reservationMapper;
-   private final IReservationMenuRepository reservationMenuRepository;
-   private final IPaymentRepository paymentRepository;
- 
+
+public class ReservationService implements IReservationService<ReservationRequest, ReservationResponse, Long> {
+    private final IReservationRepository reservationRepository;
+    private final IReservationMapper reservationMapper;
+    private final IReservationMenuRepository reservationMenuRepository;
+    private final IPaymentRepository paymentRepository;
+    private final IUserRepository userRepository;
+    private final ITableRepository tableRepository;
+
 
     @Override
     public Page<ReservationResponse> findByUserIdAndStatusPending(int page, int size, Long id) {
@@ -70,32 +68,39 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public Reservation add(Long user, Date date, String start, String end, Long idTable) throws TimeIsValidException {
+        if (!isEndTimeAfterStartTime(start, end)) {
+            throw new TimeIsValidException("End time must be after start time");
+        }
+        if (!isValidTimeRange(start, end)) {
+            throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
+        }
+        Optional<User> u = userRepository.findById(user);
+        Optional<Tables> table = tableRepository.findById(idTable);
+        ReservationRequest reservation = ReservationRequest.builder()
+                .user(u.get())
+                .code(UUID.randomUUID().toString().substring(0, 8))
+                .table(table.get())
+                .bookingDate(date)
+                .startTime(start + ":00")
+                .endTime(end + ":00")
+                .status(Status.PENDING)
+                .build();
+        return reservationRepository.save(reservationMapper.toEntity(reservation));
+    }
 
-    public void save(ReservationRequest reservationRequest, Reservation reservation) throws TimeIsValidException {
+
+    @Override
+    public void save(ReservationRequest reservationRequest) throws TimeIsValidException {
         if (!isEndTimeAfterStartTime(reservationRequest.getStartTime(), reservationRequest.getEndTime())) {
             throw new TimeIsValidException("End time must be after start time");
         }
-        if (!isValidTimeRange(reservationRequest.getStartTime(), reservationRequest.getEndTime())){
+        if (!isValidTimeRange(reservationRequest.getStartTime(), reservationRequest.getEndTime())) {
             throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
         }
-        Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
+//        Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
 
-        ReservationRequest request = ReservationRequest.builder()
-                .id(reservationRequest.getId())
-                .table(reservation.getTable())
-                .user(reservation.getUser())
-                .bookingDate(reservationRequest.getBookingDate())
-                .startTime(reservationRequest.getStartTime())
-                .endTime(reservationRequest.getEndTime())
-                .nameBooking(reservationRequest.getNameBooking())
-                .phoneBooking(reservationRequest.getPhoneBooking())
-                .emailBooking(reservationRequest.getEmailBooking())
-                .description(reservationRequest.getDescription())
-                .payment(payment.get())
-                .code(reservation.getCode())
-                .status(reservation.getStatus())
-                .build();
-        reservationRepository.save(reservationMapper.toEntity(request));
+        reservationRepository.save(reservationMapper.toEntity(reservationRequest));
     }
 
     private boolean isEndTimeAfterStartTime(String startTime, String endTime) {
@@ -130,6 +135,15 @@ public class ReservationService implements IReservationService<ReservationReques
         Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
             reservation.get().setStatus(Status.CONFIRM);
+            reservationRepository.save(reservation.get());
+        }
+    }
+
+    @Override
+    public void changeStatusOrder(Long id) {
+        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (reservation.isPresent()) {
+            reservation.get().setStatus(Status.ORDER);
             reservationRepository.save(reservation.get());
         }
     }

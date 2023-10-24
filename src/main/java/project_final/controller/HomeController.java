@@ -16,6 +16,7 @@ import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
 import project_final.exception.TimeIsValidException;
+import project_final.model.domain.Status;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.*;
@@ -30,6 +31,7 @@ import java.util.*;
 @AllArgsConstructor
 public class HomeController {
     private final ITableService tableService;
+    private final IReservationService reservationService;
     private final IReservationMenuRepository reservationMenuRepository;
     private final IReservationMenuService reservationMenuService;
     private final ITableTypeService tableTypeService;
@@ -142,25 +144,24 @@ public class HomeController {
     }
 
     @GetMapping("/home/chose-idTable")
-    public String choseTable(
-            @RequestParam(name = "id") Long id,
-            @RequestParam(name = "date", required = false)
-            @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-            @RequestParam(name = "start", required = false, defaultValue = "") String start,
-            @RequestParam(name = "end", required = false, defaultValue = "") String end,
-            HttpSession session) throws TimeIsValidException {
+    public String choseTable(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                             @RequestParam(name = "id") Long id,
+                             @RequestParam(name = "date", required = false)
+                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                             @RequestParam(name = "start", required = false, defaultValue = "") String start,
+                             @RequestParam(name = "end", required = false, defaultValue = "") String end,
+                             HttpSession session) throws TimeIsValidException {
         if (tableService.isTableAvailable(id, date, start, end)) {
             throw new TimeIsValidException("bàn đã được sử dụng");
         }
+        Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
+        session.setAttribute("reservationLocal", reservation);
 
-        session.setAttribute("idTable", id);
-        session.setAttribute("date", date);
-        session.setAttribute("start", start);
-        session.setAttribute("end", end);
         return "redirect:/home/menu";
     }
 
     @RequestMapping("/home/menu")
+<<<<<<< HEAD
     public String getMenu(@RequestParam(defaultValue = "") String name,
                           @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "12") int size,
@@ -170,13 +171,25 @@ public class HomeController {
         Reservation reservation = new Reservation();
         if (u != null) {
             model.addAttribute("cart", reservationMenuService.findById(u.getId()));
+=======
+    public String getMenu(
+            @AuthenticationPrincipal UserPrinciple userPrinciple,
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "10") int sizeCart,
+            Model model, HttpSession session) {
+
+        if (userPrinciple != null) {
+            model.addAttribute("cart", reservationMenuService.getAll(userPrinciple.getId(), page, size));
+>>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
         }
-        Long idTable = (Long) session.getAttribute("idTable");
-        session.setAttribute("idTable", idTable);
+
+
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("name", name);
-//        model.addAttribute("menuTrending", menuService.findTopSellingMenus());
+        model.addAttribute("menuTrending", menuService.findTopSellingMenus());
 
         model.addAttribute("tableMenu", new ReservationMenuRequest());
 
@@ -189,17 +202,26 @@ public class HomeController {
                                          @RequestParam("idUser") Long idU,
                                          Model model, @RequestParam(defaultValue = "") String name,
                                          @RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "12") int size, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+                                         @RequestParam(defaultValue = "12") int size,
+                                         @AuthenticationPrincipal UserPrinciple userPrinciple,
+                                         HttpSession session) {
         Map<String, String> map = new HashMap<>();
         if (userPrinciple == null || !Objects.equals(userPrinciple.getId(), idU)) {
             map.put("icon", "error");
             map.put("message", "Please log in to the account with this code to update");
         } else {
+<<<<<<< HEAD
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
             model.addAttribute("idR",idR);
             model.addAttribute("reservationMenu",new ReservationMenuRequest());
+=======
+            session.setAttribute("idReservation", idR);
+            Optional<Reservation> reservation = reservationRepository.findById(idR);
+            reservation.get().setStatus(Status.PENDING);
+            reservationRepository.save(reservation.get());
+>>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
         }
         return map;
     }
@@ -221,16 +243,16 @@ public class HomeController {
     @RequestMapping("/add-cart")
     @ResponseBody
     public Page<TableMenuCartResponse> addTableMenu(
+            @AuthenticationPrincipal UserPrinciple userPrinciple,
             @RequestParam(defaultValue = "") Long id,
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
             HttpSession session) throws CustomsException {
-        Long idTable = (Long) session.getAttribute("idTable");
-        UserPrinciple u = (UserPrinciple) session.getAttribute("currentUser");
-        Reservation reservation = reservationMenuService.addCart(id, u.getId(), idTable);
-        session.setAttribute("reservationLocal", reservation);
-        return reservationMenuService.getTableMenu(u.getId(), page, sizeCart);
+
+
+        reservationMenuService.addCart(id, userPrinciple.getId());
+        return reservationMenuService.getTableMenu(userPrinciple.getId(), page, sizeCart);
     }
 
 
@@ -251,24 +273,16 @@ public class HomeController {
     @GetMapping("/check-out")
     public String checkoutTable(HttpSession session,
                                 Model model,
+                                @AuthenticationPrincipal UserPrinciple userPrinciple,
                                 @RequestParam(defaultValue = "") String name,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "12") int size) {
-        Reservation reservation = (Reservation) session.getAttribute("reservationLocal");
-        Date date = (Date) session.getAttribute("date");
-        String start = (String) session.getAttribute("start");
-        String end = (String) session.getAttribute("end");
-        Long id = reservation.getId();
-        Long idTable = (Long) session.getAttribute("idTable");
 
-        ReservationRequest reservationRequest = new ReservationRequest();
-        reservationRequest.setBookingDate(date);
-        reservationRequest.setStartTime(start);
-        reservationRequest.setEndTime(end);
+        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
 
-        model.addAttribute("table", tableService.findById(idTable));
-        model.addAttribute("reservationRequest", reservationRequest);
-        model.addAttribute("cart", reservationMenuService.getDetails(id));
+        model.addAttribute("table", tableService.findById(existingReservation.get().getTable().getId()));
+        model.addAttribute("reservationR", existingReservation.get());
+        model.addAttribute("cart", reservationMenuService.getDetails(existingReservation.get().getId()));
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
     }
@@ -307,8 +321,8 @@ public class HomeController {
         model.addAttribute("review", reviewRepository.findAll());
 //        model.addAttribute("menuTrending", reservationMenuRepository.findAllByMenuTop());
 //        System.out.println(reservationMenuRepository.findAllByMenuTop());
-        List<Object[]> result = reservationMenuRepository.findAllByMenuTop();
-        model.addAttribute("menuTopList", result);
+        model.addAttribute("menuTopList", menuService.findTopMenusByMonth());
+
         return "/dashboard/dashboard";
     }
 }

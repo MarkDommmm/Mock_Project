@@ -29,7 +29,7 @@ public class ReservationRequest {
     private Long id;
     private User user;
     private Tables table;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
     @Future(message = "Set date is not valid")
     @NotNull(message = "Cannot be left blank")
     private Date bookingDate;

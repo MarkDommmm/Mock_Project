@@ -54,6 +54,12 @@
                 width: 100% !important;
             }
         }
+        .flex-header-modal h3{
+            text-decoration: underline;
+            font-style: italic;
+
+            cursor: pointer;
+        }
 
     </style>
 </head>
@@ -1549,6 +1555,8 @@
     </div>
 
     <script>
+        let  idUser = null;
+        let  idResvertion = null;
         $(document).on("click", ".checkCode", function (e) {
             e.preventDefault();
             const code = $("#code").val();
@@ -1560,7 +1568,9 @@
                     code: code
                 },
                 success: function (data) {
-                    console.log(data)
+                    idUser = data.idUser;
+                    idResvertion = data.id;
+
                     $("#staticBackdrop").css({
                         "left": "-16%",
                         "top": "10%"
@@ -1576,7 +1586,7 @@
 
                             <h3>Table Orders</h3>
 
-                               <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-reservation="${data.id}">Update dishes</h3>
+                               <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Update dishes</h3>
 
                                   <h3>Cancel Orders</h3>
                                   </div>
@@ -1658,6 +1668,8 @@
                     id: id
                 },
                 success: function (data) {
+                    console.log(idUser, idResvertion);
+
                     $("#staticBackdrop").css({
                         "left": "-16%",
                         "top": "10%"
@@ -1670,7 +1682,15 @@
                      <div class="col-lg-12">
                         <div class="table-responsive">
 
+                               <div class="flex-header-modal">
+
                             <h3>Table Orders</h3>
+
+                               <h3 class="update-dishes" data-id-user="${idUser}" data-id-resvertion="${idResvertion}">Update dishes</h3>
+
+                                  <h3>Cancel Orders</h3>
+                                  </div>
+
                             <table class="table table-striped" role="grid"
                                    data-toggle="data-table" style="text-align: center">
                                 <thead>
@@ -1695,6 +1715,8 @@
 
                     $(".render-details").html("");
                     $.each(data, function (index, d) {
+                        let formattedDate = moment(d.dateBooking).format('DD/MM/YYYY');
+
                         let htmlMenu = `
                         <tr >
                             <td>${d.id}</td>
@@ -1704,7 +1726,7 @@
   <td>${d.name}</td>
   <td>$ ${d.price}</td>
   <td>${d.quantity}</td>
-  <td>${d.dateBooking}</td>
+  <td>${formattedDate}</td>
   <td>${d.startTime}</td>
   <td>${d.endTime}</td>
   <td>${d.status}</td>
@@ -1719,15 +1741,15 @@
         });
 
         $(document).on("click", ".update-dishes", function () {
-            let idR = $(this).data("id-reservation");
+            let idR = $(this).data("id-resvertion");
             let idU = $(this).data("id-user");
-            console.log(idR, idU)
+
             $.ajax({
                 url: "/edit-order",
                 type: "GET",
                 data: {
                     idUser: idU,
-                    idReservation: idR
+                    idResvertion: idR
                 },
                 success: function (data) {
                     console.log(data)

@@ -19,7 +19,7 @@ public interface IReservationMenuService extends IGenericService<ReservationMenu
 
     List<TableMenuCartResponse> getDetails(Long id);
 
-    Reservation addCart(Long id, Long idUser, Long idTable);
+    void addCart(Long id, Long idUser);
 
 
     void removeCartItem(Long id);

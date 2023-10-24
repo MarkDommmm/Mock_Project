@@ -1544,7 +1544,6 @@
                     </div>
                 </div>
 
-
                 <!-- <h3>Menu category</h3> -->
                 <div class="card-transparent bg-transparent mb-0">
                     <div class="card-header border-0  ">
@@ -1819,7 +1818,7 @@
                                                                         d="M59.3805 29.5491C59.9905 28.2991 61.0605 26.5891 64.5505 25.8691C65.8905 25.5891 66.2805 25.0091 66.1605 24.1291C65.9205 22.2991 63.6405 22.4291 62.4105 22.7191C58.3105 23.6791 57.4005 27.3191 57.2305 28.7591C57.0605 30.1291 58.7805 30.7991 59.3805 29.5491V29.5491Z"
                                                                         fill="#FFF59D"/>
                                                             </svg>
-                                                            <small>Top of the day</small>
+                                                            <small>Top of the month</small>
                                                         </span>
                                                     <h6 class="mb-1 mt-3 heading-title fw-bolder"
                                                         th:text="${mt.name}"></h6>
@@ -1887,7 +1886,7 @@
                             <div class="card-body">
 
                                 <div class="horizontal-scroll" id="render-cart">
-                                    <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${carts}">
+                                    <div class="rounded-pill bg-soft-primary iq-my-cart" th:each="c:${cart}">
                                         <div class="d-flex align-items-center justify-content-between profile-img4">
                                             <div class="profile-img11">
                                                 <img th:src="${c.image}"
@@ -1941,14 +1940,14 @@
                                      alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
                                      style="max-height: 80px;">
                             </div>
-                            <div th:unless="${updateOrder}" class="text-center" sec:authorize="isAuthenticated()">
+                            <div th:unless="${session.idReservation}" class="text-center" sec:authorize="isAuthenticated()">
                                 <a type="button" href="/check-out"
                                    style="margin-bottom: 20px"
                                    class="btn btn-primary rounded-pill checkout">Checkout!!!
                                 </a>
                             </div>
-                            <div th:if="${updateOrder}" class="text-center" sec:authorize="isAuthenticated()">
-                                <a type="button" href="/add"
+                            <div th:if="${session.idReservation}" class="text-center" sec:authorize="isAuthenticated()">
+                                <a type="button" th:href="@{|/reservation/change-status/${session.idReservation}|}"
                                    style="margin-bottom: 20px"
                                    class="btn btn-primary rounded-pill update">Update!!!
                                 </a>
@@ -2047,7 +2046,6 @@
         // Add Cart
         $(document).on("click", ".add-cart", function () {
             const id = $(this).data("id");
-            const idR =  $(this).data("idR");
             $(".col .dish-card").removeClass("active");
 
             $(this).closest(".dish-card").addClass("active");
@@ -2146,6 +2144,7 @@
                     id: id
                 },
                 success: function (data) {
+                    console.log(data)
                     Swal.fire({
                         position: 'center',
                         icon: 'success',

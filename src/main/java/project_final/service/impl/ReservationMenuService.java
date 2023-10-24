@@ -64,24 +64,49 @@ public class ReservationMenuService implements IReservationMenuService {
 
 
     @Override
-    public Reservation addCart(Long id, Long idUser, Long idTable) {
+    public void addCart(Long id, Long idUser) {
+//        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(idUser);
+//        Reservation r;
+//
+//        if (!existingReservation.isPresent()) {
+//            Optional<User> user = userRepository.findById(idUser);
+//            Optional<Tables> tables = tableRepository.findById(idTable);
+//            r = new Reservation();
+//            r.setCode(UUID.randomUUID().toString().substring(0, 8));
+//            r.setUser(user.orElse(null));
+//            r.setTable(tables.orElse(null));
+//            r.setCreatedDate(new Date());
+//            r.setStatus(Status.PENDING);
+//            reservationRepository.save(r);
+//        } else {
+//            r = existingReservation.get();
+//        }
+//
+//        Optional<Menu> menuOptional = menuRepository.findById(id);
+//        if (menuOptional.isPresent()) {
+//            Menu menu = menuOptional.get();
+//            List<ReservationMenu> reservationMenuCartRespons = reservationMenuRepository.findAll();
+//            boolean menuInCart = false;
+//
+//            for (ReservationMenu reservationMenu : reservationMenuCartRespons) {
+//                if (reservationMenu.getMenu().getId().equals(menu.getId()) && reservationMenu.getReservation().getId().equals(r.getId())) {
+//                    reservationMenu.setQuantity(reservationMenu.getQuantity() + 1);
+//                    reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantity());
+//                    menuInCart = true;
+//                    reservationMenuRepository.save(reservationMenu);
+//                    break;
+//                }
+//            }
+//
+//            if (!menuInCart) {
+//                ReservationMenuRequest tableMenuRequest = new ReservationMenuRequest();
+//                tableMenuRequest.setMenu(menu);
+//                tableMenuRequest.setReservation(r);
+//                tableMenuRequest.setPrice(menu.getPrice());
+//                save(tableMenuRequest);
+//            }
+//        }
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(idUser);
-        Reservation r;
-
-        if (!existingReservation.isPresent()) {
-            Optional<User> user = userRepository.findById(idUser);
-            Optional<Tables> tables = tableRepository.findById(idTable);
-            r = new Reservation();
-            r.setCode(UUID.randomUUID().toString().substring(0, 8));
-            r.setUser(user.orElse(null));
-            r.setTable(tables.orElse(null));
-            r.setCreatedDate(new Date());
-            r.setStatus(Status.PENDING);
-            reservationRepository.save(r);
-        } else {
-            r = existingReservation.get();
-        }
-
         Optional<Menu> menuOptional = menuRepository.findById(id);
         if (menuOptional.isPresent()) {
             Menu menu = menuOptional.get();
@@ -89,7 +114,8 @@ public class ReservationMenuService implements IReservationMenuService {
             boolean menuInCart = false;
 
             for (ReservationMenu reservationMenu : reservationMenuCartRespons) {
-                if (reservationMenu.getMenu().getId().equals(menu.getId()) && reservationMenu.getReservation().getId().equals(r.getId())) {
+                if (reservationMenu.getMenu().getId().equals(menu.getId())
+                        && reservationMenu.getReservation().getId().equals(existingReservation.get().getId())) {
                     reservationMenu.setQuantity(reservationMenu.getQuantity() + 1);
                     reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantity());
                     menuInCart = true;
@@ -101,12 +127,11 @@ public class ReservationMenuService implements IReservationMenuService {
             if (!menuInCart) {
                 ReservationMenuRequest tableMenuRequest = new ReservationMenuRequest();
                 tableMenuRequest.setMenu(menu);
-                tableMenuRequest.setReservation(r);
+                tableMenuRequest.setReservation(existingReservation.get());
                 tableMenuRequest.setPrice(menu.getPrice());
                 save(tableMenuRequest);
             }
         }
-        return r;
     }
 
 
