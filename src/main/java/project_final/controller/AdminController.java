@@ -25,16 +25,8 @@ public class AdminController {
     private final ICategoryRepository categoryRepository;
     private final IReviewRepository reviewRepository;
 
-    @RequestMapping("/user")
-    public String User(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
-        session.setAttribute("currentUser", userPrinciple);
-        return "dashboard/ChoseTable";
-    }
 
-    @RequestMapping("/admin")
-    public String admin() {
-        return "dashboard/page/user/user-list";
-    }
+
 
     @RequestMapping("/403")
     public String error403() {
