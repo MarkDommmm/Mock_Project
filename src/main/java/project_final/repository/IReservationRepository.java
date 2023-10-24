@@ -21,6 +21,9 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
     @Query("SELECT R FROM Reservation R WHERE   R.status ='ORDER' ")
             List<Reservation> findAllByStatusORDER();
 
+    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.status = 'ORDER'")
+    Optional<Reservation> findOrderReservationByUserId(@Param("userId") Long userId);
+
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId")
     Page<Reservation> findAllByUser(Pageable pageable, @Param("userId") Long userId);
 

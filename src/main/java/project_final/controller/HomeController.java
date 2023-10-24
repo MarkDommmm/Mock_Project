@@ -109,11 +109,7 @@ public class HomeController {
                                @RequestParam(defaultValue = "") String nameTableType,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size,
-                               @RequestParam(name = "date", required = false)
-                               @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                               @RequestParam(name = "start", required = false, defaultValue = "") String start,
-                               @RequestParam(name = "end", required = false, defaultValue = "") String end) {
+                               @RequestParam(defaultValue = "20") int size) {
 
         session.setAttribute("currentUser", userPrinciple);
 //        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
@@ -144,20 +140,29 @@ public class HomeController {
     }
 
     @GetMapping("/home/chose-idTable")
-    public String choseTable(@AuthenticationPrincipal UserPrinciple userPrinciple,
-                             @RequestParam(name = "id") Long id,
-                             @RequestParam(name = "date", required = false)
-                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                             @RequestParam(name = "start", required = false, defaultValue = "") String start,
-                             @RequestParam(name = "end", required = false, defaultValue = "") String end,
-                             HttpSession session) throws TimeIsValidException {
+    @ResponseBody
+    public Map<String, String> choseTable(@AuthenticationPrincipal UserPrinciple userPrinciple,
+                                          @RequestParam(name = "id") Long id,
+                                          @RequestParam(name = "date", required = false)
+                                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                          @RequestParam(name = "start", required = false, defaultValue = "") String start,
+                                          @RequestParam(name = "end", required = false, defaultValue = "") String end,
+                                          HttpSession session) throws TimeIsValidException {
+        Map<String, String> map = new HashMap<>();
         if (tableService.isTableAvailable(id, date, start, end)) {
             throw new TimeIsValidException("bàn đã được sử dụng");
         }
-        Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
-        session.setAttribute("reservationLocal", reservation);
+        Optional<Reservation> existingReservation = reservationRepository.findOrderReservationByUserId(userPrinciple.getId());
+        if (existingReservation.isPresent()) {
+            map.put("icon", "error");
+            map.put("message","You have an order in progress, please wait for Admin to confirm!");
+        } else {
+            Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
+            session.setAttribute("reservationLocal", reservation);
+            map.put("icon", "success");
+        }
 
-        return "redirect:/home/menu";
+        return map;
     }
 
     @RequestMapping("/home/menu")
@@ -228,10 +233,13 @@ public class HomeController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
-            HttpSession session) throws CustomsException {
+            HttpSession session) {
+        try {
+            reservationMenuService.addCart(id, userPrinciple.getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-
-        reservationMenuService.addCart(id, userPrinciple.getId());
         return reservationMenuService.getTableMenu(userPrinciple.getId(), page, sizeCart);
     }
 
@@ -267,9 +275,9 @@ public class HomeController {
         return "dashboard/checkoutTable";
     }
 
- 
+
     @RequestMapping("home/reviews")
-    public String getHomeReview(Model model){
+    public String getHomeReview(Model model) {
         model.addAttribute("review", new Review());
         return "dashboard/reviews";
     }
@@ -279,7 +287,6 @@ public class HomeController {
         session.setAttribute("currentUser", userPrinciple);
         return "dashboard/ChoseTable";
     }
- 
 
 
 }

@@ -2,6 +2,7 @@ package project_final.config;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import project_final.controller.CustomAuthenticationFailureHandler;
 import project_final.security.UserDetailService;
 
 
@@ -45,6 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -61,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/public/login")
                 .loginProcessingUrl("/public/login")
                 .defaultSuccessUrl("/home")
+                .failureHandler(customAuthenticationFailureHandler)
 //                .failureForwardUrl("/error")
                 .and()
         ;
@@ -72,12 +78,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
 
-        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
-//
-        http.httpBasic()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .accessDeniedPage("/403");
     }
 }
