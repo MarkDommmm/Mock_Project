@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project_final.entity.Reservation;
+import project_final.entity.Review;
 import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
@@ -266,6 +267,19 @@ public class HomeController {
         return "dashboard/checkoutTable";
     }
 
+ 
+    @RequestMapping("home/reviews")
+    public String getHomeReview(Model model){
+        model.addAttribute("review", new Review());
+        return "dashboard/reviews";
+    }
+
+    @RequestMapping("/user")
+    public String User(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
+        session.setAttribute("currentUser", userPrinciple);
+        return "dashboard/ChoseTable";
+    }
+ 
 
 
 }

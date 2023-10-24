@@ -37,7 +37,6 @@ public class CategoryMapper implements ICategoryMapper{
             image = "../../assets/images/avatars/01.png";
         }
 
-        // Xây dựng đối tượng Category và trả về
         return Category.builder()
                 .id(categoryRequest.getId())
                 .name(categoryRequest.getName())

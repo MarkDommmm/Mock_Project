@@ -14,7 +14,6 @@ import project_final.entity.Reservation;
 public class ReservationMenuResponse {
     private Long id;
     private Menu menu;
-
     private Reservation reservation;
     private int quantity;
     private double price;

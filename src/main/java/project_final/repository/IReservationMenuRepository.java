@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import project_final.entity.Reservation;
 import project_final.entity.ReservationMenu;
 
 import java.util.List;
@@ -22,6 +23,15 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.user.id = :id AND RM.reservation.status = 'ORDER'")
     List<ReservationMenu> findAllByReservation(@Param("id") Long id);
 
+
+    Page<ReservationMenu> findByReservation(Reservation reservation, Pageable pageable);
+
+    @Query("SELECT M.name, SUM(RM.quantity),MONTH(R.createdDate) as month " +
+            "FROM ReservationMenu RM " +
+            "JOIN RM.reservation R " +
+            "JOIN RM.menu M " +
+            "GROUP BY M.name, MONTH(R.createdDate)")
+    List<Object[]> findAllByMenuTop();
 
 
 

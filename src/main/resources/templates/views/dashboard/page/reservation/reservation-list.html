@@ -1154,7 +1154,139 @@
     <div class="content-inner mt-5 py-0">
         <div>
             <div class="row">
+<<<<<<< HEAD
+<!--                <div class="col-sm-12">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card-header d-flex justify-content-between">-->
+<!--                            <div class="header-title">-->
+<!--                                <h4 class="card-title">Reservation List</h4>-->
+<!--                            </div>-->
+<!--                            <form action="/reservation" method="get">-->
+<!--                                <input type="date" name="date" class="form-control" placeholder="Search..."-->
+<!--                                       th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>-->
+<!--                                <button type="submit">Search</button>-->
+<!--                            </form>-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="card-body px-0">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="table-responsive">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <table id="user-list-table" class="table table-striped" role="grid"&ndash;&gt;-->
+<!--&lt;!&ndash;                                       data-toggle="data-table" style="text-align: center">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <tr class="ligth">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>STT</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>Code orders</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>User</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>Table</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>Booking Date</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>Status</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th>Action</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <tr th:each="r, loop: ${reservations}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:text="${loop.count}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:text="${r.code}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:text="${r.user.username}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:text="${r.table.name}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <th th:text="${r.bookingDate}"></th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:text="${r.status}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:if="${r.status.name == 'PENDING'}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <a th:href="@{/reservation/confirm/{id}(id=${r.id})}">Confirm</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <td th:if="${r.status.name == 'CONFIRM'}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <a th:href="@{/reservation/completed/{id}(id=${r.id})}">Completed</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <a th:href="@{/reservation/noShow/{id}(id=${r.id})}">No_Show</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </table>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <nav aria-label="..." th:if="${reservations.getTotalPages()!= 0}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <ul class="pagination pagination-sm">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <li th:each="pageNumber : ${#numbers.sequence(0, reservations.getTotalPages() - 1)}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                            th:class="${pageNumber == reservations.getNumber() ? 'page-item active' : 'page-item'}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <a th:href="@{|/reservation?page=${pageNumber}&size=${reservations.size}&&${date}|}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                               class="page-link">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <span th:text="${pageNumber + 1}"></span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </li>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </nav>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <nav th:unless="${reservations.getTotalPages() != 0}"></nav>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="header-title">
+                    <h1 class="card-title">Reservation List</h1>
+                </div>
+                <div class="col-xl-12 col-lg-12 dish-card-horizontal mt-2">
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4" id="render-table">
+                        <div class="col" th:each="r:${reservations}">
+                            <div class="card card-white dish-card profile-img mb-0 index">
+                                <div class="delete-admin">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                </div>
+                                <div class="edit-admin">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </div>
+                                <div class="profile-img21">
+                                    <img th:src="${r.table.tableImage}"
+                                         class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
+                                         alt="profile-image">
+                                    <img th:src="${r.table.tableImage}"
+                                         class="img-fluid rounded-pill avatar-170 " alt="profile-image">
+                                </div>
 
+                                <div class="card-body menu-image ">
+                                    <div style="display: flex;justify-content: space-between">
+                                        <h6 class="heading-title fw-bolder mt-4 mb-0" th:text="${r.table.name}" ></h6>
+                                        <a th:href="@{|/reservation/reservationMenu/${r.id}|}">List Menu</a>
+                                    </div>
+                                    <div>
+                                        <h6 class="heading-title fw-bolder mt-4 mb-0">Start: <span th:text="${r.startTime}"></span> </h6>
+                                        <h6 class="heading-title fw-bolder mt-4 mb-0">End:  <span th:text="${r.endTime}"></span> </h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <div class="d-flex align-items-center">
+                                                    <span class="text-primary fw-bolder me-2"
+                                                          th:text="${r.user.username}"></span>
+                                            <!--             <small class="text-decoration-line-through">$8.49</small>-->
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <a th:href="@{|reservation/confirm/${r.id}|}">
+                                            <div class="d-flex align-items-center">
+                                                    <span class="text-primary fw-bolder me-2"
+                                                          th:text="${r.status}"></span>
+                                            </div>
+                                        </a>
+                                        <div>
+                                            <span>add menu</span>
+                                            <div id="choseTable" class="choseTable" >
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <rect class="circle-1" width="24" height="24" rx="12"
+                                                          fill="currentColor"/>
+                                                    <rect class="circle-2" x="11.168" y="7" width="1.66667"
+                                                          height="10" rx="0.833333" fill="currentColor"/>
+                                                    <rect class="circle-3" x="7" y="12.834" width="1.66666"
+                                                          height="10" rx="0.833332" transform="rotate(-90 7 12.834)"
+                                                          fill="currentColor"/>
+                                                </svg>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+=======
+
+>>>>>>> fcff7e8f399c37199c9db5cad4ca14a53efc0d7c
             </div>
         </div>
     </div>
