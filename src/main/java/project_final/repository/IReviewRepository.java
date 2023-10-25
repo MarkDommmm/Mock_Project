@@ -15,10 +15,13 @@ public interface IReviewRepository extends JpaRepository<Review,Long> {
 
     @Query("SELECT r FROM Review r WHERE r.status = true ORDER BY r.createdDate DESC")
     Page<Review> findAllByStatus(Pageable pageable);
+@Query("SELECT r FROM Review r join Reservation re ON r.reservation = re WHERE re.user.id =:id")
+    Page<Review> findAllByUser(@Param("id") Long id,Pageable pageable);
 
-    Page<Review> findAllByUser(User user,Pageable pageable);
+//    @Query("SELECT count(r.id) FROM Review r join User u on r.user= u join Reservation re on re.user=u" +
+//            " where u.id =: id")
+//    boolean existsByUserAndReservation(@Param("id") Long id);
+@Query("SELECT count(r.id) > 0 FROM Review r JOIN r.reservation re WHERE re.id = :id")
+boolean existsByReservation(@Param("id") Long id);
 
-    @Query("SELECT count(r.id) FROM Review r join User u on r.user= u join Reservation re on re.user=u" +
-            " where u.id =: id")
-    boolean existsByUserAndReservation(@Param("id") Long id);
 }

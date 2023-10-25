@@ -1347,10 +1347,10 @@
                                         <li class="py-3 px-2 pt-0" th:each="r:${reviews}">
                                             <div class="d-flex align-items-center">
                                                 <img class="img-fluid avatar avatar-55 avatar-rounded"
-                                                     th:src="${r.user.avatar}" alt="">
+                                                     th:src="${r.reservation.user.avatar}" alt="">
                                                 <div class="ms-3">
                                                     <h6 class="mb-1 heading-title fw-bolder"
-                                                        th:text="${r.user.name}"></h6>
+                                                        th:text="${r.reservation.user.name}"></h6>
                                                     <p class="mb-1" th:text="${r.comment}"></p>
                                                     <a th:href="${r.image}" target="_blank">
                                                         <img th:src="${r.image}" width="120px" style="border-radius: 20px">
@@ -1531,6 +1531,7 @@
                                               th:action="@{/home/create/review}" method="post"
                                               th:object="${reviewRequest}"
                                               enctype="multipart/form-data">
+                                            <input type="hidden" th:field="*{reservation}">
                                             <div class="row" style="justify-content: center">
                                                 <div class="rating col-lg-12" style="width: 157px">
                                                     <input value="5" name="rating" id="star5" type="radio"

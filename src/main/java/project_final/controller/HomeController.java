@@ -16,6 +16,7 @@ import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
 import project_final.exception.TimeIsValidException;
+import project_final.model.domain.RoleName;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
@@ -238,9 +239,16 @@ public class HomeController {
             model.addAttribute("reservationMenu", new ReservationMenuRequest());
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
+            if (reservation.isPresent()) {
+                if (reservation.get().getStatus().equals(Status.ORDER)||reservation.get().getStatus().equals(Status.PENDING))
+                    reservation.get().setStatus(Status.PENDING);
+                    reservationRepository.save(reservation.get());
+            }
 
+ 
             reservation.get().setStatus(Status.PENDING);
             reservationRepository.save(reservation.get());
+ 
 
         } else {
             map.put("icon", "error");
@@ -364,7 +372,9 @@ public class HomeController {
         Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
             model.addAttribute("review", "");
-            model.addAttribute("reviewRequest", new ReviewRequest());
+            ReviewRequest reviewRequest = new ReviewRequest();
+            reviewRequest.setReservation(reservation.get());
+            model.addAttribute("reviewRequest", reviewRequest);
             return "dashboard/reviews";
         }
         return "redirect:/auth/profile" + userPrinciple.getId();

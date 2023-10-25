@@ -332,7 +332,7 @@
         var startMinute = parseInt(startTimeArray[1], 10);
 
 // Kiểm tra xem giờ bắt đầu có lớn hơn 9 giờ sáng không
-        if (startHour > 9 || (startHour === 9 && startMinute > 0)) {
+        if (    startHour > 9 || (startHour === 9 && startMinute > 0)) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Do you want to choose the dish?',

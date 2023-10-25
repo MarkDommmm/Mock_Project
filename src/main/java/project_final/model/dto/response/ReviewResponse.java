@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import project_final.entity.Reservation;
 import project_final.entity.User;
 
 import java.util.Date;
@@ -18,6 +19,6 @@ public class ReviewResponse {
     private String comment;
     private int rating;
     private Date createdDate;
-    private User user;
+    private Reservation reservation;
     private boolean status;
 }
