@@ -23,7 +23,7 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .reservation(tableMenuRequest.getReservation())
                 .quantity(tableMenuRequest.getQuantity())
                 .price(tableMenuRequest.getMenu().getPrice())
-                .status(Status.NOT_SERVED_YET)
+                .status(Status.NOT_SERVED)
                 .pay(pay).build();
     }
 

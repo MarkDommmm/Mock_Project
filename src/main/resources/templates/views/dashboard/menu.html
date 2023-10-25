@@ -2279,8 +2279,18 @@
                 type: "GET",
                 data: {},
                 success: function (data) {
+                        if (data.icon == "error"){
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }else {
+                            window.location.href ="/checkout"
+                        }
 
-                    window.location.href ="/checkout"
                 },
                 error:function (){
                     Swal.fire({
