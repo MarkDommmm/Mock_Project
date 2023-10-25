@@ -50,7 +50,7 @@ public class AuthController {
 
     @GetMapping("/reservation-detail")
     @ResponseBody
-    private List<TableMenuCartResponse> detailOrder(@RequestParam(defaultValue = "0") Long id) {
+    private List<TableMenuCartResponse> detailOrder(@RequestParam(defaultValue = "") Long id) {
         return tableMenuService.getDetails(id);
     }
 

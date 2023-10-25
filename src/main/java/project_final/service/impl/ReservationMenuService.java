@@ -57,7 +57,7 @@ public class ReservationMenuService implements IReservationMenuService {
 
     @Override
     public List<TableMenuCartResponse> getDetails(Long id) {
-        List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllByReservation(id);
+        List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllByReservationId(id);
         return reservationMenus.stream().map(reservationMenuMapper::toResponse).collect(Collectors.toList());
     }
 
@@ -114,6 +114,7 @@ public class ReservationMenuService implements IReservationMenuService {
                     reservationMenuRepository.deleteById(reservationMenu.getId());
                 } else {
                     reservationMenu.setQuantity(reservationMenu.getQuantity() - 1);
+                    reservationMenu.setPrice(reservationMenu.getPrice() - reservationMenu.getMenu().getPrice());
                     reservationMenuRepository.save(reservationMenu);
                 }
                 break;

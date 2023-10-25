@@ -10,7 +10,7 @@ public interface IReviewService <K,V,E>{
     Page<V> findAllByStatus(int page, int size);
     Page<V> findAllByUser(E id,int page, int size);
     V findById(E id);
-    void save(K k, User user);
+    void save(K k, Long id);
     void delete(E id,User user);
     void changeStatus(E id);
 
