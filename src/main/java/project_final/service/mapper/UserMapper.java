@@ -47,6 +47,7 @@ public class UserMapper implements IUserMapper {
                 .avatar(avatar)
                 .phone(userRequest.getPhone())
                 .status(user.get().isStatus())
+                .roles(user.get().getRoles())
                 .build();
     }
 

@@ -1535,10 +1535,11 @@
 
         $(document).on("click", ".remove-cart", function () {
             const id = $(this).data("menu-id");
-            const price = $(this).data("price");
-            const qty = $(this).data("qty");
+            const price = parseFloat($(this).data("price"));
+            const qty = parseInt($(this).data("qty"));
             const priceMenu = price / qty;
             totalPrice -= priceMenu
+
             $.ajax({
                 url: "/remove-cart-item",
                 type: "GET",

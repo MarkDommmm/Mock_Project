@@ -1403,18 +1403,8 @@
     </div>
 </div>
 <!-- loader END -->
-<div class="position-relative">
-    <div class="user-img1">
-        <svg width="1857" viewBox="0 0 1857 327" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-                    d="M4.05078 189.348C86.8841 109.514 348.951 -25.2523 734.551 74.3477C1120.15 173.948 1641.22 91.181 1853.55 37.3477"
-                    stroke="#EA6A12" stroke-opacity="0.3"/>
-            <path
-                    d="M0.99839 152.331C90.9502 80.6133 364.495 -28.9952 739.062 106.31C1113.63 241.616 1640.16 208.056 1856.6 174.363"
-                    stroke="#EA6A12" stroke-opacity="0.3"/>
-        </svg>
-    </div>
-</div>
+
+
 <th:block th:insert="/dashboard/layout/slider.html"></th:block>
 <main class="main-content">
     <div class="position-relative">
@@ -2051,23 +2041,19 @@
     <!-- Footer Section End -->
     <script>
         var totalPrice = 0.0;
+
         $(document).ready(function () {
-
-            // Lặp qua mỗi phần tử có class là "iq-my-cart"
             $(".iq-my-cart").each(function () {
-                // Lấy giá trị từ thuộc tính data-price
                 var price = parseFloat($(this).data("price"));
-
-                // Cộng dồn vào tổng
                 totalPrice += price;
             });
 
+            totalPrice = Number(totalPrice.toFixed(2)); // Giữ lại chỉ hai chữ số thập phân
             $(".render-total-price").html("$" + totalPrice);
 
-
-            // Hiển thị tổng
             console.log("Tổng giá trị là: $" + totalPrice);
         });
+
         // Add Cart
         $(document).on("click", ".add-cart", function () {
             const id = $(this).data("id");
@@ -2096,6 +2082,7 @@
                     })
                     $("#render-cart").html("");
                     $.each(data.content, function (i, c) {
+                        p = Number(c.price.toFixed(2));
                         let htmlCart = `
 
                                   <div class="rounded-pill bg-soft-primary iq-my-cart"">
@@ -2126,8 +2113,9 @@
                                                     </span>
                                             </div>
                                         </div>
-                                        <div class="me-4 text-end">
-                                                <span class="mb-1">
+                                           <div class="me-4 text-end">
+                                                <span class="mb-1 remove-cart" data-price="${c.price}"
+                                                      data-qty="${c.quantity}" data-menu-id="${c.id}">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
                                                         <path opacity="0.4"
@@ -2138,8 +2126,8 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                            <p class="mb-0 text-dark" >$${c.price}</p>
-                                        </div>
+                                                <p class="mb-0 text-dark"  >$${p}</p>
+                                            </div>
                                     </div>
                                 </div>
 
@@ -2149,25 +2137,17 @@
                     `;
                         $("#render-cart").append(htmlCart);
                     })
+                    totalPrice = Number(totalPrice.toFixed(2));
                     $(".render-total-price").html("$" + totalPrice);
-                },
-                // error: function () {
-                //     Swal.fire({
-                //         position: 'center',
-                //         icon: 'error',
-                //         title: 'Please log in to add to cart!!!',
-                //         showConfirmButton: false,
-                //         timer: 1500
-                //     });
-                // }
+                }
             });
         });
 
         // Remove Cart
         $(document).on("click", ".remove-cart", function () {
             const id = $(this).data("menu-id");
-            const price = $(this).data("price");
-            const qty = $(this).data("qty");
+            const price = parseFloat($(this).data("price"));
+            const qty = parseFloat($(this).data("qty"));
             const priceMenu = price / qty;
             totalPrice -= priceMenu
 
@@ -2188,6 +2168,7 @@
                     })
                     $("#render-cart").html("");
                     $.each(data, function (i, c) {
+                        p = Number(c.price.toFixed(2));
                         let htmlCart = `
                      <div class="rounded-pill bg-soft-primary iq-my-cart" data-price="${c.price}">
                                     <div class="d-flex align-items-center justify-content-between profile-img4">
@@ -2218,7 +2199,8 @@
                                             </div>
                                         </div>
                                         <div class="me-4 text-end">
-                                               <span class="mb-1 remove-cart" data-menu-id="${c.id}">
+                                                 <span class="mb-1 remove-cart" data-price="${c.price}"
+                                                      data-qty="${c.quantity}" data-menu-id="${c.id}">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
                                                         <path opacity="0.4"
@@ -2229,7 +2211,9 @@
                                                                 fill="#E60A0A"/>
                                                     </svg>
                                                 </span>
-                                            <p class="mb-0 text-dark" >${c.price}$</p>
+                                                .
+
+                                            <p class="mb-0 text-dark" >$${p}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -2239,6 +2223,7 @@
                     if (totalPrice <= 0) {
                         $(".render-total-price").html("$" + "0");
                     } else {
+                        totalPrice = Number(totalPrice.toFixed(2));
                         $(".render-total-price").html("$" + totalPrice);
                     }
                 }
@@ -2397,6 +2382,7 @@
                 }
             });
         });
+
     </script>
 
 </main>

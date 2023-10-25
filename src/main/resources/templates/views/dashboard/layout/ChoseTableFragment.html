@@ -48,7 +48,7 @@
     <div class="swiper-container d-slider2">
         <div class="swiper-wrapper">
             <div class="swiper-slide cardH " th:each="t,loop:${tableTypes}"
-                 >
+            >
                 <span></span>
                 <div class="card  category-menu boxs">
                     <div class="card-body">
@@ -312,8 +312,27 @@
 
         var idTable = $(this).data("id-table");
         var bookingDate = $("#bookingDate").val();
-        var startTime = $("#startTime").val();
+
         var endTime = $("#endTime").val();
+
+        var startTime = $("#startTime").val();
+        var h = new Date().getHours();
+
+// Lấy giờ và phút từ chuỗi startTime
+        var startTimeArray = startTime.split(":");
+        var startHour = parseInt(startTimeArray[0], 10);
+        var startMinute = parseInt(startTimeArray[1], 10);
+
+
+        if (h > startHour || (h === startHour && new Date().getMinutes() > startMinute)) {
+            console.log("Giờ bắt đầu lớn hơn giờ hiện tại");
+        } else {
+            console.log("Giờ bắt đầu không lớn hơn giờ hiện tại");
+        }
+
+
+
+
 
         Swal.fire({
             icon: 'warning',
@@ -336,7 +355,7 @@
                             end: endTime
                         },
                         success: function (data) {
-                            if (data.icon === 'error'){
+                            if (data.icon === 'error') {
                                 Swal.fire({
                                     position: 'center',
                                     icon: data.icon,
@@ -344,10 +363,10 @@
                                     showConfirmButton: false,
                                     timer: 1500
                                 }).then(() => {
-                                    window.location.href="/home"
+                                    window.location.href = "/home"
                                 })
-                            }else {
-                                window.location.href="/home/menu"
+                            } else {
+                                window.location.href = "/home/menu"
                             }
 
                         }
