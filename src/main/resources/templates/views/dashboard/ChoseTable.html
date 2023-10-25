@@ -54,7 +54,8 @@
                 width: 100% !important;
             }
         }
-        .flex-header-modal h3{
+
+        .flex-header-modal h3 {
             text-decoration: underline;
             font-style: italic;
 
@@ -1545,8 +1546,8 @@
     </div>
 
     <script>
-        let  idUser = null;
-        let  idResvertion = null;
+        let idUser = null;
+        let idResvertion = null;
         $(document).on("click", ".checkCode", function (e) {
             e.preventDefault();
             const code = $("#code").val();
@@ -1579,7 +1580,9 @@
                                <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Update dishes</h3>
 
                                   <h3>Cancel Orders</h3>
-                                  <h3 class="check-out" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Checkout</h3>
+                                  <a href="/checkout-final?idR=${data.id}&idU=${data.idUser}">
+                                  <h3 class="check-out" >Checkout</h3>
+                                  </a>
                                   </div>
 
                             <table class="table table-striped" role="grid"
@@ -1637,7 +1640,7 @@
                     `;
                     $("#modal-body").append(htmlCode);
                 },
-                error: function(data){
+                error: function (data) {
                     Swal.fire({
                         position: 'center',
                         icon: "error",
@@ -1752,43 +1755,15 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
-                    }else {
-                        window.location.href ="/home/menu"
+                    } else {
+                        window.location.href = "/home/menu"
                     }
 
                 },
 
             });
         })
-        $(document).on("click", ".check-out", function () {
-            let idR = $(this).data("id-resvertion");
-            let idU = $(this).data("id-user");
 
-            $.ajax({
-                url: "/check-out",
-                type: "GET",
-                data: {
-                    idUser: idU,
-                    idResvertion: idR
-                },
-                success: function (data) {
-                    console.log(data)
-                    // if (data.icon == "error") {
-                    //     Swal.fire({
-                    //         position: 'center',
-                    //         icon: data.icon,
-                    //         title: data.message,
-                    //         showConfirmButton: false,
-                    //         timer: 1500
-                    //     });
-                    // }else {
-                    //     window.location.href ="/home/menu"
-                    // }
-
-                },
-
-            });
-        })
 
         $(document).ready(function () {
 
@@ -1797,6 +1772,25 @@
                 $('#staticBackdrop').modal('show');
             }
         });
+
+
+
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var errorParam = urlParams.get('error');
+
+        // Kiểm tra xem có tham số error hay không
+        if (errorParam =="check-out") {
+            // Hiển thị SweetAlert với thông báo và tham số từ URL
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'This application has been paid',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+
     </script>
 </main>
 <!-- Wrapper End-->

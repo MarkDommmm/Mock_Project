@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import project_final.entity.Reservation;
 import project_final.entity.ReservationMenu;
@@ -25,6 +26,13 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
 
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id")
     List<ReservationMenu> findAllByReservationId(Long id);
+
+    @Query("SELECT CASE WHEN COUNT(RM) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM ReservationMenu RM " +
+            "WHERE RM.reservation.id = :id AND RM.pay = 'UN_PAID'")
+    boolean checkUnpaidExists(@Param("id") Long id);
+
+
 
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id ")
     List<ReservationMenu> findAllById(Long id);

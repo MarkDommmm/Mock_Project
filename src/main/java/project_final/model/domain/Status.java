@@ -9,6 +9,6 @@ public enum Status {
     NO_SHOW,
     PAID,
     SERVED,
-    NOT_SERVED_YET,
+    NOT_SERVED,
     UN_PAID,
 }

@@ -40,6 +40,7 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
 
     @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.status = 'PENDING'")
     Optional<Reservation> findPendingReservationByUserId(@Param("userId") Long userId);
+
     @Query("SELECT r FROM Reservation r WHERE r.id = :idR AND r.status = 'PENDING'")
     Optional<Reservation> findPendingReservationByReservationId(@Param("idR") Long idR);
 

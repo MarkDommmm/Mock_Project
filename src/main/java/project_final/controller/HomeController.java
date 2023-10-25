@@ -75,19 +75,18 @@ public class HomeController {
                 "You need to activate your account to use our services.\n" +
 
                 "\n\nVisit the link below to activate your account\n\n" +
-                "http://localhost:8888/public/active-account?email="+ email;
+                "http://localhost:8888/public/active-account?email=" + email;
         mailService.sendMail(userRequest.getEmail(), "Active Account", content);
         return "redirect:/public/login";
     }
 
 
     @GetMapping("/public/active-account")
-    public String activateAccount(@RequestParam String email){
+    public String activateAccount(@RequestParam String email) {
         userService.active(email);
         String content = "Hello " + email + ",\n\n" +
                 "You have successfully activated your account !!\n" +
-                "Now you can log in to use the service \n"
-                ;
+                "Now you can log in to use the service \n";
         mailService.sendMail(email, "Account activation successful", content);
         return "/dashboard/auth/active-account";
 
@@ -246,6 +245,10 @@ public class HomeController {
                     reservationRepository.save(reservation.get());
             }
 
+ 
+            reservation.get().setStatus(Status.PENDING);
+            reservationRepository.save(reservation.get());
+ 
 
         } else {
             map.put("icon", "error");
@@ -306,16 +309,9 @@ public class HomeController {
     @GetMapping("/check-out")
     @ResponseBody
     public Map<String, String> checkoutTable(HttpSession session,
-                                             Model model,
-                                             @AuthenticationPrincipal UserPrinciple userPrinciple,
-                                             @RequestParam(defaultValue = "") String name,
-                                             @RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "12") int size) {
+                                             @AuthenticationPrincipal UserPrinciple userPrinciple) {
         Map<String, String> map = new HashMap<>();
-        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
         Optional<Reservation> existingReservationOrder = reservationRepository.findOrderReservationByUserId(userPrinciple.getId());
-        List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
-
         if (existingReservationOrder.isPresent()) {
             map.put("icon", "error");
             map.put("message", "You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777");
@@ -327,9 +323,11 @@ public class HomeController {
     }
 
     @RequestMapping("/checkout")
-    public String checkout(Model model,@AuthenticationPrincipal UserPrinciple userPrinciple) {
+    public String checkout(Model model, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
-         List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
+        List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
+
         double totalPrice = tableMenuCartResponse.stream()
                 .mapToDouble(TableMenuCartResponse::getPrice)
                 .sum();
@@ -340,6 +338,32 @@ public class HomeController {
         model.addAttribute("payment", paymentRepository.findAll());
 
         return "dashboard/checkoutTable";
+    }
+
+    @RequestMapping("/checkout-final")
+    public String checkoutFinal(Model model,
+                                @RequestParam("idR") Long idR,
+                                @RequestParam("idU") Long idU,
+                                @AuthenticationPrincipal UserPrinciple userPrinciple) {
+
+        Optional<Reservation> existingReservation = reservationRepository.findById(idR);
+
+        List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
+        if (reservationMenuRepository.checkUnpaidExists(idR)) {
+            double totalPrice = tableMenuCartResponse.stream()
+                    .mapToDouble(TableMenuCartResponse::getPrice)
+                    .sum();
+            model.addAttribute("table", tableService.findById(existingReservation.get().getTable().getId()));
+            model.addAttribute("reservationR", existingReservation.get());
+            model.addAttribute("cart", tableMenuCartResponse);
+            model.addAttribute("totalPrice", totalPrice);
+            model.addAttribute("payment", paymentRepository.findAll());
+        } else {
+            return "redirect:/home?error=check-out";
+        }
+
+
+        return "dashboard/checkoutFinal";
     }
 
 
