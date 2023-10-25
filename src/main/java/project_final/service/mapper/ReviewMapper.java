@@ -42,7 +42,7 @@ public class ReviewMapper implements IReviewMapper{
                 .comment(reviewRequest.getComment())
                 .rating(reviewRequest.getRating())
                 .createdDate(new Date())
-                .user(reviewRequest.getUser())
+                .reservation(reviewRequest.getReservation())
                 .status(true)
                 .build();
     }
@@ -54,7 +54,7 @@ public class ReviewMapper implements IReviewMapper{
                 .comment(review.getComment())
                 .rating(review.getRating())
                 .image(review.getImage())
-                .user(review.getUser())
+                .reservation(review.getReservation())
                 .status(review.isStatus()).build();
     }
 }

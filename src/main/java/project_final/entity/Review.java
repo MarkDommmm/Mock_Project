@@ -22,7 +22,7 @@ public class Review {
     private int rating;
     private Date createdDate;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
     private boolean status;
 }

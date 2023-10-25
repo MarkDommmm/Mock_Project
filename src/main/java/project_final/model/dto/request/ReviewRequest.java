@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import project_final.entity.Reservation;
 import project_final.entity.User;
 
 
@@ -19,5 +20,5 @@ public class ReviewRequest {
     private String comment;
     private int rating;
     private Date createdDate;
-    private User user;
+    private Reservation reservation;
 }

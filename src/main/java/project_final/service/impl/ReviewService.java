@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import project_final.entity.Reservation;
 import project_final.entity.Review;
 import project_final.entity.User;
+import project_final.model.domain.Status;
 import project_final.model.dto.request.ReviewRequest;
 import project_final.model.dto.response.ReviewResponse;
 import project_final.repository.IReservationRepository;
@@ -42,7 +43,7 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     @Override
     public Page<ReviewResponse> findAllByUser(Long id, int page, int size) {
         User user = userRepository.findById(id).get();
-        Page<Review> reviews = reviewRepository.findAllByUser(user, PageRequest.of(page, size));
+        Page<Review> reviews = reviewRepository.findAllByUser(user.getId(), PageRequest.of(page, size));
         return reviews.map(reviewMapper::toResponse);
     }
 
@@ -57,12 +58,11 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
 
     @Override
     public void save(ReviewRequest reviewRequest, Long id) {
-        Optional<User> user = userRepository.findById(id);
-        reviewRequest.setUser(user.get());
-        if (!reviewRepository.existsByUserAndReservation(id)){
+
+        if (!reviewRepository.existsByReservation(reviewRequest.getReservation().getId()) && reviewRequest.getReservation().getUser().getId().equals(id)
+        && reviewRequest.getReservation().getStatus().equals(Status.COMPLETED)) {
             reviewRepository.save(reviewMapper.toEntity(reviewRequest));
         }
-
     }
 
 
@@ -70,7 +70,7 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     public void delete(Long id, User user) {
         Optional<Review> review = reviewRepository.findById(id);
         if (review.isPresent()) {
-            if (user.equals(review.get().getUser())) {
+            if (user.getId().equals(review.get().getReservation().getUser().getId())) {
                 reviewRepository.deleteById(id);
             }
         }
