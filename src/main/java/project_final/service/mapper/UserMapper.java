@@ -82,6 +82,7 @@ public class UserMapper implements IUserMapper {
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
                 .roles(roles)
+                .active(false)
                 .status(true).build();
     }
 
@@ -91,10 +92,12 @@ public class UserMapper implements IUserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .username(user.getUsername())
+                .avatar(user.getAvatar())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .roles(user.getRoles())
                 .status(user.isStatus())
+                .active(user.isActive())
                 .build();
     }
 }

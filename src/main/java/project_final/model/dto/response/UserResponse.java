@@ -22,4 +22,5 @@ public class UserResponse {
     private String phone;
     private Set<Role> roles;
     private boolean status;
+    private boolean active;
 }

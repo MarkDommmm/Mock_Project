@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
+import project_final.model.dto.request.ActiveForm;
 import project_final.model.dto.request.ForgotPassForm;
 import project_final.model.dto.request.UpdateUserRequest;
 import project_final.model.dto.request.UserRequest;
@@ -92,6 +93,17 @@ public class UserService implements IUserService {
 //            throw new RegisterException("Old password does not match");
 //        }
         return null;
+    }
+
+    @Override
+    public void active(String email) {
+        User user = userRepository.findByEmail(email);
+
+            if(user!=null) {
+                user.setActive(true);
+                userRepository.save(user);
+            }
+
     }
 
     @Override

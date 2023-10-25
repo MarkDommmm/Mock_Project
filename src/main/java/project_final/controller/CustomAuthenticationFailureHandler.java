@@ -21,7 +21,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         if (errorMessage != null && errorMessage.contains("Bad credentials")) {
             // Đây có thể là lỗi sai mật khẩu, thực hiện xử lý tương ứng
             response.sendRedirect("/public/login?error=bad_credentials");
-        } else {
+        } else{
             // Xử lý các trường hợp khác
             response.sendRedirect("/public/login?error=other_error");
         }

@@ -82,6 +82,8 @@ public class UserPrinciple implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.status;
+
+     return    this.status;
+
     }
 }

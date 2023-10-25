@@ -1579,6 +1579,7 @@
                                <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Update dishes</h3>
 
                                   <h3>Cancel Orders</h3>
+                                  <h3 class="check-out" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Checkout</h3>
                                   </div>
 
                             <table class="table table-striped" role="grid"
@@ -1754,6 +1755,35 @@
                     }else {
                         window.location.href ="/home/menu"
                     }
+
+                },
+
+            });
+        })
+        $(document).on("click", ".check-out", function () {
+            let idR = $(this).data("id-resvertion");
+            let idU = $(this).data("id-user");
+
+            $.ajax({
+                url: "/check-out",
+                type: "GET",
+                data: {
+                    idUser: idU,
+                    idResvertion: idR
+                },
+                success: function (data) {
+                    console.log(data)
+                    // if (data.icon == "error") {
+                    //     Swal.fire({
+                    //         position: 'center',
+                    //         icon: data.icon,
+                    //         title: data.message,
+                    //         showConfirmButton: false,
+                    //         timer: 1500
+                    //     });
+                    // }else {
+                    //     window.location.href ="/home/menu"
+                    // }
 
                 },
 

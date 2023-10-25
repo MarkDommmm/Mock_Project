@@ -1,6 +1,7 @@
 package project_final.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import project_final.entity.Reservation;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
@@ -29,6 +30,7 @@ public interface IReservationService<K,V,E> {
     void noShow(E id);
     ReservationCheckCodeResponse findByCode(String code);
     double getTotalPrice( Long id);
+    double getTotalPaid( Long id);
 
     double revenuesOnDay( Date date);
     int countCompletedReservationsOnDay(Date date);
