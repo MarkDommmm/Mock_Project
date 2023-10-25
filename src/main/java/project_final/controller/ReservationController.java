@@ -85,6 +85,7 @@ public class ReservationController {
     public String getReservationMenu(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         model.addAttribute("reservationMenu", reservationMenuService.getReservationMenu(id, page, size));
         model.addAttribute("total",reservationService.getTotalPrice(id));
+        model.addAttribute("totalPaid",reservationService.getTotalPaid(id));
         return "dashboard/page/reservation/reservation-menu";
     }
 

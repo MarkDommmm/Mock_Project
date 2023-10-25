@@ -86,7 +86,8 @@ public class ReservationMenuService implements IReservationMenuService {
 
             for (ReservationMenu reservationMenu : reservationMenuCartRespons) {
                 if (reservationMenu.getMenu().getId().equals(menu.getId())
-                        && reservationMenu.getReservation().getId().equals(existingReservation.get().getId())) {
+                        && reservationMenu.getReservation().getId().equals(existingReservation.get().getId())
+                        && reservationMenu.getPay().equals(Status.UN_PAID)) {
                     reservationMenu.setQuantity(reservationMenu.getQuantity() + 1);
                     reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantity());
                     menuInCart = true;

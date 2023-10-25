@@ -215,6 +215,11 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public double getTotalPaid(Long id) {
+        return reservationRepository.getTotalPaid(id);
+    }
+
+    @Override
     public double revenuesOnDay(Date date) {
         return 0;
     }
