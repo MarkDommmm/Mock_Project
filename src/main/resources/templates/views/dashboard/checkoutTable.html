@@ -1411,12 +1411,22 @@
                                                       th:field="*{description}"></textarea>
                                         </div>
                                         <h6 class="card-title" style="margin-top: 20px">Payment Method</h6>
-                                        <div class="form-check form-check-inline form-group col-md-2" th:each="p:${payment}">
-                                            <label for="radio1">
-                                                <input th:field="*{payment}" th:value="${p.id}" type="radio" class="form-check-input" name="bsradio" id="radio1">
-                                                <img width="100px" th:src="${p.getIMG()}" alt="erorr">
-                                            </label>
-                                        </div>
+                                        <th:block th:if="${cart.size()== 0}">
+                                            <div class="form-check form-check-inline form-group col-md-2" th:each="p:${payment}" th:if="${p.id == 1}">
+                                                <label for="radio1">
+                                                    <input th:field="*{payment}" th:value="${p.id}" type="radio" class="form-check-input" name="bsradio" id="radio1">
+                                                    <img width="100px" th:src="${p.getIMG()}" alt="erorr">
+                                                </label>
+                                            </div>
+                                        </th:block>
+                                        <th:block th:unless="${cart.size()== 0}">
+                                            <div class="form-check form-check-inline form-group col-md-2" th:each="p:${payment}" >
+                                                <label for="radio1">
+                                                    <input th:field="*{payment}" th:value="${p.id}" type="radio" class="form-check-input" name="bsradio" id="radio1">
+                                                    <img width="100px" th:src="${p.getIMG()}" alt="erorr">
+                                                </label>
+                                            </div>
+                                        </th:block>
 
                                         <button type="submit" class="btn btn-primary">Checkout</button>
                                     </form>
