@@ -74,10 +74,9 @@ public class ReservationMenuService implements IReservationMenuService {
 
     @Override
     public void addCart(Long id, Long idR) {
+
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByReservationId(idR);
-        if (!existingReservation.isPresent()) {
-            throw new RuntimeException("Existing reservation");
-        }
+
         Optional<Menu> menuOptional = menuRepository.findById(id);
         if (menuOptional.isPresent()) {
             Menu menu = menuOptional.get();

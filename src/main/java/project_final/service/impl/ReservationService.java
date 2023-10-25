@@ -76,12 +76,13 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public Reservation add(Long user, Date date, String start, String end, Long idTable) throws TimeIsValidException {
-        if (!isEndTimeAfterStartTime(start, end)) {
-            throw new TimeIsValidException("End time must be after start time");
-        }
-        if (!isValidTimeRange(start, end)) {
-            throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
-        }
+//        if (!isEndTimeAfterStartTime(start, end)) {
+//            throw new TimeIsValidException("End time must be after start time");
+//        }
+//        if (!isValidTimeRange(start, end)) {
+//            throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
+//        }
+
         Optional<User> u = userRepository.findById(user);
         Optional<Tables> table = tableRepository.findById(idTable);
         Optional<Payment> payment = paymentRepository.findById(1L);

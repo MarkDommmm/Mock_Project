@@ -25,12 +25,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project_final.config.VNPayConfig;
 
 import project_final.entity.Reservation;
+import project_final.entity.ReservationMenu;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
 import project_final.model.dto.response.ReservationMenuResponse;
 import project_final.model.dto.response.TableMenuCartResponse;
+import project_final.repository.IReservationMenuRepository;
 import project_final.repository.IReservationRepository;
 import project_final.security.UserPrinciple;
 import project_final.service.IReservationService;
@@ -52,7 +54,7 @@ public class ReservationController {
     private final IReservationService reservationService;
     private final IReservationMenuService reservationMenuService;
     private final GenerateExcelService generateExcelService;
-
+    private final IReservationMenuRepository reservationMenuRepository;
     private final IReservationRepository reservationRepository;
 
     private final PaypalService paypalService;
@@ -84,13 +86,13 @@ public class ReservationController {
     @GetMapping("/reservation/reservationMenu/{id}")
     public String getReservationMenu(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         model.addAttribute("reservationMenu", reservationMenuService.getReservationMenu(id, page, size));
-        model.addAttribute("total",reservationService.getTotalPrice(id));
+        model.addAttribute("total", reservationService.getTotalPrice(id));
         return "dashboard/page/reservation/reservation-menu";
     }
 
 
     @PostMapping("/reservation/add")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
                                  BindingResult bindingResult, HttpSession session,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple,
@@ -147,11 +149,17 @@ public class ReservationController {
     public String successPay(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
+            List<ReservationMenu> reservationMenu = reservationMenuRepository.findAllById(reservationRequest.getId());
             Payment payment = paypalService.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             session.setAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
             if (payment.getState().equals("approved")) {
-                reservationRequest.setStatus(Status.PAID);
+
+                for (ReservationMenu rm : reservationMenu) {
+                    rm.setPay(Status.PAID);
+                    reservationMenuRepository.save(rm);
+                }
+                reservationRequest.setStatus(Status.ORDER);
                 reservationService.save(reservationRequest);
                 return "/dashboard/errors/SuccessPayment";
             }
@@ -176,6 +184,7 @@ public class ReservationController {
         reservationRequest.setUser(user);
         return "redirect:/reservation";
     }
+
     @GetMapping("/reservation/served/{id}")
     public String served(@PathVariable Long id, @RequestParam("idRese") Long idRese) {
         reservationMenuService.served(id);
