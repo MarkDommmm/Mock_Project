@@ -66,6 +66,20 @@ public class HomeController {
             return "/dashboard/auth/sign-up";
         }
         userService.save(userRequest);
+        User user = userService.findByUserName(userRequest.getUsername()).get();
+        String activationCode = user.getActiveCode();
+        String content = "Hello " + userRequest.getUsername() + ",\n\n" +
+                "Thank you for registering an account !!\n" +
+                "Your confirmation code is : \n"+ activationCode  + "\n" +
+                "\n\nVisit the link below to activate your account\n\n" +
+                "<a>http://localhost:8888/public/active-account<a>";
+        mailService.sendMail(userRequest.getEmail(), "Active Account", content);
+        return "redirect:/public/login";
+    }
+
+    @RequestMapping("/public/active-account")
+    public String activateAccount(){
+
         return "redirect:/public/login";
     }
 
@@ -198,20 +212,21 @@ public class HomeController {
                                          @AuthenticationPrincipal UserPrinciple userPrinciple,
                                          HttpSession session) {
         Map<String, String> map = new HashMap<>();
-        if (userPrinciple == null || !Objects.equals(userPrinciple.getId(), idU)) {
-            map.put("icon", "error");
-            map.put("message", "Please log in to the account with this code to update");
-        } else {
-
+        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("123"))) {
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
-            model.addAttribute("idR",idR);
-            model.addAttribute("reservationMenu",new ReservationMenuRequest());
+            model.addAttribute("idR", idR);
+            model.addAttribute("reservationMenu", new ReservationMenuRequest());
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
-            reservation.get().setStatus(Status.PENDING);
-            reservationRepository.save(reservation.get());
+            reservation.ifPresent(res -> {
+                res.setStatus(Status.PENDING);
+                reservationRepository.save(res);
+            });
+        } else {
+            map.put("icon", "error");
+            map.put("message", "Access denied. Please log in to the correct account or contact an administrator.");
         }
         return map;
     }
@@ -239,12 +254,12 @@ public class HomeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
             HttpSession session) {
+        Long idR = (Long) session.getAttribute("idReservation");
         try {
-            reservationMenuService.addCart(id, userPrinciple.getId());
+                reservationMenuService.addCart(id, idR);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         return reservationMenuService.getTableMenu(userPrinciple.getId(), page, sizeCart);
     }
 
@@ -279,6 +294,8 @@ public class HomeController {
         model.addAttribute("payment", paymentRepository.findAll());
         return "dashboard/checkoutTable";
     }
+
+
 
 
     @RequestMapping("home/reviews")

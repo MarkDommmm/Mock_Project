@@ -23,7 +23,6 @@ public class UserRequest {
     @Size(min = 6, message = "Username must be at least 6 characters long")
     @Pattern(regexp = "\\S+", message = "Username must not contain whitespace")
     private String username;
-
     @Size(min = 6, message = "Password must be at least 6 characters long")
     @Pattern(regexp = "\\S+", message = "Password must not contain whitespace")
     private String password;
@@ -34,5 +33,4 @@ public class UserRequest {
     private String email;
     private String phone;
     private Set<Long> role;
-
 }

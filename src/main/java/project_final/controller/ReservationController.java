@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 
@@ -89,6 +90,7 @@ public class ReservationController {
 
 
     @PostMapping("/reservation/add")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
                                  BindingResult bindingResult, HttpSession session,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple,

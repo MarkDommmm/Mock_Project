@@ -19,6 +19,7 @@ import project_final.service.mapper.IUserMapper;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -76,6 +77,7 @@ public class UserMapper implements IUserMapper {
                 .name(userRequest.getName())
                 .username(userRequest.getUsername())
                 .password(passwordEncoder.encode(userRequest.getPassword()))
+                .activeCode(UUID.randomUUID().toString().substring(0,6))
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
                 .roles(roles)
