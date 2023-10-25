@@ -3,6 +3,7 @@ package project_final.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import project_final.entity.Reservation;
 import project_final.entity.Review;
@@ -15,6 +16,7 @@ import project_final.repository.IUserRepository;
 import project_final.service.IReviewService;
 import project_final.service.mapper.IReviewMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,12 +59,12 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     public void save(ReviewRequest reviewRequest, Long id) {
         Optional<User> user = userRepository.findById(id);
         reviewRequest.setUser(user.get());
-//        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (!reviewRepository.existsByUserAndReservation(id)){
+            reviewRepository.save(reviewMapper.toEntity(reviewRequest));
+        }
 
-//        if (reservation != null && reservation.getStatus().equals("COMPLETED")) {
-        reviewRepository.save(reviewMapper.toEntity(reviewRequest));
-//        }
     }
+
 
     @Override
     public void delete(Long id, User user) {

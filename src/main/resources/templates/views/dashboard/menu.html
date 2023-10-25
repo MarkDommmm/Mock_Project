@@ -1936,13 +1936,14 @@
                                      alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
                                      style="max-height: 80px;">
                             </div>
-                            <div th:unless="${session.idReservation}" class="text-center"
-                                 sec:authorize="isAuthenticated()">
-                                <a type="button" href="/check-out"
+                            <div th:unless="${session.idReservation}" class="text-center "
+                                 sec:authorize="isAuthenticated()" >
+                                <a type="button"
                                    style="margin-bottom: 20px"
-                                   class="btn btn-primary rounded-pill checkout">Checkout!!!
+                                   class="check-out btn btn-primary rounded-pill  ">Checkout!!!
                                 </a>
                             </div>
+
                             <div th:if="${session.idReservation}" class="text-center" sec:authorize="isAuthenticated()">
                                 <a type="button" th:href="@{|/reservation/change-status/${session.idReservation}|}"
                                    style="margin-bottom: 20px"
@@ -2058,7 +2059,7 @@
         $(document).on("click", ".add-cart", function () {
             const id = $(this).data("id");
             var price = parseFloat($(this).data("menu-price"));
-            console.log(price)
+
             totalPrice += price;
 
             $(".col .dish-card").removeClass("active");
@@ -2073,17 +2074,26 @@
                 },
                 success: function (data) {
 
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: '❤️Added to cart !!!❤️',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    $("#render-cart").html("");
-                    $.each(data.content, function (i, c) {
-                        p = Number(c.price.toFixed(2));
-                        let htmlCart = `
+                    if (data.content.length == 0) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    } else {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: '❤️Added to cart !!!❤️',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        $("#render-cart").html("");
+                        $.each(data.content, function (i, c) {
+                            p = Number(c.price.toFixed(2));
+                            let htmlCart = `
 
                                   <div class="rounded-pill bg-soft-primary iq-my-cart"">
                                     <div class="d-flex align-items-center justify-content-between profile-img4">
@@ -2135,10 +2145,13 @@
 
 
                     `;
-                        $("#render-cart").append(htmlCart);
-                    })
-                    totalPrice = Number(totalPrice.toFixed(2));
-                    $(".render-total-price").html("$" + totalPrice);
+                            $("#render-cart").append(htmlCart);
+                        })
+                        totalPrice = Number(totalPrice.toFixed(2));
+                        $(".render-total-price").html("$" + totalPrice);
+                    }
+
+
                 }
             });
         });
@@ -2259,6 +2272,27 @@
     </script>
 
     <script>
+        $(document).on("click", ".check-out", function () {
+
+            $.ajax({
+                url: "/check-out",
+                type: "GET",
+                data: {},
+                success: function (data) {
+
+                    window.location.href ="/checkout"
+                },
+                error:function (){
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+            });
+        });
         $(document).on("click", ".chose-menu-cate", function () {
 
             $(".chose-menu-cate .category-menu").removeClass("active");

@@ -30,8 +30,8 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
     @Query("SELECT R FROM Reservation R WHERE DATE(R.bookingDate) = DATE(:date)")
     Page<Reservation> findAllByBookingDate(@Param("date") Date date, Pageable pageable);
 
-    @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId")
-    Reservation findByUser(@Param("userId") Long userId);
+    @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='COMPLETED'")
+    List<Reservation> findByUser(@Param("userId") Long userId);
 
     Reservation findByCode(String code);
 
