@@ -87,8 +87,8 @@ public class ReservationController {
     public String getReservationMenu(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         model.addAttribute("reservationMenu", reservationMenuService.getReservationMenu(id, page, size));
 
-        model.addAttribute("total",reservationService.getTotalPrice(id));
-        model.addAttribute("totalPaid",reservationService.getTotalPaid(id));
+        model.addAttribute("total", reservationService.getTotalPrice(id));
+        model.addAttribute("totalPaid", reservationService.getTotalPaid(id));
 
         return "dashboard/page/reservation/reservation-menu";
     }
@@ -102,14 +102,21 @@ public class ReservationController {
                                  Model model, HttpServletRequest request) throws TimeIsValidException {
 
 
-        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
+        Optional<Reservation> existingReservation = reservationRepository.findById(reservationRequest.getId());
 
-        List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
+        double totalPrice = 0;
+        if (existingReservation.get().getStatus().equals(Status.PENDING)) {
+            List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
 
+            totalPrice = tableMenu.stream()
+                    .mapToDouble(TableMenuCartResponse::getPrice)
+                    .sum();
+        } else {
+            totalPrice = reservationService.getTotalPrice(existingReservation.get().getId())
+                    - reservationService.getTotalPaid(existingReservation.get().getId());
 
-        double totalPrice = tableMenu.stream()
-                .mapToDouble(TableMenuCartResponse::getPrice)
-                .sum();
+        }
+
 
         if (reservationRequest.getPayment().getId().equals(1L)) {
             reservationRequest.setStatus(Status.ORDER);
@@ -154,6 +161,7 @@ public class ReservationController {
             ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
             List<ReservationMenu> reservationMenu = reservationMenuRepository.findAllById(reservationRequest.getId());
             Payment payment = paypalService.executePayment(paymentId, payerId);
+
             System.out.println(payment.toJSON());
             session.setAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
             if (payment.getState().equals("approved")) {
@@ -162,8 +170,14 @@ public class ReservationController {
                     rm.setPay(Status.PAID);
                     reservationMenuRepository.save(rm);
                 }
-                reservationRequest.setStatus(Status.ORDER);
-                reservationService.save(reservationRequest);
+                if (reservationRequest.getStatus().equals(Status.CONFIRM)) {
+                    reservationRequest.setStatus(Status.COMPLETED);
+                    reservationService.save(reservationRequest);
+                } else {
+                    reservationRequest.setStatus(Status.ORDER);
+                    reservationService.save(reservationRequest);
+                }
+
                 return "/dashboard/errors/SuccessPayment";
             }
 
