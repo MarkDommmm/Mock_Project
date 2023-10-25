@@ -114,6 +114,7 @@ public class ReservationMenuService implements IReservationMenuService {
                     reservationMenuRepository.deleteById(reservationMenu.getId());
                 } else {
                     reservationMenu.setQuantity(reservationMenu.getQuantity() - 1);
+                    reservationMenu.setPrice(reservationMenu.getPrice() - reservationMenu.getMenu().getPrice());
                     reservationMenuRepository.save(reservationMenu);
                 }
                 break;

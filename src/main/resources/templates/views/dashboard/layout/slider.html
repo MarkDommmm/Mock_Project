@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
 </head>
 <body>
-<aside sec:authorize="hasAuthority('ROLE_ADMIN')" class="sidebar sidebar-default sidebar-hover sidebar-mini navs-pill-all ">
+<aside class="sidebar sidebar-default sidebar-hover sidebar-mini navs-pill-all ">
     <div class="sidebar-header d-flex align-items-center justify-content-start">
         <a href="/home" class="navbar-brand">
             <!--Logo start-->
@@ -1263,7 +1266,7 @@
             </i>
         </div>
     </div>
-    <div class="sidebar-body pt-0 data-scrollbar">
+    <div class="sidebar-body pt-0  ">
         <div class=" navbar-collapse" id="sidebar">
             <!-- Sidebar Menu Start -->
             <ul class="navbar-nav iq-main-menu">
@@ -1273,33 +1276,8 @@
                         <span class="mini-icon">-</span>
                     </a>
                 </li>
-                <li class="nav-item sub-nav">
-                    <a class="nav-link active" aria-current="page" href="/dashboard">
-                        <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path opacity="0.4"
-                                      d="M16.0756 2H19.4616C20.8639 2 22.0001 3.14585 22.0001 4.55996V7.97452C22.0001 9.38864 20.8639 10.5345 19.4616 10.5345H16.0756C14.6734 10.5345 13.5371 9.38864 13.5371 7.97452V4.55996C13.5371 3.14585 14.6734 2 16.0756 2Z"
-                                      fill="currentColor"></path>
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                      d="M4.53852 2H7.92449C9.32676 2 10.463 3.14585 10.463 4.55996V7.97452C10.463 9.38864 9.32676 10.5345 7.92449 10.5345H4.53852C3.13626 10.5345 2 9.38864 2 7.97452V4.55996C2 3.14585 3.13626 2 4.53852 2ZM4.53852 13.4655H7.92449C9.32676 13.4655 10.463 14.6114 10.463 16.0255V19.44C10.463 20.8532 9.32676 22 7.92449 22H4.53852C3.13626 22 2 20.8532 2 19.44V16.0255C2 14.6114 3.13626 13.4655 4.53852 13.4655ZM19.4615 13.4655H16.0755C14.6732 13.4655 13.537 14.6114 13.537 16.0255V19.44C13.537 20.8532 14.6732 22 16.0755 22H19.4615C20.8637 22 22 20.8532 22 19.44V16.0255C22 14.6114 20.8637 13.4655 19.4615 13.4655Z"
-                                      fill="currentColor"></path>
-                            </svg>
-                        </i>
-                        <span class="item-name">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <hr class="hr-horizontal">
-                </li>
-<!--                Pages-->
-                <li class="nav-item static-item">
-                    <a class="nav-link static-item disabled" href="#" tabindex="-1">
-                        <span class="default-icon">Pages</span>
-                        <span class="mini-icon">-</span>
-                    </a>
-                </li>
-<!--                Restaurant-->
-                <li  class="nav-item">
+                <!--            HOME-->
+                <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-auth" role="button"
                        aria-expanded="false" aria-controls="sidebar-user">
                         <i class="icon">
@@ -1350,10 +1328,52 @@
                                 <span class="item-name">Menu</span>
                             </a>
                         </li>
+                        <li class="nav-item" id="open-modal-check-code" style="cursor: pointer">
+                            <a class="nav-link">
+                                <i class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24"
+                                         fill="currentColor">
+                                        <g>
+                                            <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                        </g>
+                                    </svg>
+                                </i>
+                                <i class="sidenav-mini-icon"> C </i>
+                                <span class="item-name">Check Code</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
-<!--                User-->
-                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <hr class="hr-horizontal">
+                </li>
+                <!--                Management-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item static-item">
+                    <a class="nav-link static-item disabled" href="#" tabindex="-1">
+                        <span class="default-icon">Management</span>
+                        <span class="mini-icon">-</span>
+                    </a>
+                </li>
+                <!--                Dashboard-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item sub-nav">
+                    <a class="nav-link active" aria-current="page" href="/dashboard">
+                        <i class="icon">
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.0756 2H19.4616C20.8639 2 22.0001 3.14585 22.0001 4.55996V7.97452C22.0001 9.38864 20.8639 10.5345 19.4616 10.5345H16.0756C14.6734 10.5345 13.5371 9.38864 13.5371 7.97452V4.55996C13.5371 3.14585 14.6734 2 16.0756 2Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M4.53852 2H7.92449C9.32676 2 10.463 3.14585 10.463 4.55996V7.97452C10.463 9.38864 9.32676 10.5345 7.92449 10.5345H4.53852C3.13626 10.5345 2 9.38864 2 7.97452V4.55996C2 3.14585 3.13626 2 4.53852 2ZM4.53852 13.4655H7.92449C9.32676 13.4655 10.463 14.6114 10.463 16.0255V19.44C10.463 20.8532 9.32676 22 7.92449 22H4.53852C3.13626 22 2 20.8532 2 19.44V16.0255C2 14.6114 3.13626 13.4655 4.53852 13.4655ZM19.4615 13.4655H16.0755C14.6732 13.4655 13.537 14.6114 13.537 16.0255V19.44C13.537 20.8532 14.6732 22 16.0755 22H19.4615C20.8637 22 22 20.8532 22 19.44V16.0255C22 14.6114 20.8637 13.4655 19.4615 13.4655Z"
+                                      fill="currentColor"></path>
+                            </svg>
+                        </i>
+                        <span class="item-name">Dashboard</span>
+                    </a>
+                </li>
+
+                <!--                User-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-user" role="button"
                        aria-expanded="false" aria-controls="sidebar-user">
                         <i class="icon">
@@ -1430,14 +1450,21 @@
                                 <span class="item-name">User List</span>
                             </a>
                         </li>
+
                     </ul>
                 </li>
-<!--                Table-->
-                <li  class="nav-item">
+                <!--                Table-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#utilities-error" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                <path opacity="0.4" d="M16.6643 21.9897H7.33488C5.88835 22.0796 4.46781 21.5781 3.3989 20.6011C2.4219 19.5312 1.92041 18.1107 2.01032 16.6652V7.33482C1.92041 5.88932 2.4209 4.46878 3.3979 3.39889C4.46781 2.42189 5.88835 1.92041 7.33488 2.01032H16.6643C18.1089 1.92041 19.5284 2.4209 20.5973 3.39789C21.5733 4.46878 22.0758 5.88832 21.9899 7.33482V16.6652C22.0788 18.1107 21.5783 19.5312 20.6013 20.6011C19.5314 21.5781 18.1109 22.0796 16.6643 21.9897Z" fill="currentColor"></path>                                <path d="M17.0545 10.3976L10.5018 16.9829C10.161 17.3146 9.7131 17.5 9.24574 17.5H6.95762C6.83105 17.5 6.71421 17.4512 6.62658 17.3634C6.53895 17.2756 6.5 17.1585 6.5 17.0317L6.55842 14.7195C6.56816 14.261 6.75315 13.8317 7.07446 13.5098L11.7189 8.8561C11.7967 8.77805 11.9331 8.77805 12.011 8.8561L13.6399 10.4785C13.747 10.5849 13.9028 10.6541 14.0683 10.6541C14.4286 10.6541 14.7109 10.3615 14.7109 10.0102C14.7109 9.83463 14.6428 9.67854 14.5357 9.56146C14.5065 9.52244 12.9554 7.97805 12.9554 7.97805C12.858 7.88049 12.858 7.71463 12.9554 7.61707L13.6078 6.95366C14.2114 6.34878 15.1851 6.34878 15.7888 6.95366L17.0545 8.22195C17.6485 8.81707 17.6485 9.79268 17.0545 10.3976Z" fill="currentColor"></path>                                </svg>
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.6643 21.9897H7.33488C5.88835 22.0796 4.46781 21.5781 3.3989 20.6011C2.4219 19.5312 1.92041 18.1107 2.01032 16.6652V7.33482C1.92041 5.88932 2.4209 4.46878 3.3979 3.39889C4.46781 2.42189 5.88835 1.92041 7.33488 2.01032H16.6643C18.1089 1.92041 19.5284 2.4209 20.5973 3.39789C21.5733 4.46878 22.0758 5.88832 21.9899 7.33482V16.6652C22.0788 18.1107 21.5783 19.5312 20.6013 20.6011C19.5314 21.5781 18.1109 22.0796 16.6643 21.9897Z"
+                                      fill="currentColor"></path>
+                                <path d="M17.0545 10.3976L10.5018 16.9829C10.161 17.3146 9.7131 17.5 9.24574 17.5H6.95762C6.83105 17.5 6.71421 17.4512 6.62658 17.3634C6.53895 17.2756 6.5 17.1585 6.5 17.0317L6.55842 14.7195C6.56816 14.261 6.75315 13.8317 7.07446 13.5098L11.7189 8.8561C11.7967 8.77805 11.9331 8.77805 12.011 8.8561L13.6399 10.4785C13.747 10.5849 13.9028 10.6541 14.0683 10.6541C14.4286 10.6541 14.7109 10.3615 14.7109 10.0102C14.7109 9.83463 14.6428 9.67854 14.5357 9.56146C14.5065 9.52244 12.9554 7.97805 12.9554 7.97805C12.858 7.88049 12.858 7.71463 12.9554 7.61707L13.6078 6.95366C14.2114 6.34878 15.1851 6.34878 15.7888 6.95366L17.0545 8.22195C17.6485 8.81707 17.6485 9.79268 17.0545 10.3976Z"
+                                      fill="currentColor"></path>
+                            </svg>
                         </i>
                         <span class="item-name">Table</span>
                         <i class="right-icon">
@@ -1479,12 +1506,18 @@
                         </li>
                     </ul>
                 </li>
-<!--                Table Type-->
-                <li  class="nav-item">
+                <!--                Table Type-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#tabletye" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                <path opacity="0.4" d="M16.6643 21.9897H7.33488C5.88835 22.0796 4.46781 21.5781 3.3989 20.6011C2.4219 19.5312 1.92041 18.1107 2.01032 16.6652V7.33482C1.92041 5.88932 2.4209 4.46878 3.3979 3.39889C4.46781 2.42189 5.88835 1.92041 7.33488 2.01032H16.6643C18.1089 1.92041 19.5284 2.4209 20.5973 3.39789C21.5733 4.46878 22.0758 5.88832 21.9899 7.33482V16.6652C22.0788 18.1107 21.5783 19.5312 20.6013 20.6011C19.5314 21.5781 18.1109 22.0796 16.6643 21.9897Z" fill="currentColor"></path>                                <path d="M17.0545 10.3976L10.5018 16.9829C10.161 17.3146 9.7131 17.5 9.24574 17.5H6.95762C6.83105 17.5 6.71421 17.4512 6.62658 17.3634C6.53895 17.2756 6.5 17.1585 6.5 17.0317L6.55842 14.7195C6.56816 14.261 6.75315 13.8317 7.07446 13.5098L11.7189 8.8561C11.7967 8.77805 11.9331 8.77805 12.011 8.8561L13.6399 10.4785C13.747 10.5849 13.9028 10.6541 14.0683 10.6541C14.4286 10.6541 14.7109 10.3615 14.7109 10.0102C14.7109 9.83463 14.6428 9.67854 14.5357 9.56146C14.5065 9.52244 12.9554 7.97805 12.9554 7.97805C12.858 7.88049 12.858 7.71463 12.9554 7.61707L13.6078 6.95366C14.2114 6.34878 15.1851 6.34878 15.7888 6.95366L17.0545 8.22195C17.6485 8.81707 17.6485 9.79268 17.0545 10.3976Z" fill="currentColor"></path>                                </svg>
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.6643 21.9897H7.33488C5.88835 22.0796 4.46781 21.5781 3.3989 20.6011C2.4219 19.5312 1.92041 18.1107 2.01032 16.6652V7.33482C1.92041 5.88932 2.4209 4.46878 3.3979 3.39889C4.46781 2.42189 5.88835 1.92041 7.33488 2.01032H16.6643C18.1089 1.92041 19.5284 2.4209 20.5973 3.39789C21.5733 4.46878 22.0758 5.88832 21.9899 7.33482V16.6652C22.0788 18.1107 21.5783 19.5312 20.6013 20.6011C19.5314 21.5781 18.1109 22.0796 16.6643 21.9897Z"
+                                      fill="currentColor"></path>
+                                <path d="M17.0545 10.3976L10.5018 16.9829C10.161 17.3146 9.7131 17.5 9.24574 17.5H6.95762C6.83105 17.5 6.71421 17.4512 6.62658 17.3634C6.53895 17.2756 6.5 17.1585 6.5 17.0317L6.55842 14.7195C6.56816 14.261 6.75315 13.8317 7.07446 13.5098L11.7189 8.8561C11.7967 8.77805 11.9331 8.77805 12.011 8.8561L13.6399 10.4785C13.747 10.5849 13.9028 10.6541 14.0683 10.6541C14.4286 10.6541 14.7109 10.3615 14.7109 10.0102C14.7109 9.83463 14.6428 9.67854 14.5357 9.56146C14.5065 9.52244 12.9554 7.97805 12.9554 7.97805C12.858 7.88049 12.858 7.71463 12.9554 7.61707L13.6078 6.95366C14.2114 6.34878 15.1851 6.34878 15.7888 6.95366L17.0545 8.22195C17.6485 8.81707 17.6485 9.79268 17.0545 10.3976Z"
+                                      fill="currentColor"></path>
+                            </svg>
                         </i>
                         <span class="item-name">Table Type</span>
                         <i class="right-icon">
@@ -1526,12 +1559,22 @@
                         </li>
                     </ul>
                 </li>
-<!--                Menu-->
-                <li class="nav-item">
+                <!--                Menu-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar_table" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                <path opacity="0.4" d="M18.8088 9.021C18.3573 9.021 17.7592 9.011 17.0146 9.011C15.1987 9.011 13.7055 7.508 13.7055 5.675V2.459C13.7055 2.206 13.5036 2 13.253 2H7.96363C5.49517 2 3.5 4.026 3.5 6.509V17.284C3.5 19.889 5.59022 22 8.16958 22H16.0463C18.5058 22 20.5 19.987 20.5 17.502V9.471C20.5 9.217 20.299 9.012 20.0475 9.013C19.6247 9.016 19.1177 9.021 18.8088 9.021Z" fill="currentColor"></path>                                <path opacity="0.4" d="M16.0842 2.56737C15.7852 2.25637 15.2632 2.47037 15.2632 2.90137V5.53837C15.2632 6.64437 16.1742 7.55437 17.2802 7.55437C17.9772 7.56237 18.9452 7.56437 19.7672 7.56237C20.1882 7.56137 20.4022 7.05837 20.1102 6.75437C19.0552 5.65737 17.1662 3.69137 16.0842 2.56737Z" fill="currentColor"></path>                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.97398 11.3877H12.359C12.77 11.3877 13.104 11.0547 13.104 10.6437C13.104 10.2327 12.77 9.89868 12.359 9.89868H8.97398C8.56298 9.89868 8.22998 10.2327 8.22998 10.6437C8.22998 11.0547 8.56298 11.3877 8.97398 11.3877ZM8.97408 16.3819H14.4181C14.8291 16.3819 15.1631 16.0489 15.1631 15.6379C15.1631 15.2269 14.8291 14.8929 14.4181 14.8929H8.97408C8.56308 14.8929 8.23008 15.2269 8.23008 15.6379C8.23008 16.0489 8.56308 16.3819 8.97408 16.3819Z" fill="currentColor"></path>                                </svg>
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M18.8088 9.021C18.3573 9.021 17.7592 9.011 17.0146 9.011C15.1987 9.011 13.7055 7.508 13.7055 5.675V2.459C13.7055 2.206 13.5036 2 13.253 2H7.96363C5.49517 2 3.5 4.026 3.5 6.509V17.284C3.5 19.889 5.59022 22 8.16958 22H16.0463C18.5058 22 20.5 19.987 20.5 17.502V9.471C20.5 9.217 20.299 9.012 20.0475 9.013C19.6247 9.016 19.1177 9.021 18.8088 9.021Z"
+                                      fill="currentColor"></path>
+                                <path opacity="0.4"
+                                      d="M16.0842 2.56737C15.7852 2.25637 15.2632 2.47037 15.2632 2.90137V5.53837C15.2632 6.64437 16.1742 7.55437 17.2802 7.55437C17.9772 7.56237 18.9452 7.56437 19.7672 7.56237C20.1882 7.56137 20.4022 7.05837 20.1102 6.75437C19.0552 5.65737 17.1662 3.69137 16.0842 2.56737Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M8.97398 11.3877H12.359C12.77 11.3877 13.104 11.0547 13.104 10.6437C13.104 10.2327 12.77 9.89868 12.359 9.89868H8.97398C8.56298 9.89868 8.22998 10.2327 8.22998 10.6437C8.22998 11.0547 8.56298 11.3877 8.97398 11.3877ZM8.97408 16.3819H14.4181C14.8291 16.3819 15.1631 16.0489 15.1631 15.6379C15.1631 15.2269 14.8291 14.8929 14.4181 14.8929H8.97408C8.56308 14.8929 8.23008 15.2269 8.23008 15.6379C8.23008 16.0489 8.56308 16.3819 8.97408 16.3819Z"
+                                      fill="currentColor"></path>
+                            </svg>
                         </i>
                         <span class="item-name">Menu</span>
                         <i class="right-icon">
@@ -1574,12 +1617,19 @@
 
                     </ul>
                 </li>
-<!--                Categry-->
-                <li class="nav-item">
+                <!--                Categry-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar_category" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                <path opacity="0.4" d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z" fill="currentColor"></path>                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.07996 6.6499V6.6599C7.64896 6.6599 7.29996 7.0099 7.29996 7.4399C7.29996 7.8699 7.64896 8.2199 8.07996 8.2199H11.069C11.5 8.2199 11.85 7.8699 11.85 7.4289C11.85 6.9999 11.5 6.6499 11.069 6.6499H8.07996ZM15.92 12.7399H8.07996C7.64896 12.7399 7.29996 12.3899 7.29996 11.9599C7.29996 11.5299 7.64896 11.1789 8.07996 11.1789H15.92C16.35 11.1789 16.7 11.5299 16.7 11.9599C16.7 12.3899 16.35 12.7399 15.92 12.7399ZM15.92 17.3099H8.07996C7.77996 17.3499 7.48996 17.1999 7.32996 16.9499C7.16996 16.6899 7.16996 16.3599 7.32996 16.1099C7.48996 15.8499 7.77996 15.7099 8.07996 15.7399H15.92C16.319 15.7799 16.62 16.1199 16.62 16.5299C16.62 16.9289 16.319 17.2699 15.92 17.3099Z" fill="currentColor"></path>                                </svg>
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M8.07996 6.6499V6.6599C7.64896 6.6599 7.29996 7.0099 7.29996 7.4399C7.29996 7.8699 7.64896 8.2199 8.07996 8.2199H11.069C11.5 8.2199 11.85 7.8699 11.85 7.4289C11.85 6.9999 11.5 6.6499 11.069 6.6499H8.07996ZM15.92 12.7399H8.07996C7.64896 12.7399 7.29996 12.3899 7.29996 11.9599C7.29996 11.5299 7.64896 11.1789 8.07996 11.1789H15.92C16.35 11.1789 16.7 11.5299 16.7 11.9599C16.7 12.3899 16.35 12.7399 15.92 12.7399ZM15.92 17.3099H8.07996C7.77996 17.3499 7.48996 17.1999 7.32996 16.9499C7.16996 16.6899 7.16996 16.3599 7.32996 16.1099C7.48996 15.8499 7.77996 15.7099 8.07996 15.7399H15.92C16.319 15.7799 16.62 16.1199 16.62 16.5299C16.62 16.9289 16.319 17.2699 15.92 17.3099Z"
+                                      fill="currentColor"></path>
+                            </svg>
                         </i>
                         <span class="item-name">Category</span>
                         <i class="right-icon">
@@ -1622,12 +1672,19 @@
 
                     </ul>
                 </li>
-<!--                Reservation-->
-                <li class="nav-item">
+                <!--                Reservation-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar_reservation" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                <path opacity="0.4" d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z" fill="currentColor"></path>                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.07996 6.6499V6.6599C7.64896 6.6599 7.29996 7.0099 7.29996 7.4399C7.29996 7.8699 7.64896 8.2199 8.07996 8.2199H11.069C11.5 8.2199 11.85 7.8699 11.85 7.4289C11.85 6.9999 11.5 6.6499 11.069 6.6499H8.07996ZM15.92 12.7399H8.07996C7.64896 12.7399 7.29996 12.3899 7.29996 11.9599C7.29996 11.5299 7.64896 11.1789 8.07996 11.1789H15.92C16.35 11.1789 16.7 11.5299 16.7 11.9599C16.7 12.3899 16.35 12.7399 15.92 12.7399ZM15.92 17.3099H8.07996C7.77996 17.3499 7.48996 17.1999 7.32996 16.9499C7.16996 16.6899 7.16996 16.3599 7.32996 16.1099C7.48996 15.8499 7.77996 15.7099 8.07996 15.7399H15.92C16.319 15.7799 16.62 16.1199 16.62 16.5299C16.62 16.9289 16.319 17.2699 15.92 17.3099Z" fill="currentColor"></path>                                </svg>
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M8.07996 6.6499V6.6599C7.64896 6.6599 7.29996 7.0099 7.29996 7.4399C7.29996 7.8699 7.64896 8.2199 8.07996 8.2199H11.069C11.5 8.2199 11.85 7.8699 11.85 7.4289C11.85 6.9999 11.5 6.6499 11.069 6.6499H8.07996ZM15.92 12.7399H8.07996C7.64896 12.7399 7.29996 12.3899 7.29996 11.9599C7.29996 11.5299 7.64896 11.1789 8.07996 11.1789H15.92C16.35 11.1789 16.7 11.5299 16.7 11.9599C16.7 12.3899 16.35 12.7399 15.92 12.7399ZM15.92 17.3099H8.07996C7.77996 17.3499 7.48996 17.1999 7.32996 16.9499C7.16996 16.6899 7.16996 16.3599 7.32996 16.1099C7.48996 15.8499 7.77996 15.7099 8.07996 15.7399H15.92C16.319 15.7799 16.62 16.1199 16.62 16.5299C16.62 16.9289 16.319 17.2699 15.92 17.3099Z"
+                                      fill="currentColor"></path>
+                            </svg>
                         </i>
                         <span class="item-name">Reservation</span>
                         <i class="right-icon">
@@ -1670,12 +1727,19 @@
 
                     </ul>
                 </li>
-<!--                Review-->
-                <li class="nav-item">
+                <!--                Review-->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#sidebar_review" role="button"
                        aria-expanded="false" aria-controls="utilities-error">
                         <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                <path opacity="0.4" d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z" fill="currentColor"></path>                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.07996 6.6499V6.6599C7.64896 6.6599 7.29996 7.0099 7.29996 7.4399C7.29996 7.8699 7.64896 8.2199 8.07996 8.2199H11.069C11.5 8.2199 11.85 7.8699 11.85 7.4289C11.85 6.9999 11.5 6.6499 11.069 6.6499H8.07996ZM15.92 12.7399H8.07996C7.64896 12.7399 7.29996 12.3899 7.29996 11.9599C7.29996 11.5299 7.64896 11.1789 8.07996 11.1789H15.92C16.35 11.1789 16.7 11.5299 16.7 11.9599C16.7 12.3899 16.35 12.7399 15.92 12.7399ZM15.92 17.3099H8.07996C7.77996 17.3499 7.48996 17.1999 7.32996 16.9499C7.16996 16.6899 7.16996 16.3599 7.32996 16.1099C7.48996 15.8499 7.77996 15.7099 8.07996 15.7399H15.92C16.319 15.7799 16.62 16.1199 16.62 16.5299C16.62 16.9289 16.319 17.2699 15.92 17.3099Z" fill="currentColor"></path>                                </svg>
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83V17.16C3 20.26 4.77 22 7.81 22H16.191C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M8.07996 6.6499V6.6599C7.64896 6.6599 7.29996 7.0099 7.29996 7.4399C7.29996 7.8699 7.64896 8.2199 8.07996 8.2199H11.069C11.5 8.2199 11.85 7.8699 11.85 7.4289C11.85 6.9999 11.5 6.6499 11.069 6.6499H8.07996ZM15.92 12.7399H8.07996C7.64896 12.7399 7.29996 12.3899 7.29996 11.9599C7.29996 11.5299 7.64896 11.1789 8.07996 11.1789H15.92C16.35 11.1789 16.7 11.5299 16.7 11.9599C16.7 12.3899 16.35 12.7399 15.92 12.7399ZM15.92 17.3099H8.07996C7.77996 17.3499 7.48996 17.1999 7.32996 16.9499C7.16996 16.6899 7.16996 16.3599 7.32996 16.1099C7.48996 15.8499 7.77996 15.7099 8.07996 15.7399H15.92C16.319 15.7799 16.62 16.1199 16.62 16.5299C16.62 16.9289 16.319 17.2699 15.92 17.3099Z"
+                                      fill="currentColor"></path>
+                            </svg>
                         </i>
                         <span class="item-name">Review</span>
                         <i class="right-icon">
@@ -1706,93 +1770,24 @@
                 <li>
                     <hr class="hr-horizontal">
                 </li>
-<!--                Elements-->
-                <li class="nav-item static-item">
-                    <a class="nav-link static-item disabled" href="#" tabindex="-1">
-                        <span class="default-icon">Elements</span>
-                        <span class="mini-icon">-</span>
-                    </a>
-                </li>
-                <li class="nav-item sub-nav">
-                    <a class="nav-link " href="../dashboard/icons/dual-tone.html">
-                        <i class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24"
-                                 fill="currentColor">
-                                <path
-                                        d="M8 10.5378C8 9.43327 8.89543 8.53784 10 8.53784H11.3333C12.4379 8.53784 13.3333 9.43327 13.3333 10.5378V19.8285C13.3333 20.9331 14.2288 21.8285 15.3333 21.8285H16C16 21.8285 12.7624 23.323 10.6667 22.9361C10.1372 22.8384 9.52234 22.5913 9.01654 22.3553C8.37357 22.0553 8 21.3927 8 20.6832V10.5378Z"
-                                        fill="currentColor"/>
-                                <rect opacity="0.4" x="8" y="1" width="5" height="5" rx="2.5" fill="currentColor"/>
-                            </svg>
-                        </i>
-                        <span class="item-name">icons</span>
-                        <i class="sidenav-mini-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24"
-                                 fill="currentColor">
-                                <path
-                                        d="M8 10.5378C8 9.43327 8.89543 8.53784 10 8.53784H11.3333C12.4379 8.53784 13.3333 9.43327 13.3333 10.5378V19.8285C13.3333 20.9331 14.2288 21.8285 15.3333 21.8285H16C16 21.8285 12.7624 23.323 10.6667 22.9361C10.1372 22.8384 9.52234 22.5913 9.01654 22.3553C8.37357 22.0553 8 21.3927 8 20.6832V10.5378Z"
-                                        fill="currentColor"/>
-                                <rect opacity="0.4" x="8" y="1" width="5" height="5" rx="2.5" fill="currentColor"/>
-                            </svg>
-                        </i>
-                    </a>
-                </li>
-                <li class="nav-item sub-nav">
-                    <a class="nav-link "
-                       href="https://templates.iqonic.design/lite/aprycot/dashboard/html/dist/index.html">
-                        <i class="icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="1" y="4" width="22" height="16" rx="2.5" fill="currentColor"
-                                      fill-opacity="0.5"/>
-                                <path d="M7 8L9.30024 10.8753C9.59242 11.2405 9.59242 11.7595 9.30024 12.1247L7 15"
-                                      stroke="currentColor" stroke-linecap="round"/>
-                                <path d="M11.9004 15H16.8004" stroke="currentColor" stroke-linecap="round"/>
-                            </svg>
-                        </i>
-                        <span class="item-name">Components</span>
-                        <i class="sidenav-mini-icon">
-                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="1" y="4" width="22" height="16" rx="2.5" fill="currentColor"
-                                      fill-opacity="0.5"/>
-                                <path d="M7 8L9.30024 10.8753C9.59242 11.2405 9.59242 11.7595 9.30024 12.1247L7 15"
-                                      stroke="currentColor" stroke-linecap="round"/>
-                                <path d="M11.9004 15H16.8004" stroke="currentColor" stroke-linecap="round"/>
-                            </svg>
-                        </i>
-                    </a>
-                </li>
-                <li class="nav-item sub-nav mb-5">
-                    <a class="nav-link"
-                       href="https://templates.iqonic.design/lite/aprycot/documentation/html/dist/main/">
-                        <i class="icon">
-                            <svg width="24" viewBox="0 0 24 24" fill="currentColor"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                        d="M3 7.5C3 6.11929 4.11929 5 5.5 5H10.9645C11.6275 5 12.2634 5.26339 12.7322 5.73223L14.5 7.5L16.2678 9.26777C16.7366 9.73661 17 10.3725 17 11.0355V20.5C17 21.8807 15.8807 23 14.5 23H5.5C4.11929 23 3 21.8807 3 20.5V7.5Z"
-                                        fill="currentColor" fill-opacity="0.5"/>
-                                <path
-                                        d="M7 3.5C7 2.11929 8.11929 1 9.5 1H14.9645C15.6275 1 16.2634 1.26339 16.7322 1.73223L18.5 3.5L20.2678 5.26777C20.7366 5.73661 21 6.37249 21 7.03553V16.5C21 17.8807 19.8807 19 18.5 19H9.5C8.11929 19 7 17.8807 7 16.5V3.5Z"
-                                        fill="currentColor"/>
-                            </svg>
-                        </i>
-                        <span class="item-name">Documentation</span>
-                        <i class="sidenav-mini-icon">
-                            <svg width="24" viewBox="0 0 24 24" fill="currentColor"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                        d="M3 7.5C3 6.11929 4.11929 5 5.5 5H10.9645C11.6275 5 12.2634 5.26339 12.7322 5.73223L14.5 7.5L16.2678 9.26777C16.7366 9.73661 17 10.3725 17 11.0355V20.5C17 21.8807 15.8807 23 14.5 23H5.5C4.11929 23 3 21.8807 3 20.5V7.5Z"
-                                        fill="currentColor" fill-opacity="0.5"/>
-                                <path
-                                        d="M7 3.5C7 2.11929 8.11929 1 9.5 1H14.9645C15.6275 1 16.2634 1.26339 16.7322 1.73223L18.5 3.5L20.2678 5.26777C20.7366 5.73661 21 6.37249 21 7.03553V16.5C21 17.8807 19.8807 19 18.5 19H9.5C8.11929 19 7 17.8807 7 16.5V3.5Z"
-                                        fill="currentColor"/>
-                            </svg>
-                        </i>
-                    </a>
-                </li>
+
+
             </ul>
             <!-- Sidebar Menu End -->
         </div>
     </div>
     <div class="sidebar-footer"></div>
+    <script>
+        $(document).on("click", "#open-modal-check-code", function (e) {
+            console.log('click clicked');
+
+
+            window.location.href = "/home#open-modal";
+        });
+
+
+
+    </script>
 </aside>
 </body>
 </html>

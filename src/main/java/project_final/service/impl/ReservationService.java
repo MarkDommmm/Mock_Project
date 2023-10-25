@@ -84,6 +84,7 @@ public class ReservationService implements IReservationService<ReservationReques
         }
         Optional<User> u = userRepository.findById(user);
         Optional<Tables> table = tableRepository.findById(idTable);
+        Optional<Payment> payment = paymentRepository.findById(1L);
         ReservationRequest reservation = ReservationRequest.builder()
                 .user(u.get())
                 .code(UUID.randomUUID().toString().substring(0, 8))
@@ -92,6 +93,7 @@ public class ReservationService implements IReservationService<ReservationReques
                 .startTime(start + ":00")
                 .endTime(end + ":00")
                 .status(Status.PENDING)
+                .payment(payment.get())
                 .build();
         return reservationRepository.save(reservationMapper.toEntity(reservation));
     }
