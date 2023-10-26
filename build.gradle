@@ -50,6 +50,7 @@ dependencies {
 	implementation group: 'com.paypal.sdk', name: 'rest-api-sdk', version: '1.14.0'
 // https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc
 	implementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.13'
+	implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 }
 
 tasks.named('test') {

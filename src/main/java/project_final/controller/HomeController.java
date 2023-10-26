@@ -143,7 +143,7 @@ public class HomeController {
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         session.removeAttribute("idReservation");
-
+    session.removeAttribute("reservationForPayment");
         return "dashboard/ChoseTable";
     }
 
@@ -231,7 +231,7 @@ public class HomeController {
                                          @AuthenticationPrincipal UserPrinciple userPrinciple,
                                          HttpSession session) {
         Map<String, String> map = new HashMap<>();
-        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("123"))) {
+        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("admin"))) {
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
