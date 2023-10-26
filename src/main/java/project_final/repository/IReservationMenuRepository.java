@@ -33,7 +33,6 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
     boolean checkUnpaidExists(@Param("id") Long id);
 
 
-
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id ")
     List<ReservationMenu> findAllById(Long id);
 
@@ -45,6 +44,9 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
             "JOIN RM.menu M " +
             "GROUP BY M.name, MONTH(R.createdDate)")
     List<Object[]> findAllByMenuTop();
+
+    @Query("SELECT R FROM ReservationMenu R where R.reservation.id = :id")
+    List<ReservationMenu> findByReaservation(@Param("id") Long id);
 
 
 
