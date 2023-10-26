@@ -4,14 +4,17 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 
@@ -20,9 +23,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import project_final.config.VNPayConfig;
 
 import project_final.entity.Reservation;
 import project_final.entity.ReservationMenu;
@@ -30,7 +30,7 @@ import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
-import project_final.model.dto.response.ReservationMenuResponse;
+
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IReservationMenuRepository;
 import project_final.repository.IReservationRepository;
@@ -40,17 +40,20 @@ import project_final.service.IReservationMenuService;
 import project_final.service.impl.GenerateExcelService;
 import project_final.service.impl.PaypalService;
 import project_final.service.impl.VNPayService;
+import project_final.util.PdfUtil;
 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+
 import java.util.*;
 
 @Controller
 @AllArgsConstructor
 public class ReservationController {
-
+    private final PdfUtil pdfUtil;
     private final IReservationService reservationService;
     private final IReservationMenuService reservationMenuService;
     private final GenerateExcelService generateExcelService;
@@ -156,14 +159,15 @@ public class ReservationController {
     }
 
     @GetMapping(value = SUCCESS_URL)
-    public String successPay(@AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    public String successPay(Model model, HttpSession session, @RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationForPayment");
             List<ReservationMenu> reservationMenu = reservationMenuRepository.findAllById(reservationRequest.getId());
             Payment payment = paypalService.executePayment(paymentId, payerId);
 
             System.out.println(payment.toJSON());
-            session.setAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
+            model.addAttribute("emailPayment", payment.getPayer().getPayerInfo().getEmail());
+
             if (payment.getState().equals("approved")) {
 
                 for (ReservationMenu rm : reservationMenu) {
@@ -177,7 +181,7 @@ public class ReservationController {
                     reservationRequest.setStatus(Status.ORDER);
                     reservationService.save(reservationRequest);
                 }
-
+                model.addAttribute("receipt", reservationRequest.getId());
                 return "/dashboard/errors/SuccessPayment";
             }
 
@@ -258,6 +262,18 @@ public class ReservationController {
 
 
     }
+
+    @GetMapping("/printInvoice/{id}")
+    public ResponseEntity<byte[]> printInvoice(@PathVariable Long id) {
+        byte[] pdfContent = pdfUtil.createPdf(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "Restaurant Aprycot-Receipt.pdf");
+        headers.set("Content-Disposition", "attachment; filename=Restaurant_Aprycot-Receipt.pdf");
+        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+    }
+
 
 
     @GetMapping("/search")

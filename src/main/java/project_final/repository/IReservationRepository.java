@@ -15,11 +15,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public interface IReservationRepository extends JpaRepository<Reservation,Long> {
+public interface IReservationRepository extends JpaRepository<Reservation, Long> {
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='PENDING' ")
     Page<Reservation> findAllByUserAndStatusPending(Pageable pageable, @Param("userId") Long userId);
+
     @Query("SELECT R FROM Reservation R WHERE   R.status ='ORDER' ")
-            List<Reservation> findAllByStatusORDER();
+    List<Reservation> findAllByStatusORDER();
 
     @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.status = 'ORDER'")
     Optional<Reservation> findOrderReservationByUserId(@Param("userId") Long userId);
@@ -59,7 +60,7 @@ public interface IReservationRepository extends JpaRepository<Reservation,Long> 
     Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
 
     @Query("SELECT SUM(RM.quantity * RM.price) FROM Reservation R " +
-            "JOIN ReservationMenu RM ON R.id = RM.reservation.id " + 
+            "JOIN ReservationMenu RM ON R.id = RM.reservation.id " +
             "WHERE R.id = :id")
     double getTotalPrice(@Param("id") Long id);
 

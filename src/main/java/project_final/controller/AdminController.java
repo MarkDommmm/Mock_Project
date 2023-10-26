@@ -38,7 +38,7 @@ public class AdminController {
     private final GoogleUtils googleUtils;
 
     @GetMapping("/login-google")
-    public String loginGoogle(HttpServletRequest request, Model model) throws IOException {
+    public String loginGoogle(HttpServletRequest request, Model model,HttpSession session) throws IOException {
         String code = request.getParameter("code");
 
         if (code == null || code.isEmpty()) {
@@ -47,12 +47,12 @@ public class AdminController {
         String accessToken = googleUtils.getToken(code);
         GooglePojo googlePojo = googleUtils.getUserInfo(accessToken);
         UserDetails userDetail = googleUtils.buildUser(googlePojo);
+
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetail, null,
                 userDetail.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return "redirect:/home";
     }
 
