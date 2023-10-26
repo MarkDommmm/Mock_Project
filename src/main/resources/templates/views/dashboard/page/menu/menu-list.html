@@ -1172,7 +1172,7 @@
                                         <td th:text="${m.name}"></td>
                                         <td th:text="${m.price} + '$'"></td>
                                         <td th:text="${m.description}"></td>
-                                        <td th:text="${m.creatDate}"></td>
+                                        <td th:text="${#dates.format(m.creatDate, 'yyyy-MM-dd')}"></td>
                                         <td th:text="${m.category.name}"></td>
                                         <td>
                                             <a     th:href="@{|/menu/status/${m.id}|}">

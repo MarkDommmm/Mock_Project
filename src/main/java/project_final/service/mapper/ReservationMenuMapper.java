@@ -21,9 +21,9 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .id(tableMenuRequest.getId())
                 .menu(tableMenuRequest.getMenu())
                 .reservation(tableMenuRequest.getReservation())
-                .quantity(tableMenuRequest.getQuantity())
+                .quantityOrdered(tableMenuRequest.getQuantityOrdered())
+                .quantityDelivered(tableMenuRequest.getQuantityDelivered())
                 .price(tableMenuRequest.getMenu().getPrice())
-                .status(Status.NOT_SERVED)
                 .pay(pay).build();
     }
 
@@ -33,12 +33,12 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .id(reservationMenu.getId())
                 .image(reservationMenu.getMenu().getImage())
                 .name(reservationMenu.getMenu().getName())
-                .quantity(reservationMenu.getQuantity())
+                .quantityDelivered(reservationMenu.getQuantityOrdered())
+                .quantityDelivered(reservationMenu.getQuantityDelivered())
                 .price(reservationMenu.getPrice())
                 .dateBooking(reservationMenu.getReservation().getBookingDate())
                 .startTime(reservationMenu.getReservation().getStartTime())
                 .endTime(reservationMenu.getReservation().getEndTime())
-                .status(reservationMenu.getStatus())
                 .pay(reservationMenu.getPay()).build();
     }
 
@@ -48,9 +48,9 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .id(reservationMenu.getId())
                 .menu(reservationMenu.getMenu())
                 .reservation(reservationMenu.getReservation())
-                .quantity(reservationMenu.getQuantity())
+                .quantityOrdered(reservationMenu.getQuantityOrdered())
+                .quantityDelivered(reservationMenu.getQuantityDelivered())
                 .price(reservationMenu.getPrice())
-                .status(reservationMenu.getStatus())
                 .pay(reservationMenu.getPay()).build();
     }
 }

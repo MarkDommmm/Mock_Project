@@ -18,12 +18,13 @@ public interface IReservationMenuService extends IGenericService<ReservationMenu
     Page<ReservationMenuResponse> getReservationMenu(Long id, int page, int size);
 
     List<TableMenuCartResponse> getDetails(Long id);
-    ReservationMenu served(Long id);
+    ReservationMenu served(int quantity,Long id);
+
+    String adminCancel(Long id);
 
     void addCart(Long id, Long idR);
 
-
     void removeCartItem(Long id);
 
-    void changeStatus(Long id);
+
 }

@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project_final.exception.CustomsException;
 import project_final.model.dto.request.MenuRequest;
 import project_final.model.dto.response.MenuResponse;
 import project_final.service.ICategoryService;
 import project_final.service.IMenuService;
+
+import javax.validation.Valid;
 
 @Controller
 @AllArgsConstructor
@@ -60,7 +63,12 @@ public class MenuController {
     }
 
     @PostMapping("/add")
-    public String addMenu(@ModelAttribute MenuRequest menuRequest) throws CustomsException {
+    public String addMenu(@Valid @ModelAttribute MenuRequest menuRequest, BindingResult bindingResult,Model model) throws CustomsException {
+        if (bindingResult.hasErrors()){
+            model.addAttribute("menu", new MenuRequest());
+            model.addAttribute("catalog", categoryService.findAll());
+            return "dashboard/page/menu/menu-add";
+        }
         menuService.save(menuRequest);
         return "redirect:/menu";
     }

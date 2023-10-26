@@ -59,6 +59,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
             nativeQuery = true)
     Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
 
+
     @Query("SELECT SUM(RM.quantity * RM.price) FROM Reservation R " +
             "JOIN ReservationMenu RM ON R.id = RM.reservation.id " +
             "WHERE R.id = :id")

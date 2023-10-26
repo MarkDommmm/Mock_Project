@@ -220,15 +220,6 @@ public class ReservationService implements IReservationService<ReservationReques
         return reservationRepository.getTotalPaid(id);
     }
 
-    @Override
-    public double revenuesOnDay(Date date) {
-        return 0;
-    }
-
-    @Override
-    public int countCompletedReservationsOnDay(Date date) {
-        return reservationRepository.countCompletedReservationsOnDay(date);
-    }
 
     @Override
     public Page<Map<String, Object>> findReservationStatistics(int page, int size) {

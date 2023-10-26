@@ -20,7 +20,8 @@ public class TableMenuCartResponse {
     private Date dateBooking;
     private Time startTime;
     private Time endTime;
-    private int quantity;
+    private int quantityOrdered ;
+    private int quantityDelivered ;
     private double price;
     private Status status;
     private Status pay;

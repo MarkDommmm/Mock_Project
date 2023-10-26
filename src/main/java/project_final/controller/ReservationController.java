@@ -4,33 +4,24 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
-
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-
 import project_final.entity.Reservation;
 import project_final.entity.ReservationMenu;
 import project_final.entity.User;
 import project_final.exception.TimeIsValidException;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.ReservationRequest;
-
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.IReservationMenuRepository;
 import project_final.repository.IReservationRepository;
@@ -41,13 +32,9 @@ import project_final.service.impl.GenerateExcelService;
 import project_final.service.impl.PaypalService;
 import project_final.service.impl.VNPayService;
 import project_final.util.PdfUtil;
-
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
-
 import java.util.*;
 
 @Controller
@@ -98,7 +85,6 @@ public class ReservationController {
 
 
     @PostMapping("/reservation/add")
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
                                  BindingResult bindingResult, HttpSession session,
                                  @AuthenticationPrincipal UserPrinciple userPrinciple,
@@ -207,9 +193,19 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/served/{id}")
-    public String served(@PathVariable Long id, @RequestParam("idRese") Long idRese) {
-        reservationMenuService.served(id);
+    public String served(@PathVariable Long id, @RequestParam("idRese") Long idRese,@RequestParam("quantity") int quantity) {
+        reservationMenuService.served(quantity,id);
         return "redirect:/reservation/reservationMenu/" + idRese;
+    }
+
+    @GetMapping("/reservation/menu/cancel")
+
+    public Map<String, String> cancel(@RequestParam("id") Long id){
+        String message =  reservationMenuService.adminCancel(id);
+        Map<String, String> map = new HashMap<>();
+        map.put("error", "error");
+        map.put("message", message);
+        return map;
     }
 
 

@@ -16,7 +16,8 @@ public class ReservationMenuResponse {
     private Long id;
     private Menu menu;
     private Reservation reservation;
-    private int quantity;
+    private int quantityOrdered ;
+    private int quantityDelivered ;
     private double price;
     private Status status;
     private Status pay;
