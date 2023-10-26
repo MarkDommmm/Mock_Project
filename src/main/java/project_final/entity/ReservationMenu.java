@@ -26,10 +26,9 @@ public class ReservationMenu {
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    private int quantity;
+    private int quantityOrdered;
+    private int quantityDelivered;
     private double price;
-    @Enumerated(EnumType.STRING)
-    private Status status;
     @Enumerated(EnumType.STRING)
     private Status pay;
 }

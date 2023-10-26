@@ -31,8 +31,5 @@ public interface IReservationService<K,V,E> {
     ReservationCheckCodeResponse findByCode(String code);
     double getTotalPrice( Long id);
     double getTotalPaid( Long id);
-
-    double revenuesOnDay( Date date);
-    int countCompletedReservationsOnDay(Date date);
     Page<Map<String,Object>>  findReservationStatistics(int page, int size);
 }

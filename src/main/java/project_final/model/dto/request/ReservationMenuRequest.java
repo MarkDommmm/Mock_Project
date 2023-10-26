@@ -17,7 +17,8 @@ public class ReservationMenuRequest {
     private Menu menu;
 
     private Reservation reservation;
-    private int quantity = 1;
+    private int quantityOrdered = 1;
+    private int quantityDelivered = 0;
     private double price;
     private Status status;
     private Status pay;

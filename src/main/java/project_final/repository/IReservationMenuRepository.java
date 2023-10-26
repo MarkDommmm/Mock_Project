@@ -39,7 +39,7 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
 
     Page<ReservationMenu> findByReservation(Reservation reservation, Pageable pageable);
 
-    @Query("SELECT M.name, SUM(RM.quantity),MONTH(R.createdDate) as month " +
+    @Query("SELECT M.name, SUM(RM.quantityOrdered),MONTH(R.createdDate) as month " +
             "FROM ReservationMenu RM " +
             "JOIN RM.reservation R " +
             "JOIN RM.menu M " +

@@ -1150,10 +1150,12 @@
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="fname">Name:</label>
                                             <input type="text" class="form-control" id="fname" th:field="*{name}">
+                                            <span style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="lname">Price:</label>
                                             <input type="text" class="form-control" id="lname" th:field="*{price}">
+                                            <span style="color: red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label class="form-label" for="add1">Description:</label>

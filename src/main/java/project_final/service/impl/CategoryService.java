@@ -23,14 +23,11 @@ public class CategoryService implements ICategoryService {
     private final ICategoryRepository categoryRepository;
     private final ICategoryMapper categoryMapper;
 
-
-
     @Override
     public Page<CategoryResponse> findAll(String name, int page, int size) {
         Page<Category> categories = categoryRepository.findAllByNameContains(name, PageRequest.of(page, size));
         return categories.map(categoryMapper::toResponse);
     }
-
 
     @Override
     public List<CategoryResponse> findAll() {

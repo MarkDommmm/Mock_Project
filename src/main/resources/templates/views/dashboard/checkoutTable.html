@@ -1468,12 +1468,12 @@
                                                               fill="#EA6A12"/>
                                                     </svg>
                                               <small class="text-dark ms-1"
-                                                     th:text="${c.quantity}">1</small>
+                                                     th:text="${c.quantityOrdered}">1</small>
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="me-4 text-end">
-                                          <span class="mb-1 remove-cart" th:data-price="${c.price}" th:data-qty="${c.quantity}" th:data-menu-id="${c.id}">
+                                          <span class="mb-1 remove-cart" th:data-price="${c.price}" th:data-qty="${c.quantityOrdered}" th:data-menu-id="${c.id}">
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg">
                                                     <path opacity="0.4"
@@ -1593,7 +1593,7 @@
                                                                   rx="0.833332" transform="rotate(-135 2.05469 9.125)"
                                                                   fill="#EA6A12"/>
                                                         </svg>
-                                                    <small class="text-dark ms-1"  >${c.quantity}</small>
+                                                    <small class="text-dark ms-1"  >${c.quantityOrdered}</small>
                                                     </span>
                                             </div>
                                         </div>

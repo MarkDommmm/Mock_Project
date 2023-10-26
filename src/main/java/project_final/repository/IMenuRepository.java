@@ -17,13 +17,14 @@ import java.util.Map;
 @Repository
 public interface IMenuRepository extends JpaRepository<Menu,Long> {
     Page<Menu> findAllByNameContains(String name, Pageable pageable);
-    @Query("SELECT m FROM Menu m WHERE m.status = true AND m.name LIKE %:name%")
+    @Query("SELECT m FROM Menu m WHERE m.status = true AND m.name LIKE %:name% ORDER BY DATE(m.createDate) DESC")
     Page<Menu> findAllByStatusIsTrueAndName(@Param("name") String name, Pageable pageable);
+
     @Query(value = "SELECT m.* " +
             "FROM menu m " +
             "JOIN reservation_menu r ON m.id = r.menu_id " +
             "GROUP BY m.id " +
-            "ORDER BY SUM(r.quantity) DESC " +
+            "ORDER BY SUM(r.quantity_ordered) DESC " +
             "LIMIT 6", nativeQuery = true)
     List<Menu> findTopSellingMenus();
 
@@ -31,9 +32,9 @@ public interface IMenuRepository extends JpaRepository<Menu,Long> {
             "WITH MonthlyData AS (" +
                     "    SELECT " +
                     "        menu.name as name, " +
-                    "        SUM(rm.quantity) AS totalQuantity, " +
+                    "        SUM(rm.quantityOrdered) AS totalQuantity, " +
                     "        MONTH(r.booking_date) AS Month, " +
-                    "        ROW_NUMBER() OVER (PARTITION BY MONTH(r.booking_date) ORDER BY SUM(rm.quantity) DESC) AS RowNum " +
+                    "        ROW_NUMBER() OVER (PARTITION BY MONTH(r.booking_date) ORDER BY SUM(rm.quantityOrdered) DESC) AS RowNum " +
                     "    FROM " +
                     "        reservation_menu AS rm " +
                     "    JOIN " +

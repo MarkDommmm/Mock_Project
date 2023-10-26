@@ -32,6 +32,7 @@ public class UserPrinciple implements UserDetails {
     @JsonIgnore
     private String password;
     private boolean status;
+    private boolean active;
     private List<GrantedAuthority> authorities;
 
     public static UserPrinciple build(User user){
@@ -46,6 +47,7 @@ public class UserPrinciple implements UserDetails {
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .status(user.isStatus())
+                .active(user.isActive())
                 .authorities(authorities).build();
     }
 
@@ -82,8 +84,8 @@ public class UserPrinciple implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-
-     return    this.status;
-
+     return    this.status && this.active;
     }
+
+
 }

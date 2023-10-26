@@ -22,8 +22,6 @@ public class ReservationMenuService implements IReservationMenuService {
     private final IReservationMenuRepository reservationMenuRepository;
     private final IReservationMenuMapper reservationMenuMapper;
     private final IMenuRepository menuRepository;
-    private final ITableRepository tableRepository;
-    private final IUserRepository userRepository;
     private final IReservationRepository reservationRepository;
 
     @Override
@@ -62,11 +60,11 @@ public class ReservationMenuService implements IReservationMenuService {
     }
 
     @Override
-    public ReservationMenu served(Long id) {
+    public ReservationMenu served(int  quantity,Long id) {
         Optional<ReservationMenu> reservationMenus = reservationMenuRepository.findById(id);
         if (reservationMenus.isPresent()) {
-            reservationMenus.get().setStatus(Status.SERVED);
-           return reservationMenuRepository.save(reservationMenus.get());
+            reservationMenus.get().setQuantityDelivered(quantity);
+            return reservationMenuRepository.save(reservationMenus.get());
         }
         return null;
     }
@@ -87,8 +85,8 @@ public class ReservationMenuService implements IReservationMenuService {
                 if (reservationMenu.getMenu().getId().equals(menu.getId())
                         && reservationMenu.getReservation().getId().equals(existingReservation.get().getId())
                         && reservationMenu.getPay().equals(Status.UN_PAID)) {
-                    reservationMenu.setQuantity(reservationMenu.getQuantity() + 1);
-                    reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantity());
+                    reservationMenu.setQuantityOrdered(reservationMenu.getQuantityOrdered() + 1);
+                    reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantityOrdered());
                     menuInCart = true;
                     reservationMenuRepository.save(reservationMenu);
                     break;
@@ -110,10 +108,10 @@ public class ReservationMenuService implements IReservationMenuService {
     public void removeCartItem(Long id) {
         for (ReservationMenu reservationMenu : reservationMenuRepository.findAll()) {
             if (reservationMenu.getId().equals(id)) {
-                if (reservationMenu.getQuantity() <= 1) {
+                if (reservationMenu.getQuantityOrdered() <= 1) {
                     reservationMenuRepository.deleteById(reservationMenu.getId());
                 } else {
-                    reservationMenu.setQuantity(reservationMenu.getQuantity() - 1);
+                    reservationMenu.setQuantityOrdered(reservationMenu.getQuantityOrdered()-1);
                     reservationMenu.setPrice(reservationMenu.getPrice() - reservationMenu.getMenu().getPrice());
                     reservationMenuRepository.save(reservationMenu);
                 }
@@ -147,12 +145,17 @@ public class ReservationMenuService implements IReservationMenuService {
 
 
     @Override
-    public void changeStatus(Long id) {
-//        Optional<ReservationMenu> tableMenu = reservationMenuRepository.findById(id);
-//        if (tableMenu.isPresent()) {
-//            tableMenu.get().setStatus();
-//            reservationMenuRepository.save(tableMenu.get());
-//        }
+    public String adminCancel(Long id) {
+        Optional<ReservationMenu> reservationMenu = reservationMenuRepository.findById(id);
+        if (reservationMenu.isPresent()) {
+            if (reservationMenu.get().getPay().equals(Status.UN_PAID) &&
+                    reservationMenu.get().getQuantityDelivered() == 0) {
+                reservationMenuRepository.deleteById(id);
+                return "Your file has been deleted.";
+            }else {
+                return "This menu cannot be deleted";
+            }
+        }
+        return "Menu is not found";
     }
-
 }

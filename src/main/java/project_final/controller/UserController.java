@@ -20,6 +20,7 @@ public class UserController {
                           @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "5") int size ){
         model.addAttribute("users", userService.findAll(name, page, size));
+        model.addAttribute("name", name);
     return "dashboard/page/user/user-list";
     }
 

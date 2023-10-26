@@ -1694,11 +1694,12 @@
                                     <th>Image</th>
                                     <th>Food</th>
                                     <th>Price</th>
-                                    <th>Quantity</th>
+                                    <th>Order</th>
+                                    <th>Deliveredtus</th>
                                     <th>Date Booking</th>
                                     <th>Start time</th>
                                     <th>End time</th>
-                                    <th>Status</th>
+
                                 </tr>
                                 </thead>
                                 <tbody class="render-details"></tbody>
@@ -1719,11 +1720,11 @@
  </td>
   <td>${d.name}</td>
   <td>$ ${d.price}</td>
-  <td>${d.quantity}</td>
+  <td>${d.quantityOrdered}</td>
+   <td>${d.quantityDelivered}</td>
   <td>${formattedDate}</td>
   <td>${d.startTime}</td>
   <td>${d.endTime}</td>
-  <td>${d.status}</td>
 
      </tr>
                     `;
