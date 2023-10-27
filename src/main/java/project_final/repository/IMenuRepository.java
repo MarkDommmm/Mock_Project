@@ -32,9 +32,9 @@ public interface IMenuRepository extends JpaRepository<Menu,Long> {
             "WITH MonthlyData AS (" +
                     "    SELECT " +
                     "        menu.name as name, " +
-                    "        SUM(rm.quantityOrdered) AS totalQuantity, " +
+                    "        SUM(rm.quantity_ordered) AS totalQuantity, " +
                     "        MONTH(r.booking_date) AS Month, " +
-                    "        ROW_NUMBER() OVER (PARTITION BY MONTH(r.booking_date) ORDER BY SUM(rm.quantityOrdered) DESC) AS RowNum " +
+                    "        ROW_NUMBER() OVER (PARTITION BY MONTH(r.booking_date) ORDER BY SUM(rm.quantity_ordered) DESC) AS RowNum " +
                     "    FROM " +
                     "        reservation_menu AS rm " +
                     "    JOIN " +

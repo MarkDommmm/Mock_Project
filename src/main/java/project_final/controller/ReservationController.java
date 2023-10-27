@@ -4,7 +4,6 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
-import org.apache.http.HttpResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,7 +32,6 @@ import project_final.service.impl.GenerateExcelService;
 import project_final.service.impl.PaypalService;
 import project_final.service.impl.VNPayService;
 import project_final.util.PdfUtil;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -72,7 +70,9 @@ public class ReservationController {
     }
 
     @RequestMapping("/reservation/statistics")
-    public String getStatistics(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public String getStatistics(Model model,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "5") int size) {
         model.addAttribute("statistics", reservationService.findReservationStatistics(page, size));
         return "dashboard/page/reservation/statistics";
     }
@@ -107,13 +107,19 @@ public class ReservationController {
             if (reservationRequest.getPayment().getId().equals(1L)) {
                 reservationRequest.setStatus(Status.ORDER);
                 reservationService.save(reservationRequest);
+                session.removeAttribute("idReservation");
+                session.removeAttribute("carts");
             } else if (reservationRequest.getPayment().getId().equals(2L)) {
                 String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
                 String vnPayUrl = vnPayService.createOrder(totalPrice, existingReservation.get().getCode(), baseUrl);
                 reservationService.save(reservationRequest);
+                session.removeAttribute("idReservation");
+                session.removeAttribute("carts");
                 return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", vnPayUrl));
             } else if (reservationRequest.getPayment().getId().equals   (3L)) {
                 session.setAttribute("reservationRequest", reservationRequest);
+                session.removeAttribute("idReservation");
+                session.removeAttribute("carts");
                 return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", "/reservation/paypal"));
             }
 

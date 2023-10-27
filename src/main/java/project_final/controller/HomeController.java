@@ -3,7 +3,6 @@ package project_final.controller;
 import com.amazonaws.services.s3.model.lifecycle.LifecycleFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,14 +17,12 @@ import project_final.exception.CustomsException;
 import project_final.exception.ForgotPassWordException;
 import project_final.exception.RegisterException;
 import project_final.exception.TimeIsValidException;
-import project_final.model.domain.RoleName;
 import project_final.model.domain.Status;
 import project_final.model.dto.request.*;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.*;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.*;
@@ -41,14 +38,9 @@ public class HomeController {
     private final IMenuService menuService;
     private final ICategoryService categoryService;
     private final IPaymentRepository paymentRepository;
-    private final IMenuRepository menuRepository;
     private final IUserService userService;
     private final IMailService mailService;
     private final IReservationRepository reservationRepository;
-    private final IUserRepository userRepository;
-    private final ITableRepository tableRepository;
-    private final ITableTypeRepository tableTypeRepository;
-    private final ICategoryRepository categoryRepository;
     private final IReviewRepository reviewRepository;
     private final IReviewService reviewService;
 
@@ -145,7 +137,6 @@ public class HomeController {
 
         session.setAttribute("currentUser", userPrinciple);
 
-//        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("notifications", reservationRepository.findAllByStatusORDER());
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
@@ -197,6 +188,7 @@ public class HomeController {
             map.put("message", "You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777");
         } else {
             Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
+
 //            session.setAttribute("reservationLocal", reservation);
             session.setAttribute("idReservation", reservation.getId());
 
@@ -214,9 +206,9 @@ public class HomeController {
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(defaultValue = "10") int sizeCart,
             Model model, HttpSession session) {
-
+        Long id = (Long) session.getAttribute("idReservation");
         if (userPrinciple != null) {
-            model.addAttribute("cart", reservationMenuService.getAll(userPrinciple.getId(), page, size));
+            model.addAttribute("cart", reservationMenuService.getAll(id, page, size));
         }
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
@@ -325,12 +317,13 @@ public class HomeController {
 
         } else {
             session.removeAttribute("idReservation");
+            session.removeAttribute("carts");
         }
         return map;
     }
 
     @RequestMapping("/checkout")
-    public String checkout(Model model, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+    public String checkout(Model model, @AuthenticationPrincipal UserPrinciple userPrinciple,HttpSession session) {
 
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
         List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
@@ -343,7 +336,6 @@ public class HomeController {
         model.addAttribute("cart", tableMenuCartResponse);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("payment", paymentRepository.findAll());
-
         return "dashboard/checkoutTable";
     }
 

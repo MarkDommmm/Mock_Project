@@ -33,7 +33,7 @@ public class ReservationMenuService implements IReservationMenuService {
 
     @Override
     public Page<TableMenuCartResponse> getAll(Long id, int page, int size) {
-        Page<ReservationMenu> tableMenus = reservationMenuRepository.findAllByUser(
+        Page<ReservationMenu> tableMenus = reservationMenuRepository.findAllByReservationId(
                 id, PageRequest.of(page, size));
         return tableMenus.map(reservationMenuMapper::toResponse);
 
