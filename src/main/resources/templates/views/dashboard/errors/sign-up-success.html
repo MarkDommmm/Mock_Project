@@ -3,30 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Aprycot | Restaurant Management Admin Template</title>
-
+    <title>Aprycot | Responsive Bootstrap 5 Admin Dashboard Template</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="text/css" th:href="@{/assets/images/favicon.ico}"/>
+    <link rel="shortcut icon" th:href="@{../../assets/images/favicon.ico}"/>
 
     <!-- Library / Plugin Css Build -->
-    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/core/libs.min.css}">
+    <link rel="stylesheet" th:href="@{../../assets/css/core/libs.min.css}">
 
     <!-- Custom Css -->
-    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/aprycot.min.css}">
-    <!--    Font Awesome-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
-    >
-
-
+    <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
 </head>
-<body class="  "
-      th:style="'background-image:url('+@{../assets/images/dashboard.png}+');  background-attachment: fixed; background-size: cover;'">
-
+<body class=" " data-bs-spy="scroll" data-bs-target="#elements-section" data-bs-offset="0" tabindex="0">
 <!-- loader Start -->
 <div id="loading">
     <div class="loader simple-loader">
@@ -1099,244 +1087,64 @@
 </div>
 <!-- loader END -->
 
-
-<th:block th:insert="/dashboard/layout/slider.html"></th:block>
-<main class="main-content">
-    <div class="position-relative">
-        <!--Nav Start-->
-        <!-- Nav Header Component Start -->
-        <th:block th:insert="/dashboard/layout/header.html"></th:block>
-        <!-- Nav Header Component End -->
-        <!--Nav End-->
-    </div>
-    <div class="content-inner mt-5 py-0">
-        <div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <div class="header-title">
-                                <h4 class="card-title">Reservation Menu List</h4>
-                            </div>
-                            <div class="header-title">
-                                <button type="button" class="btn btn-outline-success">
-                                    <th:block th:each="f, iterStat : ${reservationMenu}">
-                                        <a th:if="${iterStat.index == 0}" th:href="@{|/printInvoice/${f.reservation.id}|}" style="color: black">Print Receipt</a>
-                                    </th:block>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body px-0">
-                            <div class="table-responsive">
-                                <table id="user-list-table" class="table table-striped" role="grid"
-                                       data-toggle="data-table" style="text-align: center">
-                                    <thead>
-                                    <tr class="ligth">
-                                        <th>STT</th>
-                                        <th>Name</th>
-                                        <th>Image</th>
-                                        <th>Quantity Order</th>
-                                        <th>Quantity Delivered</th>
-                                        <th>Price</th>
-                                        <th>Pay</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="r,loop :${reservationMenu}">
-                                        <td th:text="${loop.count}"></td>
-                                        <td th:text="${r.menu.name}"></td>
-                                        <td class="text-center">
-                                            <img class="bg-soft-primary rounded img-fluid avatar-40 me-3"
-                                                 th:src="${r.menu.image}" alt="profile">
-                                        </td>
-                                        <td th:text="${r.quantityOrdered}"></td>
-                                        <th>
-                                            <input style="width: 50px" type="number" th:value="${r.quantityDelivered}"
-                                                   th:min="0" th:max="${r.quantityOrdered}" id="input-quantity"/>
-                                        </th>
-                                        <td th:text="${r.price}"></td>
-                                        <th th:text="${r.pay}"></th>
-                                        <td>
-                                            <div class="flex align-items-center list-user-action" id="served"
-                                            >
-
-                                                <a class="btn btn-sm btn-icon btn-warning served" data-toggle="tooltip"
-                                                   data-placement="top" title="" data-original-title="Edit"
-                                                   th:data-id-rese="${r.reservation.id}" th:data-id-menu="${r.id}">
-                                    <span class="btn-inner">
-                                       <svg width="20" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M11.4925 2.78906H7.75349C4.67849 2.78906 2.75049 4.96606 2.75049 8.04806V16.3621C2.75049 19.4441 4.66949 21.6211 7.75349 21.6211H16.5775C19.6625 21.6211 21.5815 19.4441 21.5815 16.3621V12.3341"
-                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                          <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M8.82812 10.921L16.3011 3.44799C17.2321 2.51799 18.7411 2.51799 19.6721 3.44799L20.8891 4.66499C21.8201 5.59599 21.8201 7.10599 20.8891 8.03599L13.3801 15.545C12.9731 15.952 12.4211 16.181 11.8451 16.181H8.09912L8.19312 12.401C8.20712 11.845 8.43412 11.315 8.82812 10.921Z"
-                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                          <path d="M15.1655 4.60254L19.7315 9.16854" stroke="currentColor"
-                                                stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                       </svg>
-                                    </span>
-                                                </a>
-                                                <a class="btn btn-sm btn-icon btn-danger cancel" data-toggle="tooltip"
-                                                   data-placement="top" title="" data-original-title="Delete"
-                                                   th:data-id-rese="${r.reservation.id}" th:data-id-menu="${r.id}">
-                                    <span class="btn-inner">
-                                       <svg width="20" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                          <path d="M19.3248 9.46826C19.3248 9.46826 18.7818 16.2033 18.4668 19.0403C18.3168 20.3953 17.4798 21.1893 16.1088 21.2143C13.4998 21.2613 10.8878 21.2643 8.27979 21.2093C6.96079 21.1823 6.13779 20.3783 5.99079 19.0473C5.67379 16.1853 5.13379 9.46826 5.13379 9.46826"
-                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                          <path d="M20.708 6.23975H3.75" stroke="currentColor" stroke-width="1.5"
-                                                stroke-linecap="round" stroke-linejoin="round"></path>
-                                          <path d="M17.4406 6.23973C16.6556 6.23973 15.9796 5.68473 15.8256 4.91573L15.5826 3.69973C15.4326 3.13873 14.9246 2.75073 14.3456 2.75073H10.1126C9.53358 2.75073 9.02558 3.13873 8.87558 3.69973L8.63258 4.91573C8.47858 5.68473 7.80258 6.23973 7.01758 6.23973"
-                                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                       </svg>
-                                    </span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
-                                <div style="display: flex;justify-content: end;margin: 20px 0;gap: 20px">
-                                    <h6>Paid: <span th:text="${totalPaid} + '$'"></span></h6>
-                                    <h6>Remaining: <span th:text="${total - totalPaid} + '$'"></span></h6>
-                                </div>
-                                <div style="display: flex;justify-content: end">
-                                    <h6>Total: <span th:text="${total} + '$'"></span></h6>
-                                </div>
-                                <nav aria-label="..." th:if="${reservationMenu.getTotalPages() != 0}">
-                                    <ul class="pagination pagination-sm">
-                                        <li th:each="pageNumber : ${#numbers.sequence(0, reservationMenu.getTotalPages() - 1)}"
-                                            th:class="${pageNumber == reservationMenu.getNumber() ? 'page-item active' : 'page-item'}">
-                                            <a th:href="@{|/reservationMenu?page=${pageNumber}&size=${reservationMenu.size}|}"
-                                               class="page-link">
-                                                <span th:text="${pageNumber + 1}"></span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                                <nav th:unless="${reservationMenu.getTotalPages() != 0}"></nav>
-                            </div>
+<div class="wrapper">
+    <section class="container-fluid bg-circle" id="auth-login">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-lg-7 col-xl-4">
+                <a href="../../dashboard/">
+                    <img th:src="@{../../assets/images/favicon.png}" class="img-fluid logo-img ms-5" alt="img2">
+                </a>
+                <div class="card-body text-center">
+                    <svg width="86" viewBox="0 0 86 91" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M44.4591 8.17851C44.5206 6.49584 43.205 5.07059 41.5222 5.12837C33.9539 5.38825 26.5686 7.64133 20.1257 11.6841C12.8201 16.2681 7.06402 22.9412 3.60569 30.836C0.147358 38.7307 -0.853289 47.482 0.733814 55.9523C2.32092 64.4225 6.42237 72.2201 12.5051 78.3314C18.5877 84.4426 26.3703 88.585 34.8413 90.22C43.3122 91.8551 52.0797 90.9072 60.0041 87.4995C67.9285 84.0918 74.6433 78.382 79.2758 71.1122C83.36 64.7029 85.6591 57.3423 85.9649 49.7871C86.0331 48.1028 84.6141 46.7774 82.9292 46.829V46.829C81.2442 46.8806 79.9333 48.2905 79.8453 49.974C79.5143 56.3045 77.5522 62.4616 74.1259 67.8384C70.1511 74.0762 64.3895 78.9754 57.5901 81.8993C50.7907 84.8232 43.2679 85.6365 35.9995 84.2336C28.7312 82.8307 22.0534 79.2764 16.8343 74.0327C11.6151 68.789 8.09591 62.0984 6.73412 54.8306C5.37233 47.5629 6.23092 40.054 9.19829 33.28C12.1657 26.506 17.1046 20.7803 23.3731 16.847C28.7786 13.4551 34.9573 11.5315 41.3 11.2393C42.9818 11.1619 44.3975 9.86097 44.4591 8.17851V8.17851Z"
+                              fill="#EA6A12"/>
+                        <path d="M40.0136 54.5643L76.8701 18.1495C78.1796 16.8557 80.2738 16.8169 81.6303 18.0614V18.0614C83.0887 19.3993 83.1259 21.687 81.7118 23.0717L40.0135 63.9056L21.8386 46.082C20.6265 44.8933 20.6169 42.9441 21.8173 41.7435V41.7435C22.9764 40.5842 24.8443 40.5472 26.0483 41.6598L40.0136 54.5643Z"
+                              fill="#EA6A12"/>
+                    </svg>
+                    <h2 class="mt-3 mb-0 ">Congratulations Sign-Up Successful</h2>
+                    <p class="cnf-mail mb-1">Thank you for registering as our member! You need to go to your <b style="color: #ea6a12">email to verify your account</b>, thank you! Have a nice day</p>
+                    <div class="row">
+                    <div class="col-lg-6">
+                        <a href="/home" class="btn btn-primary mt-3">Back to Home</a>
+                    </div>
+                        <div class="col-lg-6">
+                            <a href="https://mail.google.com/" target="_blank" class="btn btn-primary mt-3">Check Mails!</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Footer Section Start -->
-    <footer class="footer">
-        <div class="footer-body">
-            <ul class="left-panel list-inline mb-0 p-0">
-                <li class="list-inline-item"><a href="../../extra/privacy-policy.html">Privacy Policy</a></li>
-                <li class="list-inline-item"><a href="../../extra/terms-of-service.html">Terms of Use</a></li>
-            </ul>
-            <div class="right-panel">
-                ©
-                <script>document.write(new Date().getFullYear())</script>
-                Aprycot, Made with
-                <span class="text-gray">
-                      <svg width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M15.85 2.50065C16.481 2.50065 17.111 2.58965 17.71 2.79065C21.401 3.99065 22.731 8.04065 21.62 11.5806C20.99 13.3896 19.96 15.0406 18.611 16.3896C16.68 18.2596 14.561 19.9196 12.28 21.3496L12.03 21.5006L11.77 21.3396C9.48102 19.9196 7.35002 18.2596 5.40102 16.3796C4.06102 15.0306 3.03002 13.3896 2.39002 11.5806C1.26002 8.04065 2.59002 3.99065 6.32102 2.76965C6.61102 2.66965 6.91002 2.59965 7.21002 2.56065H7.33002C7.61102 2.51965 7.89002 2.50065 8.17002 2.50065H8.28002C8.91002 2.51965 9.52002 2.62965 10.111 2.83065H10.17C10.21 2.84965 10.24 2.87065 10.26 2.88965C10.481 2.96065 10.69 3.04065 10.89 3.15065L11.27 3.32065C11.3618 3.36962 11.4649 3.44445 11.554 3.50912C11.6104 3.55009 11.6612 3.58699 11.7 3.61065C11.7163 3.62028 11.7329 3.62996 11.7496 3.63972C11.8354 3.68977 11.9247 3.74191 12 3.79965C13.111 2.95065 14.46 2.49065 15.85 2.50065ZM18.51 9.70065C18.92 9.68965 19.27 9.36065 19.3 8.93965V8.82065C19.33 7.41965 18.481 6.15065 17.19 5.66065C16.78 5.51965 16.33 5.74065 16.18 6.16065C16.04 6.58065 16.26 7.04065 16.68 7.18965C17.321 7.42965 17.75 8.06065 17.75 8.75965V8.79065C17.731 9.01965 17.8 9.24065 17.94 9.41065C18.08 9.58065 18.29 9.67965 18.51 9.70065Z"
-                                fill="currentColor"></path>
-                      </svg>
-                  </span> by <a href="https://iqonic.design/">IQONIC Design</a>.
+            <div class="col-md-12 col-lg-5 col-xl-8 d-lg-block d-none vh-100 overflow-hidden">
+                <div>
+                    <img th:src="@{../../assets/images/auth/01.png}" class="rounded-circle first-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/02.png}" class="rounded-circle second-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/03.png}" class="rounded-circle third-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/04.png}" class="rounded-circle fourth-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/05.png}" class="rounded-circle fifth-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/06.png}" class="rounded-circle six-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/01.png}" class="rounded-circle seventh-img" alt="images">
+                    <img th:src="@{../../assets/images/auth/02.png}" class="rounded-circle eight-img" alt="images">
+                </div>
             </div>
         </div>
-    </footer>
-
-    <!-- Footer Section End -->    </main>
-<script>
-
-    $(document).on("click", ".served", function () {
-        var id = $(this).data("id-menu");
-        var quantity = parseInt($("#input-quantity").val());
-        var idRese = $(this).data("id-rese");
-        console.log(id, quantity, idRese);
-        $.ajax({
-            url: "/reservation/served/" + id,
-            type: "GET",
-            data: {
-                id: id,
-                quantity: quantity,
-                idRese: idRese
-            },
-            success: function (data) {
-                console.log(data);
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: '❤️Update successfully !!!❤️',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        });
-    });
-
-    $(document).on("click", ".cancel", function () {
-        var id = $(this).data("id-menu");
-        var idRese = $(this).data("id-rese");
-        console.log(id);
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/reservation/menu/cancel",
-                    type: "GET",
-                    data: {
-                        id: id,
-                    },
-                    success: function (data) {
-                        Swal.fire(
-                            data.message,
-                        )
-                            .then(() => {
-                                location.href = "/reservation/reservationMenu/" + idRese;
-                            });
-                    }
-                });
-            }
-        })
-
-
-    });
-
-</script>
-
-<!-- Wrapper End-->
-<!-- offcanvas start -->
+    </section>
+</div>
 
 <!-- Required Library Bundle Script -->
-<script src="../../assets/js/core/libs.min.js"></script>
+<script th:src="@{../../assets/js/core/libs.min.js}"></script>
 
 <!-- External Library Bundle Script -->
-<script src="../../assets/js/core/external.min.js"></script>
+<script th:src="@{../../assets/js/core/external.min.js}"></script>
 
 <!-- Mapchart JavaScript -->
-<script src="../../assets/js/charts/dashboard.js"></script>
+<script th:src="@{../../assets/js/charts/dashboard.js}"></script>
 
 <!-- fslightbox JavaScript -->
-<script src="../../assets/js/fslightbox.js"></script>
+<script th:src="@{../../assets/js/fslightbox.js}"></script>
 
 <!-- app JavaScript -->
-<script src="../../assets/js/app.js"></script>
+<script th:src="@{../../assets/js/app.js}"></script>
 
 <!-- moment JavaScript -->
-<script src="../../assets/vendor/moment.min.js"></script>
+<script th:src="@{../../assets/vendor/moment.min.js}"></script>
 </body>
 </html>

@@ -102,14 +102,6 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public void save(ReservationRequest reservationRequest) throws TimeIsValidException {
-        if (!isEndTimeAfterStartTime(reservationRequest.getStartTime(), reservationRequest.getEndTime())) {
-            throw new TimeIsValidException("End time must be after start time");
-        }
-        if (!isValidTimeRange(reservationRequest.getStartTime(), reservationRequest.getEndTime())) {
-            throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
-        }
-//        Optional<Payment> payment = paymentRepository.findById(reservationRequest.getPayment().getId());
-
         reservationRepository.save(reservationMapper.toEntity(reservationRequest));
     }
 

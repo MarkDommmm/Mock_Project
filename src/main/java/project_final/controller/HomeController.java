@@ -61,6 +61,11 @@ public class HomeController {
         return new ModelAndView("/dashboard/auth/sign-up", "signup", new UserRequest());
     }
 
+    @RequestMapping("/sign-up/success")
+    public String signUpSuccess() {
+        return "/dashboard/errors/sign-up-success";
+    }
+
     @PostMapping("/public/sign-up")
     public String register(@Valid @ModelAttribute("signup") UserRequest userRequest, BindingResult bindingResult) throws RegisterException, CustomsException {
         if (bindingResult.hasErrors()) {
@@ -77,7 +82,7 @@ public class HomeController {
                 "\n\nVisit the link below to activate your account\n\n" +
                 "http://localhost:8888/public/active-account?email=" + email;
         mailService.sendMail(userRequest.getEmail(), "Active Account", content);
-        return "redirect:/public/login";
+        return "redirect:/sign-up/success";
     }
 
 
@@ -143,7 +148,7 @@ public class HomeController {
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
         session.removeAttribute("idReservation");
-    session.removeAttribute("reservationForPayment");
+        session.removeAttribute("reservationForPayment");
         return "dashboard/ChoseTable";
     }
 
@@ -240,15 +245,15 @@ public class HomeController {
             session.setAttribute("idReservation", idR);
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             if (reservation.isPresent()) {
-                if (reservation.get().getStatus().equals(Status.ORDER)||reservation.get().getStatus().equals(Status.PENDING))
+                if (reservation.get().getStatus().equals(Status.ORDER) || reservation.get().getStatus().equals(Status.PENDING))
                     reservation.get().setStatus(Status.PENDING);
-                    reservationRepository.save(reservation.get());
+                reservationRepository.save(reservation.get());
             }
 
- 
+
             reservation.get().setStatus(Status.PENDING);
             reservationRepository.save(reservation.get());
- 
+
 
         } else {
             map.put("icon", "error");
@@ -350,14 +355,12 @@ public class HomeController {
 
         List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
         if (reservationMenuRepository.checkUnpaidExists(idR)) {
-            double totalPrice = tableMenuCartResponse.stream()
-                    .mapToDouble(TableMenuCartResponse::getPrice)
-                    .sum();
             model.addAttribute("table", tableService.findById(existingReservation.get().getTable().getId()));
             model.addAttribute("reservationR", existingReservation.get());
             model.addAttribute("cart", tableMenuCartResponse);
-            model.addAttribute("totalPrice", totalPrice);
+            model.addAttribute("totalPrice", reservationService.getTotalPrice(idR));
             model.addAttribute("payment", paymentRepository.findAll());
+            model.addAttribute("totalPaid", reservationService.getTotalPaid(idR));
         } else {
             return "redirect:/home?error=check-out";
         }
@@ -370,7 +373,9 @@ public class HomeController {
     @RequestMapping("/home/reviews/{id}")
     public String getHomeReview(Model model, @PathVariable Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
         Optional<Reservation> reservation = reservationRepository.findById(id);
+
         if (reservation.isPresent()) {
+            model.addAttribute("reviews", reviewRepository.findAll());
             model.addAttribute("review", "");
             ReviewRequest reviewRequest = new ReviewRequest();
             reviewRequest.setReservation(reservation.get());
@@ -388,7 +393,6 @@ public class HomeController {
 
     @PostMapping("/home/create/review")
     public String addReview(@ModelAttribute ReviewRequest reviewRequest, @AuthenticationPrincipal UserPrinciple userPrinciple) {
-
         reviewService.save(reviewRequest, userPrinciple.getId());
         return "redirect:/home/reviews";
     }

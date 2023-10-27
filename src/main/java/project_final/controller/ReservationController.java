@@ -4,6 +4,7 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
+import org.apache.http.HttpResponse;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,9 +33,12 @@ import project_final.service.impl.GenerateExcelService;
 import project_final.service.impl.PaypalService;
 import project_final.service.impl.VNPayService;
 import project_final.util.PdfUtil;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -85,56 +89,64 @@ public class ReservationController {
 
 
     @PostMapping("/reservation/add")
-    public String addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
-                                 BindingResult bindingResult, HttpSession session,
-                                 @AuthenticationPrincipal UserPrinciple userPrinciple,
-                                 Model model, HttpServletRequest request) throws TimeIsValidException {
-
-
-        Optional<Reservation> existingReservation = reservationRepository.findById(reservationRequest.getId());
-
-        double totalPrice = 0;
-        if (existingReservation.get().getStatus().equals(Status.PENDING)) {
-            List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
-
-            totalPrice = tableMenu.stream()
-                    .mapToDouble(TableMenuCartResponse::getPrice)
-                    .sum();
-        } else {
-            totalPrice = reservationService.getTotalPrice(existingReservation.get().getId())
-                    - reservationService.getTotalPaid(existingReservation.get().getId());
-
-        }
-
-
-        if (reservationRequest.getPayment().getId().equals(1L)) {
-            reservationRequest.setStatus(Status.ORDER);
-            reservationService.save(reservationRequest);
-        } else if (reservationRequest.getPayment().getId().equals(2L)) {
-            String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-            String vnPayUrl = vnPayService.createOrder(totalPrice, existingReservation.get().getCode(), baseUrl);
-            reservationService.save(reservationRequest);
-            return "redirect:" + vnPayUrl;
-        } else if (reservationRequest.getPayment().getId().equals(3L)) {
-            try {
-                Payment payment = paypalService.createPayment(totalPrice, "USD", "Paypal",
-                        "sale", reservationRequest.getDescription(), "http://localhost:8888/" + CANCEL_URL,
-                        "http://localhost:8888/" + SUCCESS_URL);
-                session.setAttribute("reservationForPayment", reservationRequest);
-                for (Links link : payment.getLinks()) {
-                    if (link.getRel().equals("approval_url")) {
-                        return "redirect:" + link.getHref();
-                    }
-                }
-            } catch (PayPalRESTException e) {
-
-                e.printStackTrace();
+    public ResponseEntity<?> addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
+                                            BindingResult bindingResult, HttpSession session,
+                                            @AuthenticationPrincipal UserPrinciple userPrinciple,
+                                            Model model, HttpServletRequest request)     {
+        try {
+            Optional<Reservation> existingReservation = reservationRepository.findById(reservationRequest.getId());
+            double totalPrice = 0;
+            if (existingReservation.get().getStatus().equals(Status.PENDING)) {
+                List<TableMenuCartResponse> tableMenu = reservationMenuService.getDetails(existingReservation.get().getId());
+                totalPrice = tableMenu.stream().mapToDouble(TableMenuCartResponse::getPrice).sum();
+            } else {
+                totalPrice = reservationService.getTotalPrice(existingReservation.get().getId())
+                        - reservationService.getTotalPaid(existingReservation.get().getId());
             }
-        }
 
-        return "redirect:/home";
+            if (reservationRequest.getPayment().getId().equals(1L)) {
+                reservationRequest.setStatus(Status.ORDER);
+                reservationService.save(reservationRequest);
+            } else if (reservationRequest.getPayment().getId().equals(2L)) {
+                String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+                String vnPayUrl = vnPayService.createOrder(totalPrice, existingReservation.get().getCode(), baseUrl);
+                reservationService.save(reservationRequest);
+                return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", vnPayUrl));
+            } else if (reservationRequest.getPayment().getId().equals   (3L)) {
+                session.setAttribute("reservationRequest", reservationRequest);
+                return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", "/reservation/paypal"));
+            }
+
+
+            return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", "/home"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error placing reservation.");
+        }
     }
 
+    @GetMapping("/reservation/paypal")
+    public ResponseEntity<?> initiatePaypalPayment(HttpSession session, HttpServletResponse response  ) {
+        try {
+            ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationRequest");
+            double totalPrice = reservationService.getTotalPrice(reservationRequest.getId());
+            Payment payment = paypalService.createPayment(totalPrice, "USD", "Paypal",
+                    "sale", reservationRequest.getDescription(), "http://localhost:8888/" + CANCEL_URL,
+                    "http://localhost:8888/" + SUCCESS_URL);
+            session.setAttribute("reservationForPayment", reservationRequest);
+            for (Links link : payment.getLinks()) {
+                if (link.getRel().equals("approval_url")) {
+                    response.sendRedirect(link.getHref());
+                    return ResponseEntity.ok().build();
+                }
+            }
+        } catch (PayPalRESTException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error initiating PayPal payment");
+    }
 
     @GetMapping(value = CANCEL_URL)
     public String cancelPay(HttpSession session, @AuthenticationPrincipal UserPrinciple userPrinciple) throws TimeIsValidException {
@@ -193,15 +205,15 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/served/{id}")
-    public String served(@PathVariable Long id, @RequestParam("idRese") Long idRese,@RequestParam("quantity") int quantity) {
-        reservationMenuService.served(quantity,id);
+    public String served(@PathVariable Long id, @RequestParam("idRese") Long idRese, @RequestParam("quantity") int quantity) {
+        reservationMenuService.served(quantity, id);
         return "redirect:/reservation/reservationMenu/" + idRese;
     }
 
     @GetMapping("/reservation/menu/cancel")
 
-    public Map<String, String> cancel(@RequestParam("id") Long id){
-        String message =  reservationMenuService.adminCancel(id);
+    public Map<String, String> cancel(@RequestParam("id") Long id) {
+        String message = reservationMenuService.adminCancel(id);
         Map<String, String> map = new HashMap<>();
         map.put("error", "error");
         map.put("message", message);
@@ -269,7 +281,6 @@ public class ReservationController {
         headers.set("Content-Disposition", "attachment; filename=Restaurant_Aprycot-Receipt.pdf");
         return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
     }
-
 
 
     @GetMapping("/search")

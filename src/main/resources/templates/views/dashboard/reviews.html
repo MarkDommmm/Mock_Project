@@ -60,8 +60,9 @@
         }
     </style>
 </head>
-<body class="  " style="background:url(main/resources/static/assets/images/dashboard.png);    background-attachment: fixed;
-    background-size: cover;">
+<body class="  "
+      th:style="'background-image:url('+@{../assets/images/dashboard.png}+');  background-attachment: fixed; background-size: cover;'">
+
 <!-- loader Start -->
 <div id="loading">
     <div class="loader simple-loader">
@@ -1133,16 +1134,7 @@
     </div>
 </div>
 <!-- loader END -->
-<div class="position-relative">
-    <div class="user-img1">
-        <svg width="1857" viewBox="0 0 1857 327" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4.05078 189.348C86.8841 109.514 348.951 -25.2523 734.551 74.3477C1120.15 173.948 1641.22 91.181 1853.55 37.3477"
-                  stroke="#EA6A12" stroke-opacity="0.3"/>
-            <path d="M0.99839 152.331C90.9502 80.6133 364.495 -28.9952 739.062 106.31C1113.63 241.616 1640.16 208.056 1856.6 174.363"
-                  stroke="#EA6A12" stroke-opacity="0.3"/>
-        </svg>
-    </div>
-</div>
+
 <th:block th:insert="/dashboard/layout/slider.html"></th:block>
 <main class="main-content">
     <div class="position-relative">
@@ -1519,7 +1511,8 @@
                                                                 </svg>
                                                             </th:block>
                                                         </div>
-                                                        <span style="margin-left: 25px"> 5 min </span>
+                                                        <span style="margin-left: 25px" th:text="${((T(java.lang.System).currentTimeMillis() - r.createdDate.getTime()) / (1000 * 60))} + ' min'"></span>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -1662,7 +1655,8 @@
                     </div>
                 </div>
                 <div class="card"
-                     style="background: url('main/resources/static/assets/images/User-profile/02.png'); background-size: cover;">
+                     th:style="'background-image:url('+@{../assets/images/dashboard.png}+');  background-attachment: fixed; background-size: cover;'">
+
                     <div class="card-body">
                         <div class="div">
                             <div class="div">
@@ -1721,23 +1715,6 @@
         </div>
     </div>
 
-    <!--    Form-->
-    <!--    <form th:action="@{/home/create/review}" method="post" th:object="${reviewRequest}" enctype="multipart/form-data">-->
-    <!--        <label for="image">Image :</label>-->
-    <!--        <input type="file" id="image" th:field="*{image}"/>-->
-    <!--        <label for="comment">Comment :</label>-->
-    <!--        <textarea type="text" id="comment" th:field="*{comment}"></textarea>-->
-    <!--        <label for="rating">Rating :</label>-->
-    <!--        <select id="rating" th:field="*{rating}">-->
-    <!--            <option th:value="1">1</option>-->
-    <!--            <option th:value="2">2</option>-->
-    <!--            <option th:value="3">3</option>-->
-    <!--            <option th:value="4">4</option>-->
-    <!--            <option th:value="5">5</option>-->
-    <!--        </select>-->
-    <!--        <button type="submit">Create</button>-->
-    <!--    </form>-->
-    <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
             <ul class="left-panel list-inline mb-0 p-0">
