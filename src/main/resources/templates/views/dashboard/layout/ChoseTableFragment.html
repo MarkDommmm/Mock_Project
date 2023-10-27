@@ -221,10 +221,6 @@
         return number < 10 ? "0" + number : number;
     }
 
-
-
-
-
     $(".category-icon").click(function () {
 
         $(".category-menu").removeClass("active");
@@ -393,15 +389,7 @@
                 showConfirmButton: false,
                 timer: 2000
             })
-        }else if (startHour < currentHour || (startHour === currentHour && startMinute < currentMinute)) {
-            Swal.fire({
-                position: 'center',
-                icon: "error",
-                title: "start time must be greater than current time",
-                showConfirmButton: false,
-                timer: 2000
-            })
-        } else if (startTime >= endTime) {
+        }else if (startTime >= endTime) {
             Swal.fire({
                 position: 'center',
                 icon: "error",

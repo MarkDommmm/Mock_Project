@@ -17,6 +17,8 @@
     <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
+    <script th:src="@{https://printjs-4de6.kxcdn.com/print.min.js}"></script>
+
     <style>
         .title-nav {
             display: flex;
@@ -28,12 +30,14 @@
             text-decoration: underline;
             cursor: pointer;
         }
-        .btn-outline-primary{
+
+        .btn-outline-primary {
             color: #000;
         }
-        .active{
+
+        .active {
             color: #fff;
-             background-color: #EA6A12 !important;
+            background-color: #EA6A12 !important;
             border-color: #EA6A12;
         }
     </style>
@@ -1175,11 +1179,27 @@
             <div class="col-lg-12">
                 <div class="table-responsive">
                     <div class="title-nav" style="margin-bottom: 30px">
-                        <button type="button" class="btn btn-outline-primary active">Table Orders</button>
-                        <button type="button" class="btn btn-outline-primary">Orders Pending</button>
-                        <button type="button" class="btn btn-outline-primary">Orders Confirm</button>
-                        <button type="button" class="btn btn-outline-primary">Orders Completed</button>
-                        <button type="button" class="btn btn-outline-primary">Orders Cancel</button>
+
+                        <button type="button" class="btn btn-outline-primary" id="table-order">
+                            <a class="text-black" th:href="@{|/auth/profile/${session.currentUser.id}|}">Table Order</a>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="order-pending">
+                            <a class="text-black" th:href="@{|/auth/get-order-pending/${session.currentUser.id}|}">Orders
+                                Pending</a>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="order-confirm">
+                            <a class="text-black" th:href="@{|/auth/get-order-confirm/${session.currentUser.id}|}">Orders
+                                Confirm</a>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="order-completed">
+                            <a class="text-black" th:href="@{|/auth/get-order-completed/${session.currentUser.id}|}">Orders
+                                Completed</a>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="order-cancel">
+                            <a class="text-black" th:href="@{|/auth/get-order-cancel/${session.currentUser.id}|}">Orders
+                                Cancel</a>
+                        </button>
+
                     </div>
 
                     <table id="user-list-table" class="table table-striped" role="grid"
@@ -1199,7 +1219,7 @@
                             <th style="min-width: 100px">Action</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="render-reservation">
                         <tr th:each="r,loop:${reservation}">
                             <td th:text="${loop.count}"></td>
                             <td th:text="${r.code}"></td>
@@ -1221,20 +1241,32 @@
                             <td>
                                 <th:block th:if="${r.status == T(project_final.model.domain.Status).COMPLETED}">
                                     <a th:href="@{|/home/reviews/${r.id}|}">Reviews</a>
+                                    <a class="btn btn-sm btn-icon" th:href="@{|/printInvoice/${r.id}|}"
+                                       onclick="downloadAndPrintPdf(document.getElementById('hiddenId').value)">
+    <span class="btn-inner">
+        <img width="30px"
+             src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1792px-PDF_icon.svg.png">
+    </span>
+                                    </a>
+
+                                    <input type="hidden" id="hiddenId" th:value="${r.id}"/>
+
+
                                 </th:block>
                                 <th:block th:if="${r.status == T(project_final.model.domain.Status).PENDING
                                 || r.status == T(project_final.model.domain.Status).PAID
                                 || r.status == T(project_final.model.domain.Status).ORDER
                                 || r.status == T(project_final.model.domain.Status).CONFIRM}">
                                     <div class="flex align-items-center list-user-action">
-                                        <a class="btn btn-sm btn-icon " data-toggle="tooltip"
-                                           data-placement="top" title="" data-original-title="Excel"
+                                        <a class="btn btn-sm btn-icon " target="_blank"
                                            th:href="@{|/printInvoice/${r.id}|}">
                                     <span class="btn-inner">
-                                     <img width="30px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1792px-PDF_icon.svg.png">
+                                     <img width="30px"
+                                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1792px-PDF_icon.svg.png">
                                     </span>
                                         </a>
-                                        <a th:if="${r.status != T(project_final.model.domain.Status).CONFIRM}" class="btn btn-sm btn-icon update-dishes" data-toggle="tooltip"
+                                        <a th:if="${r.status != T(project_final.model.domain.Status).CONFIRM}"
+                                           class="btn btn-sm btn-icon update-dishes" data-toggle="tooltip"
                                            data-placement="top" title="" data-original-title="Edit"
                                            th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}">
                                     <span class="btn-inner">
@@ -1302,8 +1334,52 @@
             </div>
         </div>
     </div>
-
     <script>
+        function downloadAndPrintPdf(id) {
+            // Tạo một yêu cầu tải file PDF
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/printInvoice/' + id, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // Tạo một đường dẫn tạm thời đến file PDF
+                    var blob = new Blob([xhr.response], {type: 'application/pdf'});
+                    var url = window.URL.createObjectURL(blob);
+
+                    // Sử dụng thư viện print-js để in file PDF
+                    printJS(url);
+
+                    // Giải phóng tài nguyên sau khi đã tải xong
+                    window.URL.revokeObjectURL(url);
+                }
+            };
+
+            // Gửi yêu cầu tải file
+            xhr.send();
+        }
+
+
+    </script>
+    <script>
+        $(document).ready(function(){
+            var url = window.location.pathname;
+            if (url.includes('/profile')) {
+                $('#table-order').addClass("active");
+            } else if (url.includes("/get-order-pending")){
+                $('#order-pending').addClass("active");
+            }else if (url.includes("/get-order-confirm")){
+                $('#order-confirm').addClass("active");
+            }else if (url.includes("/get-order-cancel")){
+                $('#order-cancel').addClass("active");
+            }else if (url.includes("/get-order-completed")){
+                $('#order-completed').addClass("active");
+            }
+
+        })
+
+
+
         $(document).on("click", "#cancel", function () {
             var id = $(this).data("id-resvertion");
             $.ajax({
@@ -1324,7 +1400,6 @@
             });
 
         });
-
         $(document).on("click", ".click-detail", function () {
 
             var id = $(this).data("id-detail");
@@ -1393,6 +1468,7 @@
 
             });
         })
+
     </script>
     <!-- Footer Section Start -->
     <footer class="footer">

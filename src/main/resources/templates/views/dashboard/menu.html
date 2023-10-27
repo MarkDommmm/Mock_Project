@@ -24,6 +24,12 @@
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
     <style>
+        .new{
+            width: 156px;
+            position: absolute;
+            top: -63px;
+            left: -19px;
+        }
         .boxs {
             border-radius: 30px;
             box-shadow: 15px 15px 30px #bebebe,
@@ -1403,6 +1409,16 @@
     </div>
 </div>
 <!-- loader END -->
+<div class="position-relative">
+    <div class="user-img1">
+        <svg width="1857" viewBox="0 0 1857 327" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.05078 189.348C86.8841 109.514 348.951 -25.2523 734.551 74.3477C1120.15 173.948 1641.22 91.181 1853.55 37.3477"
+                  stroke="#EA6A12" stroke-opacity="0.3"/>
+            <path d="M0.99839 152.331C90.9502 80.6133 364.495 -28.9952 739.062 106.31C1113.63 241.616 1640.16 208.056 1856.6 174.363"
+                  stroke="#EA6A12" stroke-opacity="0.3"/>
+        </svg>
+    </div>
+</div>
 
 
 <th:block th:insert="/dashboard/layout/slider.html"></th:block>
@@ -1662,7 +1678,7 @@
                                                                   th:text="'$'+${f.price}"></span>
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
-                                                <a sec:authorize="isAuthenticated()" class="add-cart"
+                                                <a th:style="${session.i == null ? 'display:none': ''}" sec:authorize="isAuthenticated()" class="add-cart"
                                                    th:data-id="${f.id}" th:data-menu-price="${f.price}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                          fill="none"
@@ -1851,14 +1867,16 @@
                     <div class="col-md-12 col-lg-12">
                         <div class="card  profile-img3 ">
                             <div class="card-body">
-                                <div class="text-center profile-img51">
+                                <img class="new" src="https://benhvienungbuoudanang.com.vn/wp-content/uploads/2020/01/new-icon.gif">
+                                <div class="text-center profile-img51" style="margin-top: 6rem !important;">
                                     <div class="profile-img41 ">
                                         <img src="../assets/images/layouts/8.png" class="img-fluid rounded-pill "
                                              alt="profile-image">
                                     </div>
-                                    <div class="profile-img51 ">
-                                        <h2 class="mb-2 profile-img55">50 % off </h2>
-                                        <p class="mb-0">The full price of burgers</p>
+                                    <div class="profile-img51 "  style="margin-top: 6rem !important;">
+                                        <h2 class="mb-2 profile-img55">New food </h2>
+                                        <h2 class="mb-2 profile-img55" style="color: #ea6a12">VEGETABLE BURGER</h2>
+                                        <p class="mb-0">A veggie burger is a hamburger made with a patty that does not contain meat, or the patty of such a hamburger. The patty may be made from ingredients like beans, nuts, grains, seeds, or fungi such as mushrooms or mycoprotein.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1937,7 +1955,7 @@
                                      style="max-height: 80px;">
                             </div>
                             <div th:unless="${session.idReservation}" class="text-center "
-                                 sec:authorize="isAuthenticated()" >
+                                 sec:authorize="isAuthenticated()" th:style="${session.i == null ? 'display:none': ''}" >
                                 <a type="button"
                                    style="margin-bottom: 20px"
                                    class="check-out btn btn-primary rounded-pill  ">Reservation!!!
@@ -2073,7 +2091,7 @@
                     id: id
                 },
                 success: function (data) {
-
+                    console.log(data)
                     if (data.content.length == 0) {
                         Swal.fire({
                             position: 'center',

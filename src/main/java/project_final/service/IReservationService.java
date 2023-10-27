@@ -15,6 +15,9 @@ import java.util.Map;
 public interface IReservationService<K,V,E> {
 
     Page<V> findByUserIdAndStatusPending( int page, int size,Long id);
+    Page<V> findAllByUserAndStatusCompleted( int page, int size,Long id);
+    Page<V> findAllByUserAndStatusCancel( int page, int size,Long id);
+    Page<V> findAllByUserAndStatusConfirm( int page, int size,Long id);
 
     Page<V> findByUserId( int page, int size,Long id);
     Page<V> findAll(Date date, int page, int size);

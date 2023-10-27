@@ -1345,7 +1345,8 @@
                                                         th:text="${r.reservation.user.name}"></h6>
                                                     <p class="mb-1" th:text="${r.comment}"></p>
                                                     <a th:href="${r.image}" target="_blank">
-                                                        <img th:src="${r.image}" width="120px" style="border-radius: 20px">
+                                                        <img th:src="${r.image}" width="120px"
+                                                             style="border-radius: 20px">
                                                     </a>
 
                                                     <div class="d-flex flex-wrap align-items-center mb-1">
@@ -1511,7 +1512,9 @@
                                                                 </svg>
                                                             </th:block>
                                                         </div>
-                                                        <span style="margin-left: 25px" th:text="${((T(java.lang.System).currentTimeMillis() - r.createdDate.getTime()) / (1000 * 60))} + ' min'"></span>
+                                                        <span style="margin-left: 25px" th:data-time="${r.createdDate}"
+                                                              id="convertedTime">
+                                                        </span>
 
                                                     </div>
                                                 </div>
@@ -1750,6 +1753,39 @@
         $(".send").click(function () {
             $("#submit").click();
         })
+
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Lấy giá trị thời gian từ thuộc tính th:data-time
+            var createdDateStr = $("#convertedTime").data("time");
+            var createdDateMillis = new Date(createdDateStr).getTime();
+
+            var currentTimeMillis = new Date().getTime();
+
+            var diffMillis = currentTimeMillis - createdDateMillis;
+            var diffMinutes = Math.floor(diffMillis / (1000 * 60));
+            var diffHours = Math.floor(diffMinutes / 60);
+            var diffDays = Math.floor(diffHours / 24);
+
+            var result = "";
+            console.log(result)
+            if (diffDays > 0) {
+                console.log(diffDays)
+                result += diffDays + " Day ";
+                console.log(result)
+            }
+            if (diffHours > 0) {
+                console.log(diffHours)
+                result += diffHours % 24 + " H ";
+                console.log(result)
+            } else if (diffMinutes > 0) {
+                result += "1 H ";
+                console.log(result)
+            }
+
+            $("#convertedTime").text(result);
+        });
 
     </script>
     <!-- Footer Section End -->    </main>

@@ -276,16 +276,16 @@ public class ReservationController {
 
     }
 
-    @GetMapping("/printInvoice/{id}")
-    public ResponseEntity<byte[]> printInvoice(@PathVariable Long id) {
-        byte[] pdfContent = pdfUtil.createPdf(id);
+        @GetMapping("/printInvoice/{id}")
+        public ResponseEntity<byte[]> printInvoice(@PathVariable Long id) {
+            byte[] pdfContent = pdfUtil.createPdf(id);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("inline", "Restaurant Aprycot-Receipt.pdf");
-        headers.set("Content-Disposition", "attachment; filename=Restaurant_Aprycot-Receipt.pdf");
-        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
-    }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", "Restaurant Aprycot-Receipt.pdf");
+//            headers.set("Content-Disposition", "attachment; filename=Restaurant_Aprycot-Receipt.pdf");
+            return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+        }
 
 
     @GetMapping("/search")
