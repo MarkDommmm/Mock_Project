@@ -24,6 +24,9 @@ public interface IReservationMenuRepository extends JpaRepository<ReservationMen
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.user.id = :id AND RM.reservation.status = 'ORDER'")
     List<ReservationMenu> findAllByReservation(@Param("id") Long id);
 
+    @Query("SELECT RM FROM ReservationMenu RM JOIN  Reservation R ON RM.reservation = R WHERE R.id =:id")
+    Page<ReservationMenu> findAllByReservationId(@Param("id") Long id,Pageable pageable);
+
     @Query("SELECT RM FROM ReservationMenu RM WHERE RM.reservation.id = :id")
     List<ReservationMenu> findAllByReservationId(Long id);
 

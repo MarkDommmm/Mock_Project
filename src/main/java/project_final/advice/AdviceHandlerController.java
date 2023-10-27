@@ -33,13 +33,6 @@ public class AdviceHandlerController {
         return null;
     }
 
-//    @ExceptionHandler(TimeIsValidException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST) // Đặt HTTP status code cho response
-//    public String handleTimeIsValidException(TimeIsValidException ex, Model model) {
-//        // Xử lý exception ở đây và truyền thông tin lỗi đến view thông qua Model
-//        model.addAttribute("error", ex.getMessage());
-//        return "/home";
-//    }
     @ExceptionHandler(CustomsException.class)
     public String customFail(CustomsException customsException, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
