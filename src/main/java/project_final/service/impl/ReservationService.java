@@ -45,6 +45,24 @@ public class ReservationService implements IReservationService<ReservationReques
     }
 
     @Override
+    public Page<ReservationResponse> findAllByUserAndStatusCompleted(int page, int size, Long id) {
+        Page<Reservation> reservations = reservationRepository.findAllByUserAndStatusCompleted(PageRequest.of(page, size), id);
+        return reservations.map(reservationMapper::toResponse);
+    }
+
+    @Override
+    public Page<ReservationResponse> findAllByUserAndStatusCancel(int page, int size, Long id) {
+        Page<Reservation> reservations = reservationRepository.findAllByUserAndStatusCancel(PageRequest.of(page, size), id);
+        return reservations.map(reservationMapper::toResponse);
+    }
+
+    @Override
+    public Page<ReservationResponse> findAllByUserAndStatusConfirm(int page, int size, Long id) {
+        Page<Reservation> reservations = reservationRepository.findAllByUserAndStatusConfirm(PageRequest.of(page, size), id);
+        return reservations.map(reservationMapper::toResponse);
+    }
+
+    @Override
     public Page<ReservationResponse> findByUserId(int page, int size, Long userId) {
         Page<Reservation> reservations = reservationRepository.findAllByUser(PageRequest.of(page, size), userId);
         return reservations.map(reservationMapper::toResponse);
@@ -76,12 +94,7 @@ public class ReservationService implements IReservationService<ReservationReques
 
     @Override
     public Reservation add(Long user, Date date, String start, String end, Long idTable) throws TimeIsValidException {
-//        if (!isEndTimeAfterStartTime(start, end)) {
-//            throw new TimeIsValidException("End time must be after start time");
-//        }
-//        if (!isValidTimeRange(start, end)) {
-//            throw new TimeIsValidException("Time starts at 9:00 and ends at 23:00");
-//        }
+
 
         Optional<User> u = userRepository.findById(user);
         Optional<Tables> table = tableRepository.findById(idTable);

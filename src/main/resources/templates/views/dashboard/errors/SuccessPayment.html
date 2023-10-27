@@ -13,6 +13,7 @@
 
     <!-- Custom Css -->
     <link rel="stylesheet" th:href="@{../../assets/css/aprycot.min.css}">
+    <script th:src="@{https://printjs-4de6.kxcdn.com/print.min.js}"></script>
 </head>
 <body class=" " data-bs-spy="scroll" data-bs-target="#elements-section" data-bs-offset="0" tabindex="0">
 <!-- loader Start -->
@@ -1108,12 +1109,15 @@
                         a nice day.
                     </p>
                     <div class="row">
-                    <div class="col-lg-6">
-                        <a href="/home" class="btn btn-primary mt-3">Back to Home</a>
-                    </div>
-                    <div class="col-lg-6">
-                        <a th:href="@{|/printInvoice/${receipt}|}" class="btn btn-primary mt-3">Print Receipt</a>
-                    </div>
+                        <div class="col-lg-6">
+                            <a href="/home" class="btn btn-primary mt-3">Back to Home</a>
+                        </div>
+                        <div class="col-lg-6">
+                            <a class="btn btn-sm btn-icon" th:href="@{|/printInvoice/${r.id}|}"
+                               onclick="downloadAndPrintPdf(document.getElementById('hiddenId').value)">
+                                Print Receipt</a>
+                            <input type="hidden" id="hiddenId" th:value="${r.id}"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1131,6 +1135,33 @@
             </div>
         </div>
     </section>
+    <script>
+        function downloadAndPrintPdf(id) {
+            // Tạo một yêu cầu tải file PDF
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/printInvoice/' + id, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // Tạo một đường dẫn tạm thời đến file PDF
+                    var blob = new Blob([xhr.response], {type: 'application/pdf'});
+                    var url = window.URL.createObjectURL(blob);
+
+                    // Sử dụng thư viện print-js để in file PDF
+                    printJS(url);
+
+                    // Giải phóng tài nguyên sau khi đã tải xong
+                    window.URL.revokeObjectURL(url);
+                }
+            };
+
+            // Gửi yêu cầu tải file
+            xhr.send();
+        }
+
+
+    </script>
 </div>
 
 <!-- Required Library Bundle Script -->

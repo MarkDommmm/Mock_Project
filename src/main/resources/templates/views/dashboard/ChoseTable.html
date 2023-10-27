@@ -20,6 +20,7 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
+    <script th:src="@{https://printjs-4de6.kxcdn.com/print.min.js}"></script>
     <style>
         .delete-admin {
             position: absolute;
@@ -1337,6 +1338,16 @@
     </div>
 </div>
 <!-- loader END -->
+<div class="position-relative">
+    <div class="user-img1">
+        <svg width="1857" viewBox="0 0 1857 327" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.05078 189.348C86.8841 109.514 348.951 -25.2523 734.551 74.3477C1120.15 173.948 1641.22 91.181 1853.55 37.3477"
+                  stroke="#EA6A12" stroke-opacity="0.3"/>
+            <path d="M0.99839 152.331C90.9502 80.6133 364.495 -28.9952 739.062 106.31C1113.63 241.616 1640.16 208.056 1856.6 174.363"
+                  stroke="#EA6A12" stroke-opacity="0.3"/>
+        </svg>
+    </div>
+</div>
 
 
 <th:block th:insert="/dashboard/layout/slider.html"></th:block>
@@ -1603,7 +1614,7 @@
                             <th>Payment</th>
                             <th>Reservation Details</th>
                             <th>Status</th>
-                             <th style="min-width: 100px">Export Excecl</th>
+                             <th style="min-width: 100px">Print Receipt</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -1626,14 +1637,14 @@
                             </td>
                             <td>
                                 <div class="flex align-items-center list-user-action">
-                                    <a class="btn btn-sm btn-icon " data-toggle="tooltip"
-                                       data-placement="top" title="" data-original-title="Excel"
-                                       href="/printInvoice/${data.id}">
-                                    <span class="btn-inner">
-                                      <img width="30px"
-                                           src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1792px-PDF_icon.svg.png">
-                                    </span>
+                                      <a class="btn btn-sm btn-icon" href="/printInvoice/${data.id}"
+                                       onclick="downloadAndPrintPdf(document.getElementById('hiddenId').value)">
+    <span class="btn-inner">
+        <img width="30px"
+             src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1792px-PDF_icon.svg.png">
+    </span>
                                     </a>
+                                          <input type="hidden" id="hiddenId" value="${data.id}"/>
 
                                 </div>
                             </td>
@@ -1796,6 +1807,34 @@
                 timer: 3000
             });
         }
+
+    </script>
+    <script>
+        function downloadAndPrintPdf(id) {
+            console.log(id)
+            // Tạo một yêu cầu tải file PDF
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/printInvoice/' + id, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // Tạo một đường dẫn tạm thời đến file PDF
+                    var blob = new Blob([xhr.response], { type: 'application/pdf' });
+                    var url = window.URL.createObjectURL(blob);
+
+                    // Sử dụng thư viện print-js để in file PDF
+                    printJS(url);
+
+                    // Giải phóng tài nguyên sau khi đã tải xong
+                    window.URL.revokeObjectURL(url);
+                }
+            };
+
+            // Gửi yêu cầu tải file
+            xhr.send();
+        }
+
 
     </script>
 </main>

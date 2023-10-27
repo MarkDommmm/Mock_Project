@@ -1,9 +1,11 @@
 package project_final.controller;
 
+import com.amazonaws.services.s3.model.lifecycle.LifecycleFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -142,7 +144,7 @@ public class HomeController {
                                @RequestParam(defaultValue = "20") int size) {
 
         session.setAttribute("currentUser", userPrinciple);
-        session.removeAttribute("idReservation");
+
 //        model.addAttribute("tables", tableService.findAllByStatusIsTrueAndName(name, page, size));
         model.addAttribute("notifications", reservationRepository.findAllByStatusORDER());
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
@@ -195,10 +197,8 @@ public class HomeController {
             map.put("message", "You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777");
         } else {
             Reservation reservation = reservationService.add(userPrinciple.getId(), date, start, end, id);
-
-
 //            session.setAttribute("reservationLocal", reservation);
-//            session.setAttribute("idReservation", reservation.getId());
+            session.setAttribute("idReservation", reservation.getId());
 
             map.put("icon", "success");
         }
@@ -280,15 +280,14 @@ public class HomeController {
     @RequestMapping("/add-cart")
     @ResponseBody
     public Page<TableMenuCartResponse> addTableMenu(
-            @AuthenticationPrincipal UserPrinciple userPrinciple,
             @RequestParam(defaultValue = "") Long id,
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
-            HttpSession session) {
+            HttpSession session, HttpRequest request) {
+
         Long idR = (Long) session.getAttribute("idReservation");
 
-        Map<String, String> map = new HashMap<>();
         Optional<Reservation> existingReservation = reservationRepository.findById(idR);
         if (existingReservation.isPresent()) {
             reservationMenuService.addCart(id, existingReservation.get().getId());
