@@ -209,15 +209,20 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/reservation/confirm/{id}")
-    public String confirm(@PathVariable Long id) {
+    @GetMapping("/reservation/confirm")
+    public String confirm(@RequestParam Long id) {
         reservationService.confirm(id);
         return "redirect:/reservation";
     }
 
-    @GetMapping("/reservation/completed/{id}")
-    public String completed(@PathVariable Long id) {
+    @GetMapping("/reservation/completed")
+    public String completed(@RequestParam Long id) {
         reservationService.completed(id);
+        List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllById(id);
+        for (ReservationMenu r:reservationMenus) {
+            r.setPay(Status.PAID);
+            reservationMenuRepository.save(r);
+        }
         return "redirect:/reservation";
     }
 

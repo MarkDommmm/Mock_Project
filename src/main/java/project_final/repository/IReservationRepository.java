@@ -60,13 +60,13 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
     Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
 
 
-    @Query("SELECT SUM(RM.quantity * RM.price) FROM Reservation R " +
+    @Query("SELECT SUM(RM.quantityOrdered * RM.price) FROM Reservation R " +
             "JOIN ReservationMenu RM ON R.id = RM.reservation.id " +
             "WHERE R.id = :id")
     double getTotalPrice(@Param("id") Long id);
 
 
-    @Query("SELECT COALESCE(SUM(RM.quantity * RM.price), 0) FROM Reservation R " +
+    @Query("SELECT COALESCE(SUM(RM.quantityOrdered * RM.price), 0) FROM Reservation R " +
             "JOIN ReservationMenu RM ON R.id = RM.reservation.id " +
             "WHERE R.id = :id AND RM.pay = 'PAID'")
     double getTotalPaid(@Param("id") Long id);

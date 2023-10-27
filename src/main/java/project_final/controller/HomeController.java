@@ -231,13 +231,14 @@ public class HomeController {
                                          @AuthenticationPrincipal UserPrinciple userPrinciple,
                                          HttpSession session) {
         Map<String, String> map = new HashMap<>();
-        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("admin"))) {
+        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("123"))) {
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
             model.addAttribute("idR", idR);
             model.addAttribute("reservationMenu", new ReservationMenuRequest());
             session.setAttribute("idReservation", idR);
+
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             if (reservation.isPresent()) {
                 if (reservation.get().getStatus().equals(Status.ORDER)||reservation.get().getStatus().equals(Status.PENDING))
@@ -280,13 +281,15 @@ public class HomeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
             HttpSession session) {
+        Long idR = (Long) session.getAttribute("idReservation");
+
         Map<String, String> map = new HashMap<>();
-        Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
+        Optional<Reservation> existingReservation = reservationRepository.findById(idR);
         if (existingReservation.isPresent()) {
             reservationMenuService.addCart(id, existingReservation.get().getId());
-            return reservationMenuService.getTableMenu(userPrinciple.getId(), page, sizeCart);
+            return reservationMenuService.getTableMenu(idR, page, sizeCart);
         }
-        return reservationMenuService.getTableMenu(null, page, sizeCart);
+        return reservationMenuService.getTableMenu(idR, page, sizeCart);
 
     }
 

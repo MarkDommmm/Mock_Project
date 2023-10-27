@@ -68,6 +68,7 @@
             display: flex;
             justify-content: space-around;
         }
+
         .update-dishes {
             display: flex;
             gap: 11px;
@@ -2429,8 +2430,9 @@
                     </i>
                 </div>
                 <form action="/reservation" method="get">
-                    <input id="input_search_day" type="date" name="date" class="form-control" placeholder="Search..."
-                           th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
+                    <input id="input_search_day" type="date" name="date" class="form-control"
+                           placeholder="Search..."
+                           th:value="${date != null} ? ${#dates.format(date, 'yyyy-MM-dd')} : ${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
                     <button id="btn_search_day" type="submit">Search</button>
                 </form>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -2679,7 +2681,6 @@
                         <div class="col" th:each="r:${reservations}">
                             <th:block th:if="${r.status == T(project_final.model.domain.Status).COMPLETED}">
                                 <div class="card card-white dish-card profile-img mb-0 index active">
-
                                     <div class="profile-img21">
                                         <img th:src="${r.table.tableImage}"
                                              class="img-fluid rounded-pill avatar-170 blur-shadow position-bottom"
@@ -2690,7 +2691,8 @@
 
                                     <div class="card-body menu-image ">
                                         <div style="display: flex;justify-content: space-between">
-                                            <h6 class="heading-title fw-bolder mt-4 mb-0" th:text="${r.table.name}"></h6>
+                                            <h6 class="heading-title fw-bolder mt-4 mb-0"
+                                                th:text="${r.table.name}"></h6>
                                             <a th:href="@{|/reservation/reservationMenu/${r.id}|}">Check Order!</a>
                                         </div>
                                         <div class="time-reservation">
@@ -2708,16 +2710,19 @@
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-between mt-3">
-                                            <a th:href="@{|reservation/confirm/${r.id}|}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="text-primary fw-bolder me-2"
-                                                          th:text="${r.status}"></span>
-                                                </div>
-                                            </a>
-                                            <div th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}"
+                                          <span th:class="${r.status.name == 'CONFIRM'} ? 'completed' : (${r.status.name == 'COMPLETED'} ? '' : 'confirm')"
+                                                th:data-id-rese="${r.id}">
+    <div class="d-flex align-items-center">
+        <span class="text-primary fw-bolder me-2" th:text="${r.status}"></span>
+        <!-- Các phần tử khác bạn muốn hiển thị -->
+    </div>
+</span>
+
+                                            <div th:style="${r.status.name == 'COMPLETED' ? 'display: none;' : ''}"
+                                                 th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}"
                                                  class="update-dishes">
                                                 <span>Add menu</span>
-                                                <div id="choseTable" class="choseTable">
+                                                <div id="choseTable1" class="choseTable">
 
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
@@ -2750,7 +2755,8 @@
 
                                     <div class="card-body menu-image ">
                                         <div style="display: flex;justify-content: space-between">
-                                            <h6 class="heading-title fw-bolder mt-4 mb-0" th:text="${r.table.name}"></h6>
+                                            <h6 class="heading-title fw-bolder mt-4 mb-0"
+                                                th:text="${r.table.name}"></h6>
                                             <a th:href="@{|/reservation/reservationMenu/${r.id}|}">Check Order!</a>
                                         </div>
                                         <div class="time-reservation">
@@ -2768,13 +2774,16 @@
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-between mt-3">
-                                            <a th:href="@{|reservation/confirm/${r.id}|}">
+                                            <span th:class="${r.status.name == 'CONFIRM'} ? 'completed' : 'confirm'"
+                                                  th:data-id-rese="${r.id}">
                                                 <div class="d-flex align-items-center">
                                                     <span class="text-primary fw-bolder me-2"
                                                           th:text="${r.status}"></span>
+                                                    <!-- Các phần tử khác bạn muốn hiển thị -->
                                                 </div>
-                                            </a>
-                                            <div th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}"
+                                            </span>
+                                            <div th:style="${r.status.name == 'COMPLETED' ? 'display: none;' : ''}"
+                                                 th:data-id-resvertion="${r.id}" th:data-id-user="${r.user.id}"
                                                  class="update-dishes">
                                                 <span>Add menu</span>
                                                 <div id="choseTable" class="choseTable">
@@ -2859,6 +2868,81 @@
 
         });
     })
+
+    $(document).on("click", ".confirm", function () {
+        var date = $("#input_search_day").val()
+        var id = $(this).data("id-rese");
+        console.log(id);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/reservation/confirm",
+                    type: "GET",
+                    data: {
+                        id: id,
+                    },
+                    success: function (data) {
+                        Swal.fire(
+                            'Confirm!',
+                            'Confirm Successfully',
+                            'success'
+                        )
+                            .then(() => {
+                                location.href = "/reservation?date=" + date;
+                            });
+                    }
+                });
+            }
+        })
+
+
+    });
+    $(document).on("click", ".completed", function () {
+        var id = $(this).data("id-rese");
+        var date = $("#input_search_day").val()
+        console.log(id);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, complete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/reservation/completed",
+                    type: "GET",
+                    data: {
+                        id: id,
+                    },
+                    success: function (data) {
+                        Swal.fire(
+                            'Completed!',
+                            'Completed succsessfully.',
+                            'success'
+                        )
+                            .then(() => {
+                                location.href = "/reservation?date=" + date;
+                            });
+                    }
+                });
+            }
+        })
+
+
+    });
 </script>
 <!-- Wrapper End-->
 <!-- offcanvas start -->
