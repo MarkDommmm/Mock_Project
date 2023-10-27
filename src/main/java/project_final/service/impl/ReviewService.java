@@ -57,12 +57,14 @@ public class ReviewService implements IReviewService<ReviewRequest, ReviewRespon
     }
 
     @Override
-    public void save(ReviewRequest reviewRequest, Long id) {
+    public String save(ReviewRequest reviewRequest, Long id) {
 
         if (!reviewRepository.existsByReservation(reviewRequest.getReservation().getId()) && reviewRequest.getReservation().getUser().getId().equals(id)
-        && reviewRequest.getReservation().getStatus().equals(Status.COMPLETED)) {
+                && reviewRequest.getReservation().getStatus().equals(Status.COMPLETED)) {
             reviewRepository.save(reviewMapper.toEntity(reviewRequest));
+            return "success";
         }
+        return "error";
     }
 
 

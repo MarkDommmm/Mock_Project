@@ -18,12 +18,15 @@ import java.util.Optional;
 public interface IReservationRepository extends JpaRepository<Reservation, Long> {
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='PENDING' ")
     Page<Reservation> findAllByUserAndStatusPending(Pageable pageable, @Param("userId") Long userId);
+
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='COMPLETED'")
-    Page<Reservation> findAllByUserAndStatusCompleted(Pageable pageable,@Param("userId") Long userId);
+    Page<Reservation> findAllByUserAndStatusCompleted(Pageable pageable, @Param("userId") Long userId);
+
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='CANCEL'")
-    Page<Reservation> findAllByUserAndStatusCancel(Pageable pageable,@Param("userId") Long userId);
+    Page<Reservation> findAllByUserAndStatusCancel(Pageable pageable, @Param("userId") Long userId);
+
     @Query("SELECT R FROM Reservation R WHERE R.user.id = :userId AND R.status ='CONFIRM'")
-    Page<Reservation> findAllByUserAndStatusConfirm(Pageable pageable,@Param("userId") Long userId);
+    Page<Reservation> findAllByUserAndStatusConfirm(Pageable pageable, @Param("userId") Long userId);
 
     @Query("SELECT R FROM Reservation R WHERE   R.status ='ORDER' ")
     List<Reservation> findAllByStatusORDER();
@@ -46,6 +49,9 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
     @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.status = 'PENDING'")
     Optional<Reservation> findPendingReservationByUserId(@Param("userId") Long userId);
 
+//    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.id =: idR AND r.status = 'PENDING'")
+//    Optional<Reservation> findPendingReservationByUser(@Param("userId") Long userId, @Param("idR") Long idR);
+
     @Query("SELECT r FROM Reservation r WHERE r.id = :idR AND r.status = 'PENDING'")
     Optional<Reservation> findPendingReservationByReservationId(@Param("idR") Long idR);
 
@@ -59,19 +65,19 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
             "(SELECT SUM(t3.quantity_ordered * t3.price) FROM reservation r3 " +
             " JOIN reservation_menu t3 ON r3.id = t3.reservation_id " +
             " WHERE r3.status = 'COMPLETED' AND r3.booking_date = r.booking_date) as totalAmount " +
-            " FROM reservation r GROUP BY r.booking_date"+
+            " FROM reservation r GROUP BY r.booking_date" +
             " ORDER BY r.booking_date DESC",
             nativeQuery = true)
     Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
 
 
-    @Query("SELECT SUM(RM.quantityOrdered * RM.price) FROM Reservation R " +
+    @Query("SELECT COALESCE(ROUND(SUM(RM.quantityOrdered * RM.price),1) ,0) FROM Reservation R " +
             "JOIN ReservationMenu RM ON R.id = RM.reservation.id " +
             "WHERE R.id = :id")
     double getTotalPrice(@Param("id") Long id);
 
 
-    @Query("SELECT COALESCE(SUM(RM.quantityOrdered * RM.price), 0) FROM Reservation R " +
+    @Query("SELECT COALESCE(ROUND (SUM(RM.quantityOrdered * RM.price),1), 0) FROM Reservation R " +
             "JOIN ReservationMenu RM ON R.id = RM.reservation.id " +
             "WHERE R.id = :id AND RM.pay = 'PAID'")
     double getTotalPaid(@Param("id") Long id);
@@ -83,7 +89,6 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
             "FROM Reservation R WHERE R.status = 'COMPLETED' " +
             "GROUP BY R.bookingDate")
     List<Map<String, Object>> getByTime();
-
 
 
 }

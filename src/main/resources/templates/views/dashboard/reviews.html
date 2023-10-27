@@ -1523,7 +1523,7 @@
 
                                     </ul>
                                     <th:block th:if="${review}">
-                                        <form class="comment-text"
+                                        <form class="comment-text" id="form"
                                               th:action="@{/home/create/review}" method="post"
                                               th:object="${reviewRequest}"
                                               enctype="multipart/form-data">
@@ -1577,7 +1577,7 @@
                                                          data-visualcompletion="ignore">
                                                     </div>
                                                 </div>
-                                                    <button type="submit" id="submit" style="display:none;"></button>
+                                                    <button   type="submit" id="submit" style="display:none;"></button>
                                                 </span>
                                                 </div>
                                             </div>
@@ -1739,6 +1739,27 @@
         </div>
     </footer>
     <script>
+
+        $(document).on("click", "#submit", function () {
+            console.log('ad')
+            $.ajax({
+                url: "/home/create/review",
+                type: "POST",
+                success: function (data) {
+                    console.log(data)
+                    Swal.fire({
+                        position: 'center',
+                        icon: data.icon,
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+
+                },
+
+            });
+        })
 
         $('#fileLink').click(function (e) {
             e.preventDefault();

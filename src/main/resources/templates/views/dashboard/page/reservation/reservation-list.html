@@ -2833,13 +2833,17 @@
     $(document).on("click", ".update-dishes", function () {
         let idR = $(this).data("id-resvertion");
         let idU = $(this).data("id-user");
+        let date = $('#input_search_day').val();
+        console.log(date)
 
         $.ajax({
             url: "/edit-order",
             type: "GET",
             data: {
                 idUser: idU,
-                idResvertion: idR
+                idResvertion: idR,
+                date: date
+
             },
             success: function (data) {
                 console.log(data)
