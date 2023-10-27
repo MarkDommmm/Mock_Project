@@ -1662,7 +1662,7 @@
                                                                   th:text="'$'+${f.price}"></span>
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
-                                                <a sec:authorize="isAuthenticated()" class="add-cart"
+                                                <a  th:style="${session.idReservation}?'':'display:none'" sec:authorize="isAuthenticated()" class="add-cart"
                                                    th:data-id="${f.id}" th:data-menu-price="${f.price}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                          fill="none"
@@ -1925,9 +1925,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row text-center" style="margin-top: 20px">
+                            <div th:if="${session.idReservation}"  class="row text-center" style="margin-top: 20px">
                                 <p class="col-lg-6 text-black">Total Price:</p>
                                 <p class="col-lg-6 text-black render-total-price"></p>
+                            </div>
+                            <div th:unless="${session.idReservation}"  class="row text-center" style="margin-top: 20px">
+                                <h5 class="col-lg-6 text-black" style="color: rgb(234, 106, 18)">Book a table to order</h5>
                             </div>
                             <div class="show-more">
                                 <p>Scroll left show more!!</p>
@@ -1936,44 +1939,36 @@
                                      alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"
                                      style="max-height: 80px;">
                             </div>
-                            <div th:unless="${session.idReservation}" class="text-center "
-                                 sec:authorize="isAuthenticated()" >
+<!--                            <div -->
+<!--                                 th:if="${cart == null and cart =='' }" class="text-center "-->
+<!--                                 sec:authorize="isAuthenticated()" >-->
+<!--                                <a type="button"-->
+<!--                                   style="margin-bottom: 20px"-->
+<!--                                   class="check-out btn btn-primary rounded-pill  ">Reservation!!!-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div th:style="${session.idReservation != null and session.idReservation != '' ? '' : 'display:none'}"-->
+<!--                                 th:unless="${cart == null and cart =='' }" class="text-center" sec:authorize="isAuthenticated()">-->
+<!--                                <a type="button" th:href="@{|/reservation/change-status/${session.idReservation}|}"-->
+<!--                                   style="margin-bottom: 20px"-->
+<!--                                   class="btn btn-primary rounded-pill update">Update!!!-->
+<!--                                </a>-->
+<!--                            </div>-->
+                            <div  th:style="${session.idReservation != null and session.idReservation != '' ? '' : 'display:none'}"
+                                    th:if="${cart.isEmpty()}" class="text-center" sec:authorize="isAuthenticated()">
                                 <a type="button"
                                    style="margin-bottom: 20px"
-                                   class="check-out btn btn-primary rounded-pill  ">Reservation!!!
+                                   class="check-out btn btn-primary rounded-pill">Reservation!!!
                                 </a>
                             </div>
 
-                            <div th:if="${session.idReservation}" class="text-center" sec:authorize="isAuthenticated()">
+                            <div  th:style="${session.idReservation != null and session.idReservation != '' ? '' : 'display:none'}"
+                                    th:unless="${cart.isEmpty()}" class="text-center" sec:authorize="isAuthenticated()">
                                 <a type="button" th:href="@{|/reservation/change-status/${session.idReservation}|}"
                                    style="margin-bottom: 20px"
                                    class="btn btn-primary rounded-pill update">Update!!!
                                 </a>
                             </div>
-
-                            <!--                            <th:block th:if="${!cart.isEmpty()}">-->
-                            <!--                                <div class="show-more">-->
-                            <!--                                    <p>Scroll left show more!!</p>-->
-                            <!--                                    <img class="animation&#45;&#45;Gl63I"-->
-                            <!--                                         src="https://cdn.pixabay.com/animation/2023/01/15/01/54/01-54-59-413_512.gif"-->
-                            <!--                                         alt="Kế Tiếp, Thay Đổi, Mũi Tên, Bên Phải"-->
-                            <!--                                         style="max-height: 80px;">-->
-                            <!--                                </div>-->
-                            <!--                                <div class="text-center" sec:authorize="isAuthenticated()"  >-->
-                            <!--                                    <a type="button" href="/check-out"-->
-                            <!--                                       style="margin-bottom: 20px"-->
-                            <!--                                       class="btn btn-primary rounded-pill checkout">Checkout!!!</a>-->
-                            <!--                                </div>-->
-                            <!--                            </th:block>-->
-                            <!--                            <th:block th:unless="${!cart.isEmpty()}">-->
-                            <!--                                <div class="show-more">-->
-                            <!--                                    <img class="animation&#45;&#45;Gl63I"-->
-                            <!--                                         src="https://eonbazar.com/images/loading_cart_2.gif"-->
-                            <!--                                         alt="Cart isEmpty"-->
-                            <!--                                         style="max-height: 80px;">-->
-                            <!--                                    <p>Cart isEmpty!!!</p>-->
-                            <!--                                </div>-->
-                            <!--                            </th:block>-->
                         </div>
                     </div>
 
@@ -2373,7 +2368,7 @@
                                                                    > $ ${f.price}</span>
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
-                                                <a class="add-cart" data-id="${f.id}">
+                                                <a th:style="${session.idReservation}?'':'display:none'" class="add-cart" data-id="${f.id}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                          fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">

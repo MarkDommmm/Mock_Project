@@ -47,15 +47,16 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
 
     @Query(value = "SELECT r.booking_date as bookingDate, " +
             "(SELECT COUNT(DISTINCT r1.id) FROM reservation r1 " +
-            " JOIN table_menu t1 ON r1.id = t1.reservation_id " +
+            " JOIN reservation_menu t1 ON r1.id = t1.reservation_id " +
             " WHERE r1.status = 'COMPLETED' AND r1.booking_date = r.booking_date) as successfulOrders, " +
             "(SELECT COUNT(DISTINCT r2.id) FROM reservation r2 " +
-            " JOIN table_menu t2 ON r2.id = t2.reservation_id " +
+            " JOIN reservation_menu t2 ON r2.id = t2.reservation_id " +
             " WHERE r2.status = 'CANCEL' AND r2.booking_date = r.booking_date) as failedOrders, " +
-            "(SELECT SUM(t3.quantity * t3.price) FROM reservation r3 " +
-            " JOIN table_menu t3 ON r3.id = t3.reservation_id " +
+            "(SELECT SUM(t3.quantity_ordered * t3.price) FROM reservation r3 " +
+            " JOIN reservation_menu t3 ON r3.id = t3.reservation_id " +
             " WHERE r3.status = 'COMPLETED' AND r3.booking_date = r.booking_date) as totalAmount " +
-            " FROM reservation r GROUP BY r.booking_date",
+            " FROM reservation r GROUP BY r.booking_date"+
+            " ORDER BY r.booking_date DESC",
             nativeQuery = true)
     Page<Map<String, Object>> getReservationStatistics(Pageable pageable);
 
@@ -71,6 +72,13 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
             "WHERE R.id = :id AND RM.pay = 'PAID'")
     double getTotalPaid(@Param("id") Long id);
 
+
+    @Query("SELECT R.bookingDate as date, " +
+            "SUM(CASE WHEN HOUR(R.endTime) <= 17 THEN 1 ELSE 0 END) AS dayTime, " +
+            "SUM(CASE WHEN HOUR(R.endTime) > 17 THEN 1 ELSE 0 END) AS nightTime " +
+            "FROM Reservation R WHERE R.status = 'COMPLETED' " +
+            "GROUP BY R.bookingDate")
+    List<Map<String, Object>> getByTime();
 
 
 
