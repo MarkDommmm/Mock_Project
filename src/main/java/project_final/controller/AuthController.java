@@ -2,6 +2,7 @@ package project_final.controller;
 
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 
@@ -11,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import project_final.exception.RegisterException;
 import project_final.model.dto.request.UpdateUserRequest;
 
+import project_final.model.dto.response.ReservationCheckCodeResponse;
+import project_final.model.dto.response.ReservationResponse;
 import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.service.*;
 
@@ -39,14 +42,7 @@ public class AuthController {
         return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
     }
 
-    @GetMapping("/get-order-pending/{id}")
-    private ModelAndView getOrderByStatusPending(@PathVariable("id") Long id,
-                                                 Model model,
-                                                 @RequestParam(defaultValue = "0") int page,
-                                                 @RequestParam(defaultValue = "10") int size) {
-        model.addAttribute("reservation", reservationService.findByUserIdAndStatusPending(page, size, id));
-        return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
-    }
+
 
     @GetMapping("/reservation-detail")
     @ResponseBody
@@ -89,6 +85,45 @@ public class AuthController {
         userService.changePass(userRequest);
         return "redirect:/home";
     }
+    @GetMapping("/get-order-pending/{id}")
+    public ModelAndView getOrderByStatusPending(@PathVariable Long id,
+                                                                      Model model,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("reservation", reservationService.findByUserIdAndStatusPending(page, size, id));
+        return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
 
+    }
+
+    @GetMapping("/get-order-confirm/{id}")
+    private ModelAndView getOrderByStatusConfirm(@PathVariable Long id,
+                                                 Model model,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("reservation", reservationService.findAllByUserAndStatusConfirm(page, size, id));
+        return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
+
+
+    }
+    @GetMapping("/get-order-completed/{id}")
+    private ModelAndView getOrderByStatusCompleted(@PathVariable Long id,
+                                                 Model model,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("reservation", reservationService.findAllByUserAndStatusCompleted(page, size, id));
+        return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
+
+
+    }
+    @GetMapping("/get-order-cancel/{id}")
+    private ModelAndView getOrderByStatusCancel(@PathVariable Long id,
+                                                 Model model,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        model.addAttribute("reservation", reservationService.findAllByUserAndStatusCancel(page, size, id));
+        return new ModelAndView("/dashboard/page/user/user-profile", "profile", userService.findById(id));
+
+
+    }
 
 }
