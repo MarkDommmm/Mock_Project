@@ -30,7 +30,7 @@
     <div class="form-group col-lg-4">
         <label for="bookingDate">Booking Date:</label>
         <div class="input-group">
-            <input type="date" class="form-control" id="bookingDate" placeholder="dd/mm/yyyy">
+            <input type="date"    class="form-control" id="bookingDate" placeholder="dd/mm/yyyy">
         </div>
 
         <!--        <input type="date" id="bookingDate" class="form-control" required/>-->
@@ -180,6 +180,51 @@
     </form>
 </div>
 <script>
+    $(document).ready(function() {
+        // Tạo một đối tượng Date chứa thời gian hiện tại
+        var currentDate = new Date();
+        var currentHour = currentDate.getHours();
+        var currentMinute = currentDate.getMinutes();
+
+        // Thêm 30 phút
+        currentMinute += 30;
+        if (currentMinute >= 60) {
+            // Nếu phút lớn hơn hoặc bằng 60, cần cộng thêm 1 vào giờ và đặt phút lại thành 0
+            currentHour += 1;
+            currentMinute = 0;
+        }
+
+        $("#startTime").val(padNumber(currentHour) + ":" + padNumber(currentMinute));
+
+        // Tính giờ kết thúc (startTime + 1 giờ)
+        var endHour = currentHour + 1;
+
+        // Set giá trị mặc định cho trường input endTime là giờ kết thúc
+        $("#endTime").val(padNumber(endHour) + ":" + padNumber(currentMinute));
+
+        // Tạo một đối tượng Date chứa thời gian hiện tại
+        var tomorrowDate = new Date();
+
+        // Thêm 1 vào ngày hiện tại để lấy ngày hôm sau
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+
+        // Lấy giá trị của ngày, tháng và năm
+        var year = tomorrowDate.getFullYear();
+        var month = padNumber(tomorrowDate.getMonth() + 1);
+        var day = padNumber(tomorrowDate.getDate());
+
+        // Đặt giá trị mặc định cho trường input khi trang tải xong
+        $("#bookingDate").val(year + "-" + month + "-" + day);
+    });
+
+    function padNumber(number) {
+        return number < 10 ? "0" + number : number;
+    }
+
+
+
+
+
     $(".category-icon").click(function () {
 
         $(".category-menu").removeClass("active");
@@ -215,7 +260,7 @@
             },
             success: function (data) {
 
-                if (data.tables.length == 0){
+                if (data.tables.length == 0) {
                     Swal.fire({
                         position: 'center',
                         icon: "warning",
@@ -321,18 +366,50 @@
 
         var idTable = $(this).data("id-table");
         var bookingDate = $("#bookingDate").val();
+        var bookingDateObject = new Date(bookingDate);
 
         var endTime = $("#endTime").val();
 
         var startTime = $("#startTime").val();
 
-// Lấy giờ và phút từ chuỗi startTime
+
         var startTimeArray = startTime.split(":");
         var startHour = parseInt(startTimeArray[0], 10);
         var startMinute = parseInt(startTimeArray[1], 10);
 
-// Kiểm tra xem giờ bắt đầu có lớn hơn 9 giờ sáng không
-        if (    startHour > 9 || (startHour === 9 && startMinute > 0)) {
+
+        // Tạo một đối tượng Date chứa thời gian hiện tại
+        var currentDate = new Date();
+
+        var currentHour = currentDate.getHours();
+        var currentMinute = currentDate.getMinutes();
+
+
+        if (bookingDateObject < currentDate){
+            Swal.fire({
+                position: 'center',
+                icon: "warning",
+                title: "You must reserve a table one day in advance! thank you!",
+                showConfirmButton: false,
+                timer: 2000
+            })
+        }else if (startHour < currentHour || (startHour === currentHour && startMinute < currentMinute)) {
+            Swal.fire({
+                position: 'center',
+                icon: "error",
+                title: "start time must be greater than current time",
+                showConfirmButton: false,
+                timer: 2000
+            })
+        } else if (startTime >= endTime) {
+            Swal.fire({
+                position: 'center',
+                icon: "error",
+                title: "The start time must be greater than the end time",
+                showConfirmButton: false,
+                timer: 2000
+            })
+        } else if (startHour > 9 || (startHour === 9 && startMinute > 0)) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Do you want to choose the dish?',

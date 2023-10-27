@@ -33,7 +33,7 @@ public class ReservationMenuMapper implements IReservationMenuMapper {
                 .id(reservationMenu.getId())
                 .image(reservationMenu.getMenu().getImage())
                 .name(reservationMenu.getMenu().getName())
-                .quantityDelivered(reservationMenu.getQuantityOrdered())
+                .quantityOrdered(reservationMenu.getQuantityOrdered())
                 .quantityDelivered(reservationMenu.getQuantityDelivered())
                 .price(reservationMenu.getPrice())
                 .dateBooking(reservationMenu.getReservation().getBookingDate())

@@ -81,8 +81,8 @@ public class PdfUtil {
                 for (ReservationMenu bill : billDto.getReservationMenu()) {
                     yPosition -= rowHeight;
                     drawTableRow(contentStream, yPosition, tableWidth, rowHeight, " " + i,
-                            bill.getMenu().getName(), String.valueOf(bill.getStatus()), "$" + bill.getMenu().getPrice(),
-                            String.valueOf(bill.getQuantity()), "$" + String.valueOf(bill.getPrice()));
+                            bill.getMenu().getName(), String.valueOf(bill.getPay()), "$" + bill.getMenu().getPrice(),
+                            String.valueOf(bill.getQuantityOrdered()), "$" + String.valueOf(bill.getPrice()));
                     i++;
                 }
 

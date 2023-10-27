@@ -1575,14 +1575,19 @@
                         <div class="table-responsive">
                         <div class="flex-header-modal">
 
-                            <h3>Table Orders</h3>
-
-                               <h3 class="update-dishes" data-id-user="${data.idUser}" data-id-resvertion="${data.id}">Update dishes</h3>
-
-                                  <h3>Cancel Orders</h3>
-                                  <a href="/checkout-final?idR=${data.id}&idU=${data.idUser}">
+                            <button type="button" class="btn btn-outline-primary active">
+                             <h3 class="check-out" >Table Orders</h3></button>
+                            <button type="button" class="btn btn-outline-primary active update-dishes"
+                            data-id-user="${data.idUser}" data-id-resvertion="${data.id}">
+                               <h3 class="check-out" >Update dishes</h3></button></button>
+                            <button type="button" class="btn btn-outline-primary active">
+                                <h3 class="check-out" >Cancel Orders</h3></button>
+                             <button type="button" class="btn btn-outline-primary active check-out">
+                                        <a href="/checkout-final?idR=${data.id}&idU=${data.idUser}">
                                   <h3 class="check-out" >Checkout</h3>
-                                  </a>
+                                  </a> </button>
+
+
                                   </div>
 
                             <table class="table table-striped" role="grid"
@@ -1623,10 +1628,10 @@
                                 <div class="flex align-items-center list-user-action">
                                     <a class="btn btn-sm btn-icon " data-toggle="tooltip"
                                        data-placement="top" title="" data-original-title="Excel"
-                                       th:href="@{|/reservation/download/${data.id}|}">
+                                       href="/printInvoice/${data.id}">
                                     <span class="btn-inner">
                                       <img width="30px"
-                                           src="https://cdn.icon-icons.com/icons2/2107/PNG/512/file_type_excel_icon_130611.png">
+                                           src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1792px-PDF_icon.svg.png">
                                     </span>
                                     </a>
 
