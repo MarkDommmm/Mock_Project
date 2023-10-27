@@ -60,7 +60,7 @@ public class ReservationMenuService implements IReservationMenuService {
     }
 
     @Override
-    public ReservationMenu served(int  quantity,Long id) {
+    public ReservationMenu served(int quantity, Long id) {
         Optional<ReservationMenu> reservationMenus = reservationMenuRepository.findById(id);
         if (reservationMenus.isPresent()) {
             reservationMenus.get().setQuantityDelivered(quantity);
@@ -85,6 +85,8 @@ public class ReservationMenuService implements IReservationMenuService {
                 if (reservationMenu.getMenu().getId().equals(menu.getId())
                         && reservationMenu.getReservation().getId().equals(existingReservation.get().getId())
                         && reservationMenu.getPay().equals(Status.UN_PAID)) {
+//                    double price = menu.getPrice() * reservationMenu.getQuantityOrdered();
+//                    double roundedResults = (double) Math.round(price * 10.0) / 10;
                     reservationMenu.setQuantityOrdered(reservationMenu.getQuantityOrdered() + 1);
                     reservationMenu.setPrice(menu.getPrice() * reservationMenu.getQuantityOrdered());
                     menuInCart = true;
@@ -111,7 +113,7 @@ public class ReservationMenuService implements IReservationMenuService {
                 if (reservationMenu.getQuantityOrdered() <= 1) {
                     reservationMenuRepository.deleteById(reservationMenu.getId());
                 } else {
-                    reservationMenu.setQuantityOrdered(reservationMenu.getQuantityOrdered()-1);
+                    reservationMenu.setQuantityOrdered(reservationMenu.getQuantityOrdered() - 1);
                     reservationMenu.setPrice(reservationMenu.getPrice() - reservationMenu.getMenu().getPrice());
                     reservationMenuRepository.save(reservationMenu);
                 }
@@ -152,7 +154,7 @@ public class ReservationMenuService implements IReservationMenuService {
                     reservationMenu.get().getQuantityDelivered() == 0) {
                 reservationMenuRepository.deleteById(id);
                 return "Your file has been deleted.";
-            }else {
+            } else {
                 return "This menu cannot be deleted";
             }
         }

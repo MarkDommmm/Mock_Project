@@ -23,6 +23,7 @@ import project_final.model.dto.response.TableMenuCartResponse;
 import project_final.repository.*;
 import project_final.security.UserPrinciple;
 import project_final.service.*;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.*;
@@ -136,7 +137,6 @@ public class HomeController {
                                @RequestParam(defaultValue = "20") int size) {
 
         session.setAttribute("currentUser", userPrinciple);
-
         model.addAttribute("notifications", reservationRepository.findAllByStatusORDER());
         model.addAttribute("tableTypes", tableTypeService.findAllByStatusIsTrueAndName(nameTableType, page, size));
         model.addAttribute("reservation", new ReservationRequest());
@@ -207,6 +207,7 @@ public class HomeController {
             @RequestParam(defaultValue = "10") int sizeCart,
             Model model, HttpSession session) {
         Long id = (Long) session.getAttribute("idReservation");
+
         if (userPrinciple != null) {
             model.addAttribute("cart", reservationMenuService.getAll(id, page, size));
         }
@@ -222,19 +223,22 @@ public class HomeController {
     @ResponseBody
     public Map<String, String> editOrder(@RequestParam("idResvertion") Long idR,
                                          @RequestParam("idUser") Long idU,
+                                         @RequestParam(value = "date", defaultValue = "0") String date,
                                          Model model, @RequestParam(defaultValue = "") String name,
                                          @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "12") int size,
                                          @AuthenticationPrincipal UserPrinciple userPrinciple,
                                          HttpSession session) {
         Map<String, String> map = new HashMap<>();
-        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("123"))) {
+        if (userPrinciple != null && (Objects.equals(userPrinciple.getId(), idU) || userPrinciple.getUsername().equals("admin"))) {
             model.addAttribute("cart", reservationMenuService.getDetails(idR));
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("menuAll", menuService.findAllByStatusIsTrueAndName(name, page, size));
-            model.addAttribute("idR", idR);
+//            model.addAttribute("idR", idR);
             model.addAttribute("reservationMenu", new ReservationMenuRequest());
+//            Tao ss luu tru idReservation sang trang home menu  và set if cho  button update
             session.setAttribute("idReservation", idR);
+            session.setAttribute("date", date);
 
             Optional<Reservation> reservation = reservationRepository.findById(idR);
             if (reservation.isPresent()) {
@@ -276,16 +280,23 @@ public class HomeController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeCart,
-            HttpSession session, HttpRequest request) {
+            HttpSession session, @AuthenticationPrincipal UserPrinciple userPrinciple) {
 
         Long idR = (Long) session.getAttribute("idReservation");
+        Optional<Reservation> existingReservation = null;
+        if (idR != null) {
+            Optional<Reservation> reservation = reservationRepository.findById(idR);
+            existingReservation = reservationRepository.findPendingReservationByUserId(reservation.get().getUser().getId());
 
-        Optional<Reservation> existingReservation = reservationRepository.findById(idR);
+        } else {
+            existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
+        }
+
         if (existingReservation.isPresent()) {
             reservationMenuService.addCart(id, existingReservation.get().getId());
-            return reservationMenuService.getTableMenu(idR, page, sizeCart);
+            return reservationMenuService.getTableMenu(existingReservation.get().getId(), page, sizeCart);
         }
-        return reservationMenuService.getTableMenu(idR, page, sizeCart);
+        return reservationMenuService.getTableMenu(null, page, sizeCart);
 
     }
 
@@ -323,7 +334,7 @@ public class HomeController {
     }
 
     @RequestMapping("/checkout")
-    public String checkout(Model model, @AuthenticationPrincipal UserPrinciple userPrinciple,HttpSession session) {
+    public String checkout(Model model, @AuthenticationPrincipal UserPrinciple userPrinciple, HttpSession session) {
 
         Optional<Reservation> existingReservation = reservationRepository.findPendingReservationByUserId(userPrinciple.getId());
         List<TableMenuCartResponse> tableMenuCartResponse = reservationMenuService.getDetails(existingReservation.get().getId());
@@ -366,8 +377,8 @@ public class HomeController {
 
     @RequestMapping("/home/reviews/{id}")
     public String getHomeReview(Model model, @PathVariable Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
-        Optional<Reservation> reservation = reservationRepository.findById(id);
 
+        Optional<Reservation> reservation = reservationRepository.findById(id);
         if (reservation.isPresent()) {
             model.addAttribute("reviews", reviewRepository.findAll());
             model.addAttribute("review", "");
@@ -386,9 +397,13 @@ public class HomeController {
     }
 
     @PostMapping("/home/create/review")
-    public String addReview(@ModelAttribute ReviewRequest reviewRequest, @AuthenticationPrincipal UserPrinciple userPrinciple) {
-        reviewService.save(reviewRequest, userPrinciple.getId());
-        return "redirect:/home/reviews";
+    @ResponseBody
+    public Map<String, String> addReview(@ModelAttribute ReviewRequest reviewRequest, @AuthenticationPrincipal UserPrinciple userPrinciple) {
+        String review = reviewService.save(reviewRequest, userPrinciple.getId());
+        Map<String, String> map = new HashMap<>();
+        map.put("icon", "warning");
+        map.put("message", review);
+        return map;
     }
 
 

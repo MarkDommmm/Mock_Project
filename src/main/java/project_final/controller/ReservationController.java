@@ -32,6 +32,7 @@ import project_final.service.impl.GenerateExcelService;
 import project_final.service.impl.PaypalService;
 import project_final.service.impl.VNPayService;
 import project_final.util.PdfUtil;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -92,7 +93,7 @@ public class ReservationController {
     public ResponseEntity<?> addReservation(@Valid @ModelAttribute("reservationR") ReservationRequest reservationRequest,
                                             BindingResult bindingResult, HttpSession session,
                                             @AuthenticationPrincipal UserPrinciple userPrinciple,
-                                            Model model, HttpServletRequest request)     {
+                                            Model model, HttpServletRequest request) {
         try {
             Optional<Reservation> existingReservation = reservationRepository.findById(reservationRequest.getId());
             double totalPrice = 0;
@@ -116,7 +117,7 @@ public class ReservationController {
                 session.removeAttribute("idReservation");
                 session.removeAttribute("carts");
                 return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", vnPayUrl));
-            } else if (reservationRequest.getPayment().getId().equals   (3L)) {
+            } else if (reservationRequest.getPayment().getId().equals(3L)) {
                 session.setAttribute("reservationRequest", reservationRequest);
                 session.removeAttribute("idReservation");
                 session.removeAttribute("carts");
@@ -132,7 +133,7 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/paypal")
-    public ResponseEntity<?> initiatePaypalPayment(HttpSession session, HttpServletResponse response  ) {
+    public ResponseEntity<?> initiatePaypalPayment(HttpSession session, HttpServletResponse response) {
         try {
             ReservationRequest reservationRequest = (ReservationRequest) session.getAttribute("reservationRequest");
             double totalPrice = reservationService.getTotalPrice(reservationRequest.getId());
@@ -185,7 +186,7 @@ public class ReservationController {
                     reservationRequest.setStatus(Status.ORDER);
                     reservationService.save(reservationRequest);
                 }
-                model.addAttribute("receipt", reservationRequest.getId());
+                    model.addAttribute("receipt", reservationRequest.getId());
                 return "/dashboard/errors/SuccessPayment";
             }
 
@@ -237,7 +238,7 @@ public class ReservationController {
     public String completed(@RequestParam Long id) {
         reservationService.completed(id);
         List<ReservationMenu> reservationMenus = reservationMenuRepository.findAllById(id);
-        for (ReservationMenu r:reservationMenus) {
+        for (ReservationMenu r : reservationMenus) {
             r.setPay(Status.PAID);
             reservationMenuRepository.save(r);
         }
@@ -251,9 +252,18 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/change-status/{id}")
-    public String changeStatus(@PathVariable("id") Long id, HttpSession session) {
+    public String changeStatus(@PathVariable("id") Long id, HttpSession session, @AuthenticationPrincipal UserPrinciple userPrinciple) {
         reservationService.changeStatusOrder(id);
         session.removeAttribute("idReservation");
+        String date = (String) session.getAttribute("date");
+        if (userPrinciple.getUsername().equals("admin")) {
+            if (date.equals("0")) {
+                return "redirect:/home";
+            } else {
+                return "redirect:/reservation?date=" + date;
+            }
+
+        }
         return "redirect:/home";
     }
 
@@ -263,7 +273,7 @@ public class ReservationController {
     public Map<String, String> cancel(@RequestParam("id") Long id, @AuthenticationPrincipal UserPrinciple userPrinciple) {
         String message = reservationService.cancel(id, userPrinciple.getId());
         Map<String, String> map = new HashMap<>();
-        map.put("error", "error");
+        map.put("error", "warning");
         map.put("message", message);
         return map;
     }
@@ -282,16 +292,16 @@ public class ReservationController {
 
     }
 
-        @GetMapping("/printInvoice/{id}")
-        public ResponseEntity<byte[]> printInvoice(@PathVariable Long id) {
-            byte[] pdfContent = pdfUtil.createPdf(id);
+    @GetMapping("/printInvoice/{id}")
+    public ResponseEntity<byte[]> printInvoice(@PathVariable Long id) {
+        byte[] pdfContent = pdfUtil.createPdf(id);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("inline", "Restaurant Aprycot-Receipt.pdf");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "Restaurant Aprycot-Receipt.pdf");
 //            headers.set("Content-Disposition", "attachment; filename=Restaurant_Aprycot-Receipt.pdf");
-            return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+    }
 
 
     @GetMapping("/search")

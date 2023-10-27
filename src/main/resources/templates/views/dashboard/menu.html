@@ -24,12 +24,13 @@
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2}"></script>
     <style>
-        .new{
+        .new {
             width: 156px;
             position: absolute;
             top: -63px;
             left: -19px;
         }
+
         .boxs {
             border-radius: 30px;
             box-shadow: 15px 15px 30px #bebebe,
@@ -1678,8 +1679,8 @@
                                                                   th:text="'$'+${f.price}"></span>
                                                     <small class="text-decoration-line-through">$8.49</small>
                                                 </div>
-
-                                                <a  th:style="${session.idReservation}?'':'display:none'" sec:authorize="isAuthenticated()" class="add-cart"
+                                                <!--     add-cart-->
+                                                <a sec:authorize="isAuthenticated()" class="add-cart"
 
                                                    th:data-id="${f.id}" th:data-menu-price="${f.price}">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
@@ -1869,16 +1870,20 @@
                     <div class="col-md-12 col-lg-12">
                         <div class="card  profile-img3 ">
                             <div class="card-body">
-                                <img class="new" src="https://benhvienungbuoudanang.com.vn/wp-content/uploads/2020/01/new-icon.gif">
+                                <img class="new"
+                                     src="https://benhvienungbuoudanang.com.vn/wp-content/uploads/2020/01/new-icon.gif">
                                 <div class="text-center profile-img51" style="margin-top: 6rem !important;">
                                     <div class="profile-img41 ">
                                         <img src="../assets/images/layouts/8.png" class="img-fluid rounded-pill "
                                              alt="profile-image">
                                     </div>
-                                    <div class="profile-img51 "  style="margin-top: 6rem !important;">
+                                    <div class="profile-img51 " style="margin-top: 6rem !important;">
                                         <h2 class="mb-2 profile-img55">New food </h2>
                                         <h2 class="mb-2 profile-img55" style="color: #ea6a12">VEGETABLE BURGER</h2>
-                                        <p class="mb-0">A veggie burger is a hamburger made with a patty that does not contain meat, or the patty of such a hamburger. The patty may be made from ingredients like beans, nuts, grains, seeds, or fungi such as mushrooms or mycoprotein.</p>
+                                        <p class="mb-0">A veggie burger is a hamburger made with a patty that does not
+                                            contain meat, or the patty of such a hamburger. The patty may be made from
+                                            ingredients like beans, nuts, grains, seeds, or fungi such as mushrooms or
+                                            mycoprotein.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1922,7 +1927,8 @@
                                                                   rx="0.833332" transform="rotate(-135 2.05469 9.125)"
                                                                   fill="#EA6A12"/>
                                                         </svg>
-                                                    <small class="text-dark ms-1" th:text="${c.quantityOrdered}"></small>
+                                                    <small class="text-dark ms-1"
+                                                           th:text="${c.quantityOrdered}"></small>
                                                     </span>
                                                 </div>
                                             </div>
@@ -1945,12 +1951,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div th:if="${session.idReservation}"  class="row text-center" style="margin-top: 20px">
+                            <div th:if="${session.idReservation}" class="row text-center" style="margin-top: 20px">
                                 <p class="col-lg-6 text-black">Total Price:</p>
                                 <p class="col-lg-6 text-black render-total-price"></p>
                             </div>
-                            <div th:unless="${session.idReservation}"  class="row text-center" style="margin-top: 20px">
-                                <h5 class="col-lg-6 text-black" style="color: rgb(234, 106, 18)">Book a table to order</h5>
+                            <div th:unless="${session.idReservation}" class="row text-center" style="margin-top: 20px">
+                                <h5 class="col-lg-6 text-black" style="color: rgb(234, 106, 18)">Book a table to
+                                    order</h5>
                             </div>
                             <div class="show-more">
                                 <p>Scroll left show more!!</p>
@@ -1960,9 +1967,8 @@
                                      style="max-height: 80px;">
                             </div>
 
-                            <div th:unless="${session.idReservation}" class="text-center "
-                                 sec:authorize="isAuthenticated()" th:style="${session.i == null ? 'display:none': ''}" >
-
+                            <div  th:style="${session.idReservation != null and session.idReservation != '' ? '' : 'display:none'}"
+                                  th:if="${cart.isEmpty()}" class="text-center" sec:authorize="isAuthenticated()">
                                 <a type="button"
                                    style="margin-bottom: 20px"
                                    class="check-out btn btn-primary rounded-pill">Reservation!!!
@@ -1970,12 +1976,13 @@
                             </div>
 
                             <div  th:style="${session.idReservation != null and session.idReservation != '' ? '' : 'display:none'}"
-                                    th:unless="${cart.isEmpty()}" class="text-center" sec:authorize="isAuthenticated()">
+                                  th:unless="${cart.isEmpty()}" class="text-center" sec:authorize="isAuthenticated()">
                                 <a type="button" th:href="@{|/reservation/change-status/${session.idReservation}|}"
                                    style="margin-bottom: 20px"
                                    class="btn btn-primary rounded-pill update">Update!!!
                                 </a>
                             </div>
+
                         </div>
                     </div>
 
@@ -2121,13 +2128,13 @@
                                                                   rx="0.833332" transform="rotate(-135 2.05469 9.125)"
                                                                   fill="#EA6A12"/>
                                                         </svg>
-                                                    <small class="text-dark ms-1"  >${c.quantity}</small>
+                                                    <small class="text-dark ms-1"  >${c.quantityOrdered}</small>
                                                     </span>
                                             </div>
                                         </div>
                                            <div class="me-4 text-end">
                                                 <span class="mb-1 remove-cart" data-price="${c.price}"
-                                                      data-qty="${c.quantity}" data-menu-id="${c.id}">
+                                                      data-qty="${c.quantityOrdered}" data-menu-id="${c.id}">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                                          xmlns="http://www.w3.org/2000/svg">
                                                         <path opacity="0.4"
@@ -2281,20 +2288,20 @@
                 type: "GET",
                 data: {},
                 success: function (data) {
-                        if (data.icon == "error"){
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'error',
-                                title: 'You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                        }else {
-                            window.location.href ="/checkout"
-                        }
+                    if (data.icon == "error") {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'You have an order in progress, please wait for Admin to confirm! Contact Hotline 7777',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    } else {
+                        window.location.href = "/checkout"
+                    }
 
                 },
-                error:function (){
+                error: function () {
                     Swal.fire({
                         position: 'center',
                         icon: 'error',

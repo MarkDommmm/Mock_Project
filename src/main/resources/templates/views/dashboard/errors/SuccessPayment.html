@@ -1113,10 +1113,10 @@
                             <a href="/home" class="btn btn-primary mt-3">Back to Home</a>
                         </div>
                         <div class="col-lg-6">
-                            <a class="btn btn-sm btn-icon" th:href="@{|/printInvoice/${r.id}|}"
+                            <a class="btn btn-primary mt-3" th:href="@{|/printInvoice/${receipt}|}"
                                onclick="downloadAndPrintPdf(document.getElementById('hiddenId').value)">
                                 Print Receipt</a>
-                            <input type="hidden" id="hiddenId" th:value="${r.id}"/>
+                            <input type="hidden" id="hiddenId" th:value="${receipt}"/>
                         </div>
                     </div>
                 </div>
